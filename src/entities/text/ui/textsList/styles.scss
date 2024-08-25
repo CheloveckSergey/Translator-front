@@ -1,0 +1,70 @@
+.text-list {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+
+  .text-adder {
+    height: 400px;
+    width: 300px;
+    border-radius: 10px;
+    overflow: hidden;
+    
+    button.editButton {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+      background-color: var(--background-light-darker);
+      transition: background-color 0.05s, color 0.05s;
+
+      &:hover {
+        background-color: var(--background-dark-lighter);
+        color: var(--font-light);
+      }
+    }
+
+    .editor {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      height: 100%;
+      width: 100%;
+      padding: 10px;
+      border: 3px solid var(--background-dark);
+      border-radius: 10px;
+
+      p {
+        // margin-bottom: 5px;
+      }
+      
+      input, textarea {
+        width: 100%;
+        padding: 5px;
+        color: inherit;
+        background-color: var(--background-light-darker);
+        border-radius: 5px;
+      }
+
+      textarea {
+        height: 200px;
+        flex-grow: 3;
+      }
+
+      .buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+
+        button.submit {
+          height: 50px;
+          width: 150px;
+        }
+  
+      }
+
+    }
+  }
+}

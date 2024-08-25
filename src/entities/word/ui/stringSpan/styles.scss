@@ -1,0 +1,49 @@
+.word-span {
+  cursor: pointer;
+
+  &:hover {
+    color: var(--font-blue);
+  }
+
+  &.process {
+    color: rgb(59, 18, 88)
+  }
+
+  &.studied {
+    color: var(--font-green);
+  }
+}
+
+.word-window {
+  display: flex;
+  flex-direction: column;
+  height: 300px;
+  width: 400px;
+  padding: 10px;
+  background-color: var(--background-light);
+  border-radius: 10px;
+
+  .word-window-loader {
+    height: 100%;
+    width: 100%;
+  }
+
+  .word-window-desc {
+    flex-grow: 3;
+
+    .value {
+      font-weight: bolder;
+    }
+  
+    .translation {
+      margin-top: 10px;
+    }
+  }
+
+  .word-window-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70px;
+  }
+}

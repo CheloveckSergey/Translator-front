@@ -1,0 +1,7 @@
+@mixin customInput() {
+  padding: 5px;
+  font-size: 1rem;
+  border-radius: 5px;
+  color: var(--font-dark);
+  background-color: var(--background-light-darker);
+}

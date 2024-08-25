@@ -1,0 +1,40 @@
+.green-button {
+  font-size: 1rem;
+  border-radius: 10px;
+  background-color: var(--button-green);
+
+  &:hover {
+    background-color: var(--button-green-lighter);
+  }
+
+  &:active {
+    background-color: aquamarine;
+  }
+}
+
+.shared-text-button {
+
+  &.light {
+    color: var(--font-light);
+
+    &:hover {
+      color: var(--font-light-darker);
+    }
+  }
+
+  &.dark {
+    color: var(--font-dark);
+
+    &:hover {
+      color: var(--font-dark-lighter);
+    }
+  }
+
+  &.green {
+    color: var(--button-green);
+      
+    &:hover {
+      color: var(--button-green-lighter);
+    }
+  }
+}

@@ -1,0 +1,19 @@
+.global-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 70px;
+  flex-shrink: 0;
+  height: 70px;
+  width: 100%;
+  background-color: var(--background-green);
+  color: var(--font-light);
+
+  h3 {
+    cursor: pointer;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

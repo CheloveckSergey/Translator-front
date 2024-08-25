@@ -1,0 +1,53 @@
+.custom-text-input, .custom-password-input, .custom-textarea {
+  padding: 5px;
+  font-size: 1rem;
+  border-radius: 5px;
+  color: var(--font-dark);
+  background-color: var(--background-light-darker);
+}
+
+.custom-submit {
+  height: 40px;
+  width: 120px;
+  font-size: 1rem;
+  border-radius: 10px;
+
+  &.green {
+
+    background-color: var(--button-green);
+  
+    &:hover {
+      background-color: var(--button-green-lighter);
+    }
+  
+    &:active {
+      background-color: aquamarine;
+    }
+  }
+
+  &.light {
+
+    background-color: var(--font-light);
+  
+    &:hover {
+      background-color: var(--font-light-darker);
+    }
+  
+    &:active {
+      background-color: var(--font-dark-lighter);
+    }
+  }
+
+  &.dark {
+
+    background-color: var(--font-dark);
+  
+    &:hover {
+      background-color: var(--font-dark-lighter);
+    }
+  
+    &:active {
+      background-color: --font-light-darker;
+    }
+  }
+}

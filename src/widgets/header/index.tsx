@@ -1,0 +1,43 @@
+import { FC } from "react";
+import './styles.scss';
+import { Link, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../app/store";
+import { authThunks } from "../../features/auth";
+
+export const Header: FC = () => {
+
+  const { user } = useAppSelector(state => state.user);
+
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  return (
+    <div className="global-header">
+      <Link to='/'>
+        <h3>Home</h3>
+      </Link>
+      <Link to='/words'>
+        <h3>Words</h3>
+      </Link>
+      <Link to='/today-list'>
+        <h3>Today List</h3>
+      </Link>
+      <Link to='/texts'>
+        <h3>Texts</h3>
+      </Link>
+      <Link to='/translator'>
+        <h3>Translator</h3>
+      </Link>
+      <h3
+        onClick={() => {
+          if (user) {
+            dispatch(authThunks.logoutThunk({userId: user?.id}));
+          }
+          navigate('/registration');
+        }}
+      >
+        Exit
+      </h3>
+    </div>
+  )
+}
