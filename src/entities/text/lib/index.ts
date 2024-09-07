@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { TextListClass, TextPreviewClass, TextSpanClass } from "../model";
-import { useQuery } from "react-query";
+import { TextListClass, TextPreviewClass, TextSpanClass, Translation, TranslationDto } from "../model";
+import { useMutation, useQuery } from "react-query";
 import { TextApi } from "../api";
 import { StringSpan } from "../../word";
-import { mapTextSpanDto } from "../model/mappers";
+import { mapTextSpanDto, mapTranslationDto } from "../model/mappers";
+import { useAppSelector } from "../../../app/store";
 
 const textsKeys = {
   texts: {
@@ -13,6 +14,10 @@ const textsKeys = {
   text: {
     root: 'text',
     slug: (textId: number) => [textsKeys.text.root, textId],
+  },
+  translation: {
+    root: 'translation',
+    slug: (value: string) => [textsKeys.translation.root, value],
   }
 }
 
@@ -33,11 +38,50 @@ const useTextPreviewsList = (userId: number) => {
     }
   });
 
+  function updateTexts() {
+    const textListCopy = textList.getCopy();
+    setTextList(textListCopy);
+  }
+
   return {
     textList,
     setTextList,
     isLoading,
     isError,
+    updateTexts,
+  }
+}
+
+const useLastTextPreviews = () => {
+
+  const { user } = useAppSelector(state => state.user);
+
+  const [textList, setTextList] = useState<TextListClass>(new TextListClass([]));
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: textsKeys.texts.slug(user!.id),
+    queryFn: () => {
+      return TextApi.getLastTextsByUser();
+    },
+    onSuccess: (data) => {
+      const textPreviews: TextPreviewClass[] = data.map(
+        textPreview => new TextPreviewClass(textPreview.id, textPreview.name, textPreview.content)
+      );
+      setTextList(new TextListClass(textPreviews));
+    }
+  });
+
+  function updateTexts() {
+    const textListCopy = textList.getCopy();
+    setTextList(textListCopy);
+  }
+
+  return {
+    textList,
+    setTextList,
+    isLoading,
+    isError,
+    updateTexts,
   }
 }
 
@@ -64,7 +108,48 @@ const useTextSpan = (textId: number) => {
   }
 }
 
+const useTranslation = () => {
+
+  const [translation, setTranslation] = useState<Translation>()
+
+  const { isLoading, isError, mutateAsync } = useMutation(({ value } : { value: string }) => {
+    return TextApi.getTranslation(value)
+  }, {
+    onSuccess: (data) => {
+      setTranslation(mapTranslationDto(data));
+    }
+  });
+
+  function updateState() {
+    if (!translation) {
+      return
+    }
+    if (translation?.type === 'word') {
+      const newTranslation: Translation = {
+        type: 'word',
+        word: translation.word.getCopy(),
+      }
+      setTranslation(newTranslation);
+    } else {
+      const newTranslation: Translation = {
+        ...translation,
+      }
+      setTranslation(newTranslation);
+    }
+  }
+
+  return {
+    translation,
+    isLoading,
+    isError,
+    refetch: mutateAsync,
+    updateState,
+  }
+}
+
 export const TextsLib = {
   useTextPreviewsList,
+  useLastTextPreviews,
   useTextSpan,
+  useTranslation,
 }

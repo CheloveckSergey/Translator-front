@@ -1,6 +1,6 @@
 import api from "../../../shared/api";
 import { StringSpan } from "../../word";
-import { TextPreview, TextSpanDto } from "../model";
+import { TextPreview, TextSpanDto, TranslationDto } from "../model";
 
 const INITIAL_URL = '/texts'
 
@@ -12,6 +12,11 @@ export class TextApi {
 
   static async getAllByUser() {
     const response = await api.get<TextPreview[]>(INITIAL_URL + '/getAllByUser');
+    return response.data;
+  }
+
+  static async getLastTextsByUser() {
+    const response = await api.get<TextPreview[]>(INITIAL_URL + '/getLastTextsByUser');
     return response.data;
   }
 
@@ -32,6 +37,14 @@ export class TextApi {
     const response = await api.post<TextPreview>(
       INITIAL_URL + '/changeName',
       { name, textId },
+    );
+    return response.data;
+  }
+
+  static async getTranslation(value: string) {
+    const response = await api.post<TranslationDto>(
+      INITIAL_URL + '/getTranslation',
+      { value },
     );
     return response.data;
   }

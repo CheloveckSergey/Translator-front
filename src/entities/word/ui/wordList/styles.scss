@@ -1,4 +1,8 @@
 .word-list {
+  margin-top: 10px;
+  &:first-child {
+    margin-top: 0;
+  }
   background-color: var(--background-light-darker);
   border: 3px solid var(--background-dark);
   border-radius: 15px;
@@ -37,7 +41,7 @@
     grid-template-columns: 3fr 3fr 2fr 3fr 3fr 2fr;
     height: 40px;
     // padding: 10px;
-    border-top: 3px solid var(--background-dark);
+    // border-top: 3px solid var(--background-dark);
 
     &:nth-child(3n+2) {
       background-color: var(--background-green-pale);

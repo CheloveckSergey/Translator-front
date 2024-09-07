@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 interface TPUProps {
   textPreview: TextPreviewClass,
   actionObjects: {
-    changeName: {
+    changeName?: {
       mutate: (
         { name, textId } : { name: string, textId: number }
       ) => Promise<any>,
@@ -32,10 +32,42 @@ export const TextPreviewUi: FC<TPUProps> = ({ textPreview, actionObjects }) => {
     setEditName(false);
   }
 
+  //Без этого почему-то ругается
+  let changeName = actionObjects.changeName;
+
   return (
     <div className="text-preview">
       <div className="header">
-        {!editName ? (
+        {(editName && changeName) ? (
+          <div className="name-editor">
+            <input 
+              type="text"
+              value={name}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+            />
+            {changeName && <SharedButtons.TextActionButton
+              body={<IoSend size={25} />}
+              onClick={() => {
+                if (changeName) {
+                  changeName.mutate({ 
+                    name, 
+                    textId: textPreview.id 
+                  }).then(() => closeNameEditing())
+                }
+              }}
+              isLoading={changeName.isLoading}
+              isError={changeName.isError}
+              color="light"
+              className=""
+            />}
+            <SharedButtons.TextButton
+              body='Cancel'
+              onClick={() => closeNameEditing()}
+              className=""
+              color="light"
+            />
+          </div>
+        ) : (
           <div className="basic">
             <h3 
               className="name"
@@ -47,40 +79,15 @@ export const TextPreviewUi: FC<TPUProps> = ({ textPreview, actionObjects }) => {
               {textPreview.name}
             </h3>
             <div className="buttons">
-              <SharedButtons.TextButton
+              {actionObjects.changeName && <SharedButtons.TextButton
                 body={<MdEdit size={25} />}
                 color="light"
                 className="change-name"
                 onClick={() => { 
                   setEditName(true); 
                 }}
-              />
+              />}
             </div>
-          </div>
-        ) : (
-          <div className="name-editor">
-            <input 
-              type="text"
-              value={name}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
-            />
-            <SharedButtons.TextActionButton
-              body={<IoSend size={25} />}
-              onClick={() => actionObjects.changeName.mutate({ 
-                name, 
-                textId: textPreview.id 
-              }).then(() => closeNameEditing())}
-              isLoading={actionObjects.changeName.isLoading}
-              isError={actionObjects.changeName.isError}
-              color="light"
-              className=""
-            />
-            <SharedButtons.TextButton
-              body='Cancel'
-              onClick={() => closeNameEditing()}
-              className=""
-              color="light"
-            />
           </div>
         )}
       </div>

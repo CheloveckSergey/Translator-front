@@ -1,6 +1,4 @@
-// import { WordSpan } from "../../word"
-
-import { StringSpanDto } from "../../word";
+import { TransStatusWord } from "../../word";
 
 export type TextPreview = {
   id: number,
@@ -8,19 +6,10 @@ export type TextPreview = {
   content: string,
 }
 
-export interface TextSpanDto {
-  id: number,
-  name: string,
-  stringSpans: StringSpanDto[], 
-  translation: string | undefined,
+export type Translation = TransText | TransStatusWord;
+
+export interface TransText {
+  type: 'text',
+  value: string,
+  translation: string,
 }
-
-
-
-// export type Span = WordSpan | string;
-
-// export type Text = {
-//   id: number,
-//   name: string,
-//   spans: Span[]
-// }

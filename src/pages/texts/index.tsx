@@ -41,14 +41,10 @@ const TextListWidget: FC = () => {
     setTextList,
     isLoading,
     isError,
+    updateTexts
   } = TextsLib.useTextPreviewsList(user!.id)
 
   const addTextMutation = TextFeaturesLib.useAddText(addText);
-
-  function updateTexts() {
-    const textListCopy = textList.getCopy();
-    setTextList(textListCopy);
-  }
 
   function addText(textPreview: TextPreviewClass) {
     textList.addText(textPreview);

@@ -26,4 +26,9 @@ export class WordSpanClass {
   deleteToStudied() {
     this.status = 'studied';
   }
+
+  getCopy() {
+    const newWordSpan = new WordSpanClass(this.value, this.status, this.translation);
+    return newWordSpan
+  }
 }

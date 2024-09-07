@@ -7,6 +7,7 @@ import { AuthPage } from "../../pages/auth";
 import { TextPage } from "../../pages/text";
 import { TodayListPage } from "../../pages/todayList";
 import { WordsPage } from "../../pages/words";
+import { HomePage } from "../../pages/home";
 
 export const AppRouter: FC = () => {
 
@@ -17,12 +18,13 @@ export const AppRouter: FC = () => {
           path="/" 
           element={<Layout />}
         >
+          <Route index element={<HomePage />} />
+          <Route path="/home" element={<HomePage />} />
           <Route path="/translator" element={<Translator />} />
           <Route path="/texts" >
             <Route index element={<TextsPage />} />
             <Route path=":textId" element={<TextPage />} />
           </Route>
-          <Route path="/home" element={<TextsPage />} />
           <Route path="/today-list" element={<TodayListPage />} />
           <Route path="/words" element={<WordsPage />} />
         </Route>

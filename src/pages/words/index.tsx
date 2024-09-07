@@ -4,9 +4,10 @@ import { WordLib } from "../../entities/word/lib";
 import { TodayWordClass } from "../../entities/word/model/todayWord";
 import './styles.scss';
 import { WordFeaturesUi } from "../../features/word/ui";
+import { WholeWord } from "../../entities/word/model/wholeWord";
 
 interface WLWProps {
-  word: TodayWordClass,
+  word: WholeWord,
   updateState: () => void,
 }
 const WordLineWidget: FC<WLWProps> = ({ word, updateState }) => {
@@ -43,9 +44,25 @@ const WordLineWidget: FC<WLWProps> = ({ word, updateState }) => {
   )
 }
 
-export const WordsPage: FC = () => {
+const WordListWidget: FC = () => {
 
   const { words, updateWords, isLoading, isError } = WordLib.useWords();
+
+  return (
+    <WordUi.WordList 
+      words={words}
+      isLoading={isLoading}
+      isError={isError}
+      mapWord={(word: WholeWord, index: number) => <WordLineWidget 
+        key={index}
+        word={word}
+        updateState={updateWords}
+      />}
+    />
+  )
+}
+
+export const WordsPage: FC = () => {
 
   return (
     <div className="words-page">
@@ -53,16 +70,7 @@ export const WordsPage: FC = () => {
         <h1>Words</h1>
         <p>Here you look at all your words.</p>
         <div className="just-cause">
-          <WordUi.WordList 
-            words={words}
-            isLoading={isLoading}
-            isError={isError}
-            mapWord={(word: TodayWordClass, index: number) => <WordLineWidget 
-              key={index}
-              word={word}
-              updateState={updateWords}
-            />}
-          />
+          <WordListWidget />
         </div>
       </div>
     </div>

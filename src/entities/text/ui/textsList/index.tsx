@@ -88,7 +88,7 @@ interface TLUProps {
   isError: boolean,
   mapTexts: (text: TextPreviewClass, index: number) => React.ReactNode | React.ReactNode[],
   actionObjects: {
-    addText: {
+    addText?: {
       mutate: (
         { name, content } : { name: string, content: string }
       ) => Promise<any>,
@@ -105,11 +105,11 @@ export const TextListUi: FC<TLUProps> = ({ textList, isLoading, isError, actionO
         isLoading={isLoading}
         isError={isError}
       >
-        <TextAdder 
+        {actionObjects.addText && <TextAdder 
           mutate={actionObjects.addText.mutate}
           isLoading={actionObjects.addText.isLoading}
           isError={actionObjects.addText.isError}
-        />
+        />}
         {textList.texts.map(mapTexts)}
       </SharedUiHelpers.ErrorLoader>
     </div>

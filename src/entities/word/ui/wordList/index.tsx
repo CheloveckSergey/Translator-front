@@ -1,12 +1,11 @@
 import { FC } from "react";
-import { TranslationWordDto } from "../../model";
-import { TodayWordClass } from "../../model/todayWord";
 import { SharedUiHelpers } from "../../../../shared/sharedUi/helpers";
 import './styles.scss';
 import { SharedLib } from "../../../../shared/lib";
+import { WholeWord } from "../../model/wholeWord";
 
 interface WListProps {
-  word: TodayWordClass,
+  word: WholeWord,
   actions: React.ReactNode[],
 }
 export const WordLine: FC<WListProps> = ({ word, actions }) => {
@@ -24,10 +23,10 @@ export const WordLine: FC<WListProps> = ({ word, actions }) => {
 }
 
 interface WLProps {
-  words: TodayWordClass[],
+  words: WholeWord[],
   isLoading: boolean,
   isError: boolean,
-  mapWord: (word: TodayWordClass, index: number) => React.ReactNode,
+  mapWord: (word: WholeWord, index: number) => React.ReactNode,
   className?: string,
 }
 export const WordList: FC<WLProps> = ({ words, isLoading, isError, mapWord, className }) => {
