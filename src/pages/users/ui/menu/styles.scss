@@ -1,0 +1,14 @@
+.users-menu {
+  align-self: flex-start;
+  padding: 5px;
+  background: var(--background-light-darker);
+  border-radius: 10px;
+
+  .point {
+    margin-top: 5px;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+}

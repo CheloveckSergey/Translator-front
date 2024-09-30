@@ -3,6 +3,7 @@ import { SharedUiHelpers } from "../../../../shared/sharedUi/helpers";
 import './styles.scss';
 import { SharedLib } from "../../../../shared/lib";
 import { WholeWord } from "../../model/wholeWord";
+import { SharedButtons } from "../../../../shared/sharedUi/buttons";
 
 interface WListProps {
   word: WholeWord,
@@ -28,25 +29,49 @@ interface WLProps {
   isError: boolean,
   mapWord: (word: WholeWord, index: number) => React.ReactNode,
   className?: string,
+  fetchNextPage?: () => void,
+  hasNextPage?: boolean | undefined,
+  isFetchingNextPage?: boolean,
 }
-export const WordList: FC<WLProps> = ({ words, isLoading, isError, mapWord, className }) => {
+export const WordList: FC<WLProps> = ({ 
+  words, 
+  isLoading, 
+  isError, 
+  mapWord, 
+  className, 
+  fetchNextPage, 
+  hasNextPage,
+  isFetchingNextPage
+}) => {
 
   return (
     <div className={["word-list", className].join(' ')}>
-      <SharedUiHelpers.ErrorLoader
-        isLoading={isLoading}
-        isError={isError}
-      >
-        <div className="word-list-header">
-          <h4 className="word">Word</h4>
-          <h4 className="translation">Translation</h4>
-          <h4 className="status">Status</h4>
-          <h4 className="create-date">Create date</h4>
-          <h4 className="quantity-date">Last iteration</h4>
-          <div className="actions"></div>
-        </div>
-        {words.map(mapWord)}
-      </SharedUiHelpers.ErrorLoader>
+      <div className="content">
+        <SharedUiHelpers.ErrorLoader
+          isLoading={isLoading}
+          isError={isError}
+        >
+          <div className="word-list-header">
+            <h4 className="word">Word</h4>
+            <h4 className="translation">Translation</h4>
+            <h4 className="status">Status</h4>
+            <h4 className="create-date">Create date</h4>
+            <h4 className="quantity-date">Last iteration</h4>
+            <div className="actions"></div>
+          </div>
+          {words.map(mapWord)}
+        </SharedUiHelpers.ErrorLoader>
+      </div>
+      {fetchNextPage && hasNextPage &&  <div className="more-button-wrapper">
+        <SharedButtons.GreenButton
+          body='Load more'
+          isLoading={Boolean(isFetchingNextPage)}
+          isError={false}
+          className="load-more"
+          onClick={() => fetchNextPage()}
+          disabled={!hasNextPage && isFetchingNextPage}
+        />
+      </div>}
     </div>
   )
 }

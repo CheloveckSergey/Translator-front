@@ -1,27 +1,27 @@
 import api from "../../../shared/api";
+import { UsualQuery } from "../../../shared/types";
 import { StringSpan } from "../../word";
 import { TextPreview, TextSpanDto, TranslationDto } from "../model";
 
-const INITIAL_URL = '/texts'
+export interface TextPreviewsQuery extends UsualQuery {
+  userId?: number,
+}
+
+const INITIAL_URL = '/texts';
 
 export class TextApi {
-  static async getAll() {
-    const response = await api.get<TextPreview[]>(INITIAL_URL + '/getAll');
+  static async getAllTextPreviewsByUser(query: TextPreviewsQuery) {
+    const response = await api.get<TextPreview[]>(
+      INITIAL_URL + '/getAllTextPreviewsByUser',
+      {
+        params: query,
+      }
+    );
     return response.data;
   }
 
-  static async getAllByUser() {
-    const response = await api.get<TextPreview[]>(INITIAL_URL + '/getAllByUser');
-    return response.data;
-  }
-
-  static async getLastTextsByUser() {
-    const response = await api.get<TextPreview[]>(INITIAL_URL + '/getLastTextsByUser');
-    return response.data;
-  }
-
-  static async getTextArray(textId: number) {
-    const response = await api.get<TextSpanDto>(INITIAL_URL + '/getTextArray/' + textId);
+  static async getTextSpan(textId: number) {
+    const response = await api.get<TextSpanDto>(INITIAL_URL + '/getTextSpan/' + textId);
     return response.data;
   }
 

@@ -23,13 +23,13 @@
         color: var(--font-light);
         border-radius: 10px;
 
-        .no-word {
+        .no-words {
           display: flex;
           justify-content: center;
           align-items: center;
           height: 100%;
           width: 100%;
-          font-size: 3rem;
+          font-size: 1rem;
         }
 
         .today-list-window-error-loader {

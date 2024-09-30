@@ -38,11 +38,13 @@ const TextListWidget: FC = () => {
 
   const {
     textList,
-    setTextList,
     isLoading,
     isError,
-    updateTexts
-  } = TextsLib.useTextPreviewsList(user!.id)
+    updateTexts,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = TextsLib.useTextPreviewsList({ limit: 3, order: 'DESC', userId: user!.id});
 
   const addTextMutation = TextFeaturesLib.useAddText(addText);
 
@@ -56,6 +58,9 @@ const TextListWidget: FC = () => {
       textList={textList}
       isLoading={isLoading}
       isError={isError}
+      fetchNextPage={fetchNextPage}
+      hasNextPage={hasNextPage}
+      isFetchingNextPage={isFetchingNextPage}
       actionObjects={{
         addText: {
           mutate: addTextMutation.mutateAsync,

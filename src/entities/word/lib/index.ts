@@ -1,6 +1,6 @@
-import { useQuery } from "react-query"
-import { WordApi } from "../api"
-import { TranslationWordDto, WholeWordDto } from "../model";
+import { useInfiniteQuery, useQuery } from "react-query"
+import { WholeWordQuery, WordApi } from "../api"
+import { TransWordDto } from "../model";
 import { useState } from "react";
 import { TodayList } from "../model/todayList";
 import { mapTodayWord, mapWholeWord } from "../model/mappers";
@@ -17,6 +17,7 @@ const wordKeys = {
   },
   allWords: {
     root: 'allWords',
+    slug: (userId: number) => [wordKeys.allWords.root, userId],
   }
 }
 
@@ -69,16 +70,35 @@ const useTodayList = (
   }
 }
 
-const useWords = () => {
-  const [words, setWords] = useState<WholeWord[]>([])
+const useWholeWords = (query: WholeWordQuery) => {
 
-  const { isLoading, isError } = useQuery({
-    queryKey: wordKeys.allWords.root,
-    queryFn: () => {
-      return WordApi.getAllWords();
+  const [words, setWords] = useState<WholeWord[]>([]);
+
+  const { isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+    queryKey: wordKeys.allWords.slug(query.userId ?? 0),
+    queryFn: ({ pageParam = query.offset ?? 0 }) => {
+      return WordApi.getAllWords({ 
+        offset: pageParam, 
+        limit: query.limit, 
+        order: query.order, 
+        userId: query.userId,
+      });
+    },
+    getNextPageParam: (lastPage, pages) => {
+      if (!query.limit) {
+        return null
+      }
+      if (lastPage.length < query.limit) return null;
+      const nextPageParam = lastPage.length ? pages.length * query.limit : null;
+      return nextPageParam;
     },
     onSuccess: (data) => {
-      setWords(data.map(word => mapWholeWord(word)));
+      let words: WholeWord[] = [];
+      for (let page of data.pages) {
+        const curWords = page.map(word => mapWholeWord(word));
+        words = [...words, ...curWords];
+      }
+      setWords(words);
     }
   });
 
@@ -93,39 +113,14 @@ const useWords = () => {
     isLoading,
     isError,
     updateWords,
-  }
-}
-
-const useLastWords = () => {
-  const [words, setWords] = useState<WholeWord[]>([])
-
-  const { isLoading, isError } = useQuery({
-    queryKey: wordKeys.allWords.root,
-    queryFn: () => {
-      return WordApi.getLastWords();
-    },
-    onSuccess: (data) => {
-      setWords(data.map(word => mapWholeWord(word)));
-    }
-  });
-
-  function updateWords() {
-    const newWords = words.map(word => word.getCopy());
-    setWords(newWords);
-  }
-
-  return {
-    words,
-    setWords,
-    isLoading,
-    isError,
-    updateWords,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
   }
 }
 
 export const WordLib = {
   useWordTranslation,
   useTodayList,
-  useWords,
-  useLastWords,
+  useWholeWords,
 }

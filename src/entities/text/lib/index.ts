@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { TextListClass, TextPreviewClass, TextSpanClass, Translation, TranslationDto } from "../model";
-import { useMutation, useQuery } from "react-query";
-import { TextApi } from "../api";
+import { useInfiniteQuery, useMutation, useQuery } from "react-query";
+import { TextApi, TextPreviewsQuery } from "../api";
 import { StringSpan } from "../../word";
 import { mapTextSpanDto, mapTranslationDto } from "../model/mappers";
 import { useAppSelector } from "../../../app/store";
@@ -21,19 +21,36 @@ const textsKeys = {
   }
 }
 
-const useTextPreviewsList = (userId: number) => {
+const useTextPreviewsList = (query: TextPreviewsQuery) => {
 
   const [textList, setTextList] = useState<TextListClass>(new TextListClass([]));
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: textsKeys.texts.slug(userId),
-    queryFn: () => {
-      return TextApi.getAllByUser();
+  const { isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+    queryKey: textsKeys.texts.slug(query.userId ?? 0),
+    queryFn: ({ pageParam = query.offset ?? 0 }) => {
+      return TextApi.getAllTextPreviewsByUser({ 
+        offset: pageParam, 
+        limit: query.limit, 
+        order: query.order, 
+        userId: query.userId,
+      });
+    },
+    getNextPageParam: (lastPage, pages) => {
+      if (!query.limit) {
+        return null
+      }
+      if (lastPage.length < query.limit) return null;
+      const nextPageParam = lastPage.length ? pages.length * query.limit : null;
+      return nextPageParam;
     },
     onSuccess: (data) => {
-      const textPreviews: TextPreviewClass[] = data.map(
-        textPreview => new TextPreviewClass(textPreview.id, textPreview.name, textPreview.content)
-      );
+      let textPreviews: TextPreviewClass[] = [];
+      for (let page of data.pages) {
+        const curTextPreviews = page.map(
+          textPreview => new TextPreviewClass(textPreview.id, textPreview.name, textPreview.content)
+        );
+        textPreviews = [...textPreviews, ...curTextPreviews];
+      }
       setTextList(new TextListClass(textPreviews));
     }
   });
@@ -49,39 +66,9 @@ const useTextPreviewsList = (userId: number) => {
     isLoading,
     isError,
     updateTexts,
-  }
-}
-
-const useLastTextPreviews = () => {
-
-  const { user } = useAppSelector(state => state.user);
-
-  const [textList, setTextList] = useState<TextListClass>(new TextListClass([]));
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: textsKeys.texts.slug(user!.id),
-    queryFn: () => {
-      return TextApi.getLastTextsByUser();
-    },
-    onSuccess: (data) => {
-      const textPreviews: TextPreviewClass[] = data.map(
-        textPreview => new TextPreviewClass(textPreview.id, textPreview.name, textPreview.content)
-      );
-      setTextList(new TextListClass(textPreviews));
-    }
-  });
-
-  function updateTexts() {
-    const textListCopy = textList.getCopy();
-    setTextList(textListCopy);
-  }
-
-  return {
-    textList,
-    setTextList,
-    isLoading,
-    isError,
-    updateTexts,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
   }
 }
 
@@ -92,7 +79,7 @@ const useTextSpan = (textId: number) => {
   const { data, isLoading, isError } = useQuery({
     queryKey: textsKeys.text.slug(textId),
     queryFn: () => {
-      return TextApi.getTextArray(textId);
+      return TextApi.getTextSpan(textId);
     },
     onSuccess: (data) => {
       console.log(data);
@@ -149,7 +136,6 @@ const useTranslation = () => {
 
 export const TextsLib = {
   useTextPreviewsList,
-  useLastTextPreviews,
   useTextSpan,
   useTranslation,
 }

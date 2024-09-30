@@ -1,4 +1,5 @@
 .green-button {
+  padding: 10px;
   font-size: 1rem;
   border-radius: 10px;
   background-color: var(--button-green);
@@ -9,6 +10,79 @@
 
   &:active {
     background-color: aquamarine;
+  }
+}
+
+.square-button {
+  position: relative;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 10px;
+  overflow: hidden;
+
+  .button-loader {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 5000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    background-color: inherit;
+  }
+
+  &.green {
+    color: var(--font-light);
+    background-color: var(--button-green);
+  
+    &:hover {
+      background-color: var(--button-green-lighter);
+    }
+  
+    &:active {
+      background-color: aquamarine;
+    }
+  }
+
+  &.light {
+    color: var(--font-dark);
+    background-color: var(--background-light);
+  
+    &:hover {
+      background-color: var(--background-light-darker);
+    }
+  
+    &:active {
+      background-color: var(--background-light);
+    }
+  }
+
+  &.dark {
+    color: var(--font-light);
+    background-color: var(--background-dark);
+  
+    &:hover {
+      background-color: var(--background-light-darker);
+    }
+  
+    &:active {
+      background-color: var(--background-dark);
+    }
+  }
+
+  &.grey {
+    color: var(--font-dark);
+    background-color: var(--background-grey);
+  
+    &:hover {
+      background-color: var(--background-grey-lighter);
+    }
+  
+    &:active {
+      background-color: var(--background-grey);
+    }
   }
 }
 

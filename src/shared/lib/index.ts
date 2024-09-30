@@ -5,9 +5,7 @@ function getComfortableDate(date: Date): string {
     return stringValue;
   }
 
-  console.log(date);
   const year = date.getFullYear();
-  console.log(year);
   const month = date.getMonth() + 1;
   const day = date.getDate();
 

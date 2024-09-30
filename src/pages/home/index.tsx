@@ -4,6 +4,7 @@ import { TextPreviewClass, TextUi, TextsLib } from "../../entities/text";
 import { WordUi } from "../../entities/word/ui";
 import { WordLib } from "../../entities/word/lib";
 import { WholeWord } from "../../entities/word/model/wholeWord";
+import { useAppSelector } from "../../app/store";
 
 interface WLWProps {
   word: WholeWord
@@ -22,11 +23,13 @@ const WordLineWidget: FC<WLWProps> = ({ word }) => {
 
 const WordsListWidget: FC = () => {
 
+  const { user } = useAppSelector(state => state.user);
+
   const {
     words,
     isLoading,
     isError,
-  } = WordLib.useLastWords();
+  } = WordLib.useWholeWords({ limit: 5 });
 
   return (
     <WordUi.WordList
@@ -58,11 +61,13 @@ const TextPreviewWidget: FC<TPWInterface> = ({ textPreview }) => {
 
 const LastTextsListWidget: FC = () => {
 
+  const { user } = useAppSelector(state => state.user);
+
   const {
     textList,
     isLoading,
     isError
-  } = TextsLib.useLastTextPreviews()
+  } = TextsLib.useTextPreviewsList({ order: 'DESC', limit: 3, userId: user?.id });
 
   return (
     <TextUi.TextListUi 

@@ -1,0 +1,14 @@
+p.menu-point {
+  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--background-grey-lighter);
+    color: var(--font-light);
+  }
+
+  &.active {
+    background-color: var(--background-grey);
+  }
+}

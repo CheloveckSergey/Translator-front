@@ -11,8 +11,13 @@ export const Header: FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
+  const name = user?.login ? user.login : 'guest';
+
   return (
     <div className="global-header">
+      <div className="left">
+        <p>{name}</p>
+      </div>
       <Link to='/'>
         <h3>Home</h3>
       </Link>
@@ -27,6 +32,9 @@ export const Header: FC = () => {
       </Link>
       <Link to='/translator'>
         <h3>Translator</h3>
+      </Link>
+      <Link to='/users'>
+        <h3>Users</h3>
       </Link>
       <h3
         onClick={() => {

@@ -1,21 +1,26 @@
 import api from "../../../shared/api";
-import { TodayWordDto, TranslationWordDto, WholeWordDto } from "../model";
+import { UsualQuery } from "../../../shared/types";
+import { TodayWordDto, TransWordDto, WholeWordDto } from "../model";
+
+export interface WholeWordQuery extends UsualQuery {
+  userId?: number,
+}
 
 const INITIAL_URL = '/words'
 
 export class WordApi {
-  static async getAllWords(): Promise<WholeWordDto[]> {
-    const response = await api.get<WholeWordDto[]>(INITIAL_URL + '/getAllWords');
+  static async getAllWords(query: WholeWordQuery): Promise<WholeWordDto[]> {
+    const response = await api.get<WholeWordDto[]>(
+      INITIAL_URL + '/getAllWords',
+      {
+        params: query
+      }
+    );
     return response.data;
   }
 
-  static async getLastWords(): Promise<WholeWordDto[]> {
-    const response = await api.get<WholeWordDto[]>(INITIAL_URL + '/getLastWords');
-    return response.data;
-  }
-
-  static async getTranslation(value: string): Promise<TranslationWordDto> {
-    const response = await api.get<TranslationWordDto>(INITIAL_URL + '/getWordTranslation/' + value);
+  static async getTranslation(value: string): Promise<TransWordDto> {
+    const response = await api.get<TransWordDto>(INITIAL_URL + '/getWordTranslation/' + value);
     return response.data;
   }
 

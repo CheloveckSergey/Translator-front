@@ -46,7 +46,15 @@ const WordLineWidget: FC<WLWProps> = ({ word, updateState }) => {
 
 const WordListWidget: FC = () => {
 
-  const { words, updateWords, isLoading, isError } = WordLib.useWords();
+  const { 
+    words, 
+    updateWords, 
+    isLoading, 
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = WordLib.useWholeWords({ limit: 10 });
 
   return (
     <WordUi.WordList 
@@ -58,6 +66,9 @@ const WordListWidget: FC = () => {
         word={word}
         updateState={updateWords}
       />}
+      hasNextPage={hasNextPage}
+      isFetchingNextPage={isFetchingNextPage}
+      fetchNextPage={fetchNextPage}
     />
   )
 }

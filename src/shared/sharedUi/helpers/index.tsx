@@ -8,9 +8,20 @@ interface ELProps {
   isError: boolean,
   iconSize?: number,
   className?: string,
-  
+  isEmpty?: boolean,
+  emptyHolder?: React.ReactNode,
+  emptyClassname?: string,
 }
-const ErrorLoader: FC<ELProps> = ({ children, isLoading, isError, iconSize = 20, className}) => {
+const ErrorLoader: FC<ELProps> = ({ 
+  children, 
+  isLoading, 
+  isError, 
+  iconSize = 20, 
+  className, 
+  isEmpty, 
+  emptyHolder,
+  emptyClassname,
+}) => {
 
   return (
     <>
@@ -21,6 +32,10 @@ const ErrorLoader: FC<ELProps> = ({ children, isLoading, isError, iconSize = 20,
       ) : isError ? (
         <div className={["load-error-wrapper", className].join(' ')}>
           <SharedIcons.Error size={iconSize} />
+        </div>
+      ) : isEmpty ? (
+        <div className={["empty-holder", emptyClassname].join(' ')}>
+          <p>{emptyHolder}</p>
         </div>
       ) : (
         <>

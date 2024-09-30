@@ -1,0 +1,29 @@
+.user-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  background-color: var(--background-light-darker);
+  border-radius: 10px;
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  h4.login {
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+}

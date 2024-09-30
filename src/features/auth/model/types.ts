@@ -1,7 +1,7 @@
-import { User } from "../../../entities/user/model";
+import { CurUser } from "../../../entities/user/model";
 
 export interface UserState {
-  user: User | undefined,
+  user: CurUser | undefined,
   loading: boolean,
   error: string | undefined,
 }

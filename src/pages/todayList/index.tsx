@@ -1,7 +1,6 @@
 import { ChangeEvent, FC, useState } from "react";
 import './styles.scss';
 import { WordLib } from "../../entities/word/lib";
-import { TranslationWordDto } from "../../entities/word";
 import { SharedUiHelpers } from "../../shared/sharedUi/helpers";
 import { TodayList } from "../../entities/word/model/todayList";
 import { SharedButtons } from "../../shared/sharedUi/buttons";
@@ -61,6 +60,10 @@ const TodayListWidget: FC<TLWProps> = ({ todayList, isLoading, isError, updateSt
         {!todayList.words.length ? (
           <div className="no-words">
             <p>Нет слов на сегодня</p>
+          </div>
+        ) : todayList.isEnd ? (
+          <div className="no-words">
+            <p>Больше на сегодня слов нет</p>
           </div>
         ) : (
           <>

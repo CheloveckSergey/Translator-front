@@ -2,7 +2,6 @@ import { ChangeEvent, FC, useState } from "react";
 import { TextPreviewUi } from "../textPreview";
 import { TextListClass, TextPreviewClass } from "../../model";
 import './styles.scss';
-import { FaRegPlusSquare } from "react-icons/fa";
 import { CiSquarePlus } from "react-icons/ci";
 import { SharedButtons } from "../../../../shared/sharedUi/buttons";
 import { SharedUiHelpers } from "../../../../shared/sharedUi/helpers";
@@ -86,6 +85,9 @@ interface TLUProps {
   textList: TextListClass,
   isLoading: boolean,
   isError: boolean,
+  fetchNextPage?: () => void,
+  hasNextPage?: boolean | undefined,
+  isFetchingNextPage?: boolean,
   mapTexts: (text: TextPreviewClass, index: number) => React.ReactNode | React.ReactNode[],
   actionObjects: {
     addText?: {
@@ -97,7 +99,16 @@ interface TLUProps {
     }
   },
 }
-export const TextListUi: FC<TLUProps> = ({ textList, isLoading, isError, actionObjects, mapTexts }) => {
+export const TextListUi: FC<TLUProps> = ({ 
+  textList, 
+  isLoading, 
+  isError, 
+  fetchNextPage, 
+  hasNextPage, 
+  isFetchingNextPage, 
+  actionObjects, 
+  mapTexts 
+}) => {
 
   return (
     <div className="text-list">
@@ -105,12 +116,24 @@ export const TextListUi: FC<TLUProps> = ({ textList, isLoading, isError, actionO
         isLoading={isLoading}
         isError={isError}
       >
-        {actionObjects.addText && <TextAdder 
-          mutate={actionObjects.addText.mutate}
-          isLoading={actionObjects.addText.isLoading}
-          isError={actionObjects.addText.isError}
-        />}
-        {textList.texts.map(mapTexts)}
+        <div className="text-list-content">
+          {actionObjects.addText && <TextAdder 
+            mutate={actionObjects.addText.mutate}
+            isLoading={actionObjects.addText.isLoading}
+            isError={actionObjects.addText.isError}
+          />}
+          {textList.texts.map(mapTexts)}
+        </div>
+        {fetchNextPage && hasNextPage &&  <div className="more-button-wrapper">
+          <SharedButtons.GreenButton
+            body='Load more'
+            isLoading={Boolean(isFetchingNextPage)}
+            isError={false}
+            className="load-more"
+            onClick={() => fetchNextPage()}
+            disabled={!hasNextPage && isFetchingNextPage}
+          />
+        </div>}
       </SharedUiHelpers.ErrorLoader>
     </div>
   )

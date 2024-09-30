@@ -11,17 +11,23 @@ export interface WordSpanDto {
 export interface ConnectionDto {
   type: 'connection',
   value: string,
-} 
+}
 
-export interface TranslationWordDto {
+
+
+export interface TransWordDto {
   value: string,
   translation: string,
 }
+
+
 
 export interface TodayWordDto {
   value: string,
   translation: string,
 }
+
+
 
 export interface WholeWordDto {
   value: string,
@@ -31,6 +37,8 @@ export interface WholeWordDto {
   updateDate: string,
   quantity: number,
 }
+
+
 
 export interface TransStatusWordDto {
   type: 'word',

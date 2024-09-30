@@ -8,6 +8,7 @@ import { TextPage } from "../../pages/text";
 import { TodayListPage } from "../../pages/todayList";
 import { WordsPage } from "../../pages/words";
 import { HomePage } from "../../pages/home";
+import { UsersPage } from "../../pages/users/ui";
 
 export const AppRouter: FC = () => {
 
@@ -27,6 +28,7 @@ export const AppRouter: FC = () => {
           </Route>
           <Route path="/today-list" element={<TodayListPage />} />
           <Route path="/words" element={<WordsPage />} />
+          <Route path="/users" element={<UsersPage />} />
         </Route>
         <Route path="/registration" element={<AuthPage />} />
       </>

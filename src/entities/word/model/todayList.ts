@@ -5,6 +5,7 @@ export class TodayList {
   words: TodayWordClass[];
   curIndex: number;
   curWord: TodayWordClass;
+  isEnd: boolean = false;
 
   constructor(words: TodayWordClass[]) {
     this.words = words;
@@ -13,6 +14,10 @@ export class TodayList {
   }
 
   next() {
+    if (this.curIndex === (this.words.length - 1)) {
+      this.isEnd = true;
+      return
+    }
     this.curIndex++;
     this.curWord = this.words[this.curIndex];
   }
@@ -25,6 +30,7 @@ export class TodayList {
     const newList = new TodayList(this.words);
     newList.curIndex = this.curIndex;
     newList.curWord = newList.words[newList.curIndex];
+    newList.isEnd = this.isEnd;
     return newList;
   }
 }
