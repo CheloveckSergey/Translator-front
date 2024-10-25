@@ -3,8 +3,9 @@ import { TextListClass, TextPreviewClass, TextSpanClass, Translation, Translatio
 import { useInfiniteQuery, useMutation, useQuery } from "react-query";
 import { TextApi, TextPreviewsQuery } from "../api";
 import { StringSpan } from "../../word";
-import { mapTextSpanDto, mapTranslationDto } from "../model/mappers";
+import { mapShortTextPreview, mapTextListDto, mapTextPreview, mapTextSpanDto, mapTranslationDto } from "../model/mappers";
 import { useAppSelector } from "../../../app/store";
+import { ShortTextPreview } from "../model/shortTextPreview";
 
 const textsKeys = {
   texts: {
@@ -18,6 +19,10 @@ const textsKeys = {
   translation: {
     root: 'translation',
     slug: (value: string) => [textsKeys.translation.root, value],
+  },
+  friendsLastTexts: {
+    root: 'friendsLastTexts',
+    slug: (userId: number) => [textsKeys.friendsLastTexts.root, userId],
   }
 }
 
@@ -26,7 +31,7 @@ const useTextPreviewsList = (query: TextPreviewsQuery) => {
   const [textList, setTextList] = useState<TextListClass>(new TextListClass([]));
 
   const { isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: textsKeys.texts.slug(query.userId ?? 0),
+    queryKey: textsKeys.texts.slug(query.userId),
     queryFn: ({ pageParam = query.offset ?? 0 }) => {
       return TextApi.getAllTextPreviewsByUser({ 
         offset: pageParam, 
@@ -46,9 +51,7 @@ const useTextPreviewsList = (query: TextPreviewsQuery) => {
     onSuccess: (data) => {
       let textPreviews: TextPreviewClass[] = [];
       for (let page of data.pages) {
-        const curTextPreviews = page.map(
-          textPreview => new TextPreviewClass(textPreview.id, textPreview.name, textPreview.content)
-        );
+        const curTextPreviews = page.map(mapTextPreview);
         textPreviews = [...textPreviews, ...curTextPreviews];
       }
       setTextList(new TextListClass(textPreviews));
@@ -69,6 +72,35 @@ const useTextPreviewsList = (query: TextPreviewsQuery) => {
     fetchNextPage,
     isFetchingNextPage,
     hasNextPage,
+  }
+}
+
+const useFriendsLastTexts = () => {
+  const { user } = useAppSelector(state => state.user);
+
+  const [texts, setTexts] = useState<ShortTextPreview[]>([]);
+
+  const { isLoading, isError } = useQuery({
+    queryKey: textsKeys.friendsLastTexts.slug(user!.id),
+    queryFn: () => {
+      return TextApi.getFriendsLastTexts();
+    },
+    onSuccess: (data) => {
+      setTexts(data.map(mapShortTextPreview));
+    }
+  });
+
+  function updateTexts() {
+    const textCopies = texts.map(text => text.getCopy());
+    setTexts(textCopies);
+  }
+
+  return {
+    texts,
+    setTexts,
+    isLoading,
+    isError,
+    updateTexts,
   }
 }
 
@@ -136,6 +168,7 @@ const useTranslation = () => {
 
 export const TextsLib = {
   useTextPreviewsList,
+  useFriendsLastTexts,
   useTextSpan,
   useTranslation,
 }

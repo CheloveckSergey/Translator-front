@@ -1,6 +1,7 @@
 import { useMutation } from "react-query"
 import { TextApi } from "../../../entities/text/api"
 import { TextPreviewClass } from "../../../entities/text";
+import { mapTextPreview } from "../../../entities/text/model/mappers";
 
 interface CreateTextProps {
   name: string,
@@ -14,7 +15,7 @@ const useAddText = (addTextPreview?: (textPreview: TextPreviewClass) => void) =>
     {
       onSuccess: (data) => {
         if (addTextPreview) {
-          addTextPreview(new TextPreviewClass(data.id, data.name, data.content));
+          addTextPreview(mapTextPreview(data));
         }
       }
     }
@@ -40,7 +41,55 @@ const useChangeName = (changeName?: (name: string) => void) => {
   )
 }
 
+const useCopyText = (textId: number, copyText?: () => void) => {
+  return useMutation(
+    () => {
+      return TextApi.copyText(textId);
+    },
+    {
+      onSuccess: (data) => {
+        if (copyText) {
+          copyText();
+        }
+      }
+    }
+  )
+}
+
+const useUncopyText = (textId: number, uncopyText?: () => void) => {
+  return useMutation(
+    () => {
+      return TextApi.uncopyText(textId);
+    },
+    {
+      onSuccess: (data) => {
+        if (uncopyText) {
+          uncopyText();
+        }
+      }
+    }
+  )
+}
+
+const useDeleteText = (textId: number, deleteText?: () => void) => {
+  return useMutation(
+    () => {
+      return TextApi.delete(textId);
+    },
+    {
+      onSuccess: (data) => {
+        if (deleteText) {
+          deleteText();
+        }
+      }
+    }
+  )
+}
+
 export const TextFeaturesLib = {
   useAddText,
   useChangeName,
+  useCopyText,
+  useUncopyText,
+  useDeleteText,
 }

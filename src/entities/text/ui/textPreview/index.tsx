@@ -7,9 +7,11 @@ import { IoSend } from "react-icons/io5";
 import { useAppSelector } from "../../../../app/store";
 import { SharedButtons } from "../../../../shared/sharedUi/buttons";
 import { useNavigate } from "react-router-dom";
+import { SharedLib } from "../../../../shared/lib";
 
 interface TPUProps {
   textPreview: TextPreviewClass,
+  showAnotherAuthor?: boolean, 
   actionObjects: {
     changeName?: {
       mutate: (
@@ -18,9 +20,12 @@ interface TPUProps {
       isLoading: boolean,
       isError: boolean,
     }
-  }
+  },
+  actions?: React.ReactNode[],
 }
-export const TextPreviewUi: FC<TPUProps> = ({ textPreview, actionObjects }) => {
+export const TextPreviewUi: FC<TPUProps> = ({ textPreview, showAnotherAuthor = false, actionObjects, actions }) => {
+
+  const { user } = useAppSelector(state => state.user);
 
   const [editName, setEditName] = useState<boolean>(false);
   const [name, setName] = useState<string>('');
@@ -34,6 +39,14 @@ export const TextPreviewUi: FC<TPUProps> = ({ textPreview, actionObjects }) => {
 
   //Без этого почему-то ругается
   let changeName = actionObjects.changeName;
+
+  if (textPreview.isDeleted) {
+    return (
+      <div className="text-preview deleted">
+        <p>You've deleted this text</p>
+      </div>
+    )
+  }
 
   return (
     <div className="text-preview">
@@ -69,15 +82,22 @@ export const TextPreviewUi: FC<TPUProps> = ({ textPreview, actionObjects }) => {
           </div>
         ) : (
           <div className="basic">
-            <h3 
-              className="name"
-              onClick={() => {
-                navigate('/texts/' + textPreview.id);
-                console.log('lol');
-              }}
-            >
-              {textPreview.name}
-            </h3>
+            <div className="name-author">
+              <h4 
+                className="name"
+                onClick={() => {
+                  navigate('/texts/' + textPreview.id);
+                  console.log('lol');
+                }}
+              >
+                {textPreview.name}
+              </h4>
+              {showAnotherAuthor && (
+                <p className="author extra">
+                  By {textPreview.author.login}
+                </p>
+              )}
+            </div>
             <div className="buttons">
               {actionObjects.changeName && <SharedButtons.TextButton
                 body={<MdEdit size={25} />}
@@ -87,13 +107,17 @@ export const TextPreviewUi: FC<TPUProps> = ({ textPreview, actionObjects }) => {
                   setEditName(true); 
                 }}
               />}
+              {actions}
             </div>
           </div>
         )}
       </div>
       <div className="content">
-        <p>
+        <p className="text">
           {textPreview.content}
+        </p>
+        <p className="date">
+          {SharedLib.getComfortableDate(textPreview.createDate)}
         </p>
       </div>
     </div>

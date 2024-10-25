@@ -1,0 +1,19 @@
+.user-texts {
+  margin-top: 10px;
+
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .watch-all {
+      color: var(--button-green);
+      cursor: pointer;
+
+      &:hover {
+        color: var(--button-green-lighter);
+        text-decoration: underline;
+      }
+    }
+  }
+}

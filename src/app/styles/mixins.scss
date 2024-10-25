@@ -1,0 +1,13 @@
+@mixin changingColors {
+  &:nth-child(3n+2) {
+    background-color: var(--background-green-pale);
+  }
+
+  &:nth-child(3n) {
+    background-color: var(--background-blue-pale);
+  }
+
+  &:nth-child(3n+1) {
+    background-color: var(--background-red-pale);
+  }
+}

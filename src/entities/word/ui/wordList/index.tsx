@@ -52,12 +52,12 @@ export const WordList: FC<WLProps> = ({
           isError={isError}
         >
           <div className="word-list-header">
-            <h4 className="word">Word</h4>
-            <h4 className="translation">Translation</h4>
-            <h4 className="status">Status</h4>
-            <h4 className="create-date">Create date</h4>
-            <h4 className="quantity-date">Last iteration</h4>
-            <div className="actions"></div>
+            <h4 className="word field">Word</h4>
+            <h4 className="translation field">Translation</h4>
+            <h4 className="status field">Status</h4>
+            <h4 className="create-date field">Create date</h4>
+            <h4 className="quantity-date field">Last iteration</h4>
+            <div className="actions field"></div>
           </div>
           {words.map(mapWord)}
         </SharedUiHelpers.ErrorLoader>
@@ -69,7 +69,7 @@ export const WordList: FC<WLProps> = ({
           isError={false}
           className="load-more"
           onClick={() => fetchNextPage()}
-          disabled={!hasNextPage && isFetchingNextPage}
+          disabled={isFetchingNextPage}
         />
       </div>}
     </div>

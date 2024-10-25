@@ -21,13 +21,13 @@ export const Header: FC = () => {
       <Link to='/'>
         <h3>Home</h3>
       </Link>
-      <Link to='/words'>
+      <Link to={'/words/user/' + user?.id}>
         <h3>Words</h3>
       </Link>
       <Link to='/today-list'>
         <h3>Today List</h3>
       </Link>
-      <Link to='/texts'>
+      <Link to={'/texts/user/' + user?.id}>
         <h3>Texts</h3>
       </Link>
       <Link to='/translator'>

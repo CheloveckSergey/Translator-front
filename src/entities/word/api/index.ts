@@ -3,7 +3,7 @@ import { UsualQuery } from "../../../shared/types";
 import { TodayWordDto, TransWordDto, WholeWordDto } from "../model";
 
 export interface WholeWordQuery extends UsualQuery {
-  userId?: number,
+  userId: number,
 }
 
 const INITIAL_URL = '/words'

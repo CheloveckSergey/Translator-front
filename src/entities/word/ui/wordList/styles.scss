@@ -1,60 +1,33 @@
+@import '../../../../app/styles/mixins.scss';
+
+@mixin divider {
+  display: grid;
+  grid-template-columns: 3fr 3fr 2fr 3fr 3fr 2fr;
+}
+
 .word-list {
-  margin-top: 10px;
-  &:first-child {
-    margin-top: 0;
-  }
   
   .content {
-    background-color: var(--background-light-darker);
     border-radius: 15px;
     overflow: hidden;
-
+    
     .word-list-header {
-      display: grid;
-      grid-template-columns: 3fr 3fr 2fr 3fr 3fr 2fr;
       height: 40px;
-      padding: 10px;
       background-color: var(--background-dark);
       color: var(--font-light);
+      @include divider();
   
-      .word {
-        text-align: center;
-      }
-      .translation {
-        text-align: center;
-      }
-      .status {
-        text-align: center;
-      }
-      .create-date {
-        text-align: center;
-      }
-      .quantity-date {
-        text-align: center;
-      }
-      .actions {
-        text-align: center;
+      .field {
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
     }
   
     .word-line {
-      display: grid;
-      grid-template-columns: 3fr 3fr 2fr 3fr 3fr 2fr;
+      @include divider();
+      @include changingColors();
       height: 40px;
-      // padding: 10px;
-      // border-top: 3px solid var(--background-dark);
-  
-      &:nth-child(3n+2) {
-        background-color: var(--background-green-pale);
-      }
-  
-      &:nth-child(3n) {
-        background-color: var(--background-blue-pale);
-      }
-  
-      &:nth-child(3n+1) {
-        background-color: var(--background-red-pale);
-      }
   
       .field {
         display: flex;
@@ -62,26 +35,7 @@
         justify-content: center;
       }
   
-      .word {
-        
-      }
-      .translation {
-  
-      }
-      .status {
-        
-      }
-      .create-date {
-  
-      }
-      .quantity-date {
-  
-      }
       .actions {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
         gap: 10px;
       }
     }
@@ -93,7 +47,6 @@
     margin-top: 10px;
     
     button.load-more {
-      height: 30px;
       width: 100px;
     }
   }

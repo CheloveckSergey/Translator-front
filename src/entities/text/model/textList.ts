@@ -1,6 +1,5 @@
 import { TextPreviewClass } from "./textPreview";
 
-
 export class TextListClass {
   texts: TextPreviewClass[];
 

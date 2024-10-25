@@ -6,6 +6,14 @@
   border-radius: 10px;
   overflow: hidden;
 
+  &.deleted {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--background-dark);
+    color: var(--font-light);
+  }
+
   &:nth-child(3n+2) {
 
     .header {
@@ -63,16 +71,29 @@
       width: 100%;
       padding: 10px;
 
-      .name {
-        cursor: pointer;
-  
-        &:hover {
-          text-decoration: underline;
+      .name-author {
+        flex-grow: 3;
+        overflow: hidden;
+
+        .name {
+          white-space: nowrap;
+          cursor: pointer;
+          overflow: hidden;
+          text-overflow: ellipsis;
+    
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+
+        .author {
+          margin-top: 5px;
         }
       }
 
       .buttons {
-  
+        display: flex;
+        gap: 10px;
       }
     }
 
@@ -95,19 +116,20 @@
   }
 
   .content {
+    position: relative;
     flex-grow: 3;
     padding: 10px;
     line-height: 1.5rem;
     overflow: hidden;
     
-    p {
+    p.text {
       position: relative;
       height: 100%;
       width: 100%;
       overflow: hidden;
     }
 
-    p:after {
+    p.text:after {
       content: "";
       text-align: right;
       position: absolute;
@@ -116,6 +138,14 @@
       width: 100%;
       height: 2rem;
       pointer-events: none;
+    }
+
+    p.date {
+      position: absolute;
+      bottom: 0px;
+      right: 5px;
+      font-size: 0.8rem;
+      color: var(--font-green);
     }
   }
 }

@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from "react-query";
+import { useInfiniteQuery, useQuery } from "react-query";
 import { useAppSelector } from "../../../app/store";
 import { FriendsApi, GetFindFriendsQuery, GetFriendsQuery, GetIncomeRequestsQuery, GetOutcomeRequestsQuery, UserApi, Users1Query } from "../api";
 import { useState } from "react";
@@ -26,6 +26,10 @@ const userKeys = {
     root: 'outcomeRequests',
     slug: (userId: number) => [userKeys.outcomeRequests.root, userId],
   },
+  user: {
+    root: 'user',
+    slug: (userId: number, meUserId: number) => [userKeys.user.root, userId, meUserId],
+  }
 }
 
 const useFriends = (query: GetFriendsQuery) => {
@@ -248,9 +252,36 @@ const useFindFriends = (query: GetFindFriendsQuery) => {
   }
 }
 
+const useUser = (userId: number, meUserId: number) => {
+  const [user, setUser] = useState<User>();
+
+  const { isLoading, isError } = useQuery({
+    queryKey: userKeys.user.slug(userId, meUserId),
+    queryFn: () => {
+      return UserApi.getUserById(userId)
+    },
+    onSuccess: (data) => {
+      setUser(mapUserDto(data));
+    },
+  });
+
+  function updateState() {
+    const newUser = user?.getCopy();
+    setUser(newUser);
+  }
+
+  return {
+    user,
+    isLoading,
+    isError,
+    updateState,
+  }
+}
+
 export const UserLib = {
   useFindFriends,
   useFriends,
   useIncomeRequests,
   useOutcomeRequests,
+  useUser,
 }

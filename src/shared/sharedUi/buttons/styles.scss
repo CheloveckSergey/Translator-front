@@ -44,6 +44,11 @@
     &:active {
       background-color: aquamarine;
     }
+
+    &:disabled {
+      background-color: var(--button-green-lighter);
+      cursor: wait;
+    }
   }
 
   &.light {

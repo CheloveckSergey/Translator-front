@@ -1,0 +1,22 @@
+.short-text-previews-list {
+  padding: 10px;
+  background-color: var(--background-light-darker);
+  border-radius: 10px;
+}
+
+.short-text-preview {
+
+  &:not(:first-child) {
+    margin-top: 5px;
+  }
+
+  .text-name {
+    margin-top: 5px;
+    color: var(--font-green);
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

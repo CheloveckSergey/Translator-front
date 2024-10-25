@@ -1,6 +1,9 @@
 import { StringSpan, WordSpanClass } from "../../word";
 import { mapStringSpanDto, mapTransWordDto } from "../../word/model/mappers";
-import { TextSpanDto, TransTextDto, TranslationDto } from "./dto";
+import { ShortTextPreviewDto, TextPreviewDto, TextSpanDto, TransTextDto, TranslationDto } from "./dto";
+import { ShortTextPreview } from "./shortTextPreview";
+import { TextListClass } from "./textList";
+import { TextPreviewClass } from "./textPreview";
 import { TextSpanClass } from "./textSpan";
 import { TransText, Translation } from "./types";
 
@@ -26,4 +29,32 @@ export function mapTranslationDto(translationDto: TranslationDto): Translation {
   } else {
     return mapTextTransDto(translationDto)
   }
+}
+
+export function mapTextPreview(textPreviewDto: TextPreviewDto): TextPreviewClass {
+  const textPreview = new TextPreviewClass(
+    textPreviewDto.id, 
+    textPreviewDto.name, 
+    textPreviewDto.content, 
+    textPreviewDto.author.id, 
+    textPreviewDto.author.login, 
+    textPreviewDto.isCopied,
+    new Date(textPreviewDto.createDate),
+  );
+  return textPreview;
+}
+
+export function mapTextListDto(textPreviewDtos: TextPreviewDto[]): TextListClass {
+  const textList = new TextListClass(textPreviewDtos.map(mapTextPreview));
+  return textList;
+}
+
+export function mapShortTextPreview(textDto: ShortTextPreviewDto): ShortTextPreview {
+  const textPreview = new ShortTextPreview(
+    textDto.id,
+    textDto.name,
+    textDto.author,
+    new Date(textDto.createDate),
+  );
+  return textPreview;
 }

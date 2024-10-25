@@ -1,17 +1,9 @@
-.home-page {
+.user-page {
   display: flex;
   justify-content: center;
 
   .main-content {
     width: 950px;
     margin-top: 10px;
-  }
-
-  h2 {
-    margin-top: 10px;
-
-    &:first-child {
-      margin-top: 0;
-    }
   }
 }

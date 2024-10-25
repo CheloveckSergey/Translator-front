@@ -5,6 +5,8 @@ import { TodayWordClass } from "../../entities/word/model/todayWord";
 import './styles.scss';
 import { WordFeaturesUi } from "../../features/word/ui";
 import { WholeWord } from "../../entities/word/model/wholeWord";
+import { useAppSelector } from "../../app/store";
+import { useParams } from "react-router-dom";
 
 interface WLWProps {
   word: WholeWord,
@@ -46,6 +48,11 @@ const WordLineWidget: FC<WLWProps> = ({ word, updateState }) => {
 
 const WordListWidget: FC = () => {
 
+  const { user } = useAppSelector(state => state.user);
+
+  const { userId: _userId } = useParams();
+  const userId = Number(_userId);
+
   const { 
     words, 
     updateWords, 
@@ -54,7 +61,7 @@ const WordListWidget: FC = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = WordLib.useWholeWords({ limit: 10 });
+  } = WordLib.useWholeWords({ limit: 10, userId });
 
   return (
     <WordUi.WordList 

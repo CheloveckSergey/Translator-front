@@ -18,4 +18,11 @@ export class UserApi {
     );
     return response.data;
   }
+
+  static async getUserById(userId: number) {
+    const response = await api.get<UserDto>(
+      INITIAL_URL + '/getUserById/' + userId,
+    );
+    return response.data;
+  }
 }

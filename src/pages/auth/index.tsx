@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, FormEvent, useState } from "react";
+import { ChangeEvent, FC, FormEvent, useEffect, useRef, useState } from "react";
 import './styles.scss';
 import { useAppDispatch } from "../../app/store";
 import { MyRejectValue, authThunks } from "../../features/auth/model/store";
@@ -137,6 +137,14 @@ const LoginBlock: FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
+  // const formRef = useRef<HTMLFormElement>(null);
+
+  // useEffect(() => {
+  //   if (formRef.current) {
+  //     formRef.current.focus();
+  //   }
+  // }, []);
+
   function log() {
     dispatch(authThunks.loginThunk({login, password}))
     .unwrap()
@@ -156,6 +164,7 @@ const LoginBlock: FC = () => {
       <h1>Login</h1>
       <div className="login-password">
         <form
+          // ref={formRef}
           onSubmit={(e: FormEvent) => {
             e.preventDefault();
             log();

@@ -98,6 +98,7 @@ interface TLUProps {
       isError: boolean,
     }
   },
+  className?: string,
 }
 export const TextListUi: FC<TLUProps> = ({ 
   textList, 
@@ -107,11 +108,12 @@ export const TextListUi: FC<TLUProps> = ({
   hasNextPage, 
   isFetchingNextPage, 
   actionObjects, 
-  mapTexts 
+  mapTexts,
+  className,
 }) => {
 
   return (
-    <div className="text-list">
+    <div className={["text-list", className].join(' ')}>
       <SharedUiHelpers.ErrorLoader
         isLoading={isLoading}
         isError={isError}

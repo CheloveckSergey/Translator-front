@@ -14,3 +14,26 @@ export interface TransTextDto {
   value: string,
   translation: string,
 }
+
+export interface TextPreviewDto {
+  id: number,
+  name: string,
+  content: string,
+  author: {
+    id: number,
+    login: string,
+  },
+  createDate: string,
+  updateDate: string,
+  isCopied?: boolean,
+}
+
+export interface ShortTextPreviewDto {
+  id: number,
+  name: string,
+  author: {
+    id: number,
+    login: string,
+  },
+  createDate: string,
+}
