@@ -11,6 +11,7 @@
   width: 120px;
   font-size: 1rem;
   border-radius: 10px;
+  cursor: pointer;
 
   &.green {
 
@@ -49,5 +50,10 @@
     &:active {
       background-color: --font-light-darker;
     }
+  }
+
+  &:disabled {
+    cursor: progress;
+    background-color: var(--background-grey);
   }
 }

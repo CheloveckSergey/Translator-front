@@ -20,7 +20,6 @@ export class TextApi {
   }
 
   static async getFriendsLastTexts() {
-    console.log('lal');
     const response = await api.get<ShortTextPreviewDto[]>(
       INITIAL_URL + '/getFriendsLastTexts',
     );

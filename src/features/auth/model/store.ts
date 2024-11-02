@@ -4,8 +4,8 @@ import AuthApi from "../api";
 import { AxiosError } from "axios";
 
 export interface MyRejectValue {
-  message: string | undefined,
-  status: number | undefined,
+  message: string,
+  status: number,
 }
 
 const initialState: UserState = {
@@ -30,7 +30,11 @@ const registerThunk = createAsyncThunk<
       return response.data;
     } catch (error) {
       const err = error as AxiosError<MyRejectValue>;
-      return thunkAPI.rejectWithValue({ message: err.response?.data.message, status: err.response?.status });
+      if (err.response?.data) {
+        return thunkAPI.rejectWithValue(err.response.data);
+      } else {
+        return thunkAPI.rejectWithValue({ message: 'Неизвестная ошибка', status: 0 });
+      }
     }
   }
 )
@@ -51,7 +55,11 @@ const loginThunk = createAsyncThunk<
       return response.data;
     } catch (error) {
       const err = error as AxiosError<MyRejectValue>;
-      return thunkAPI.rejectWithValue({ message: err.response?.data.message, status: err.response?.status });
+      if (err.response?.data) {
+        return thunkAPI.rejectWithValue(err.response.data);
+      } else {
+        return thunkAPI.rejectWithValue({ message: 'Неизвестная ошибка', status: 0 });
+      }
     }
   }
 )
@@ -72,7 +80,11 @@ const refreshThunk = createAsyncThunk<
       return response.data;
     } catch (error) {
       const err = error as AxiosError<MyRejectValue>;
-      return thunkAPI.rejectWithValue({ message: err.response?.data.message, status: err.response?.status });
+      if (err.response?.data) {
+        return thunkAPI.rejectWithValue(err.response.data);
+      } else {
+        return thunkAPI.rejectWithValue({ message: 'Неизвестная ошибка', status: 0 });
+      }
     }
   }
 )
@@ -93,7 +105,11 @@ const logoutThunk = createAsyncThunk<
       return response.data;
     } catch (error) {
       const err = error as AxiosError<MyRejectValue>;
-      return thunkAPI.rejectWithValue({ message: err.response?.data.message, status: err.response?.status });
+      if (err.response?.data) {
+        return thunkAPI.rejectWithValue(err.response.data);
+      } else {
+        return thunkAPI.rejectWithValue({ message: 'Неизвестная ошибка', status: 0 });
+      }
     }
   }
 )
@@ -102,7 +118,11 @@ export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-
+    clearUser(state) {
+      state.user = undefined;
+      state.loading = false;
+      state.error = undefined;
+    },
   },
   extraReducers: builder => {
     builder
@@ -170,6 +190,10 @@ export const userSlice = createSlice({
       })
   }
 });
+
+export const AuthActions = {
+  clearUser: userSlice.actions.clearUser,
+}
 
 export const authThunks = {
   registerThunk, 

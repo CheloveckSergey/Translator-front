@@ -1,10 +1,12 @@
 import { ChangeEvent, FC, FormEvent, useEffect, useRef, useState } from "react";
 import './styles.scss';
-import { useAppDispatch } from "../../app/store";
+import { useAppDispatch, useAppSelector } from "../../app/store";
 import { MyRejectValue, authThunks } from "../../features/auth/model/store";
 import { useNavigate } from "react-router-dom";
 import { SharedButtons } from "../../shared/sharedUi/buttons";
 import { SharedInputs } from "../../shared/sharedUi/inputs";
+import { SharedUiHelpers } from "../../shared/sharedUi/helpers";
+import { SharedIcons } from "../../shared/sharedUi/icons";
 
 type PasswordReliability = 'low' | 'normal' | 'high';
 
@@ -117,8 +119,6 @@ const RegistrationBlock: FC = () => {
           <SharedInputs.CustomSubmit
             className="submit"
             body={'Registration'}
-            isLoading={false}
-            isError={false}
             color="green"
           />
         </form>
@@ -129,6 +129,7 @@ const RegistrationBlock: FC = () => {
 }
 
 const LoginBlock: FC = () => {
+  const { loading, error } = useAppSelector(state => state.user);
 
   const [login, setLogin] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -137,25 +138,22 @@ const LoginBlock: FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  // const formRef = useRef<HTMLFormElement>(null);
+  const ref = useRef<HTMLInputElement>(null);
 
-  // useEffect(() => {
-  //   if (formRef.current) {
-  //     formRef.current.focus();
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.focus();
+    }
+  }, []);
 
   function log() {
     dispatch(authThunks.loginThunk({login, password}))
     .unwrap()
-    .then((data) => {
+    .then(() => {
       navigate('/home');
-    } )
+    })
     .catch((error: MyRejectValue) => {
-      // if (error.message) {
-      //   setEMessage(error.message);
-      // }
-      console.log(error);
+      setErrorMessage(error.message);
     });
   }
 
@@ -164,7 +162,6 @@ const LoginBlock: FC = () => {
       <h1>Login</h1>
       <div className="login-password">
         <form
-          // ref={formRef}
           onSubmit={(e: FormEvent) => {
             e.preventDefault();
             log();
@@ -197,9 +194,9 @@ const LoginBlock: FC = () => {
           <SharedInputs.CustomSubmit
             className="submit"
             body={'Login'}
-            isLoading={false}
-            isError={false}
             color="green"
+            ref={ref}
+            disabled={loading || !!error}
           />
         </form>
         <div className="error-message">{errorMessage}</div>
@@ -209,6 +206,7 @@ const LoginBlock: FC = () => {
 }
 
 export const AuthPage: FC = () => {
+  const { loading } = useAppSelector(state => state.user);
 
   const [loginPage, setLoginPage] = useState<boolean>(true);
 
@@ -222,6 +220,9 @@ export const AuthPage: FC = () => {
           onClick={() => setLoginPage(!loginPage)}
           color="green"
         />
+        {loading && <div className="loader">
+          <SharedIcons.Spinner size={50} />
+        </div>}
       </div>
     </div>
   )

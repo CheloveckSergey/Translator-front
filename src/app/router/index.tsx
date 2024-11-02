@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
+import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements, redirect } from "react-router-dom";
 import { Layout } from "../layout";
 import { Translator } from "../../pages/translator";
 import { TextsPage } from "../../pages/texts/ui";
@@ -10,8 +10,25 @@ import { WordsPage } from "../../pages/words";
 import { HomePage } from "../../pages/home";
 import { UsersPage } from "../../pages/users/ui";
 import { UserPage } from "../../pages/user";
+import { useAppSelector } from "../store";
+
+// interface PRProps {
+//   element: React.ReactNode,
+//   path: string,
+// }
+// const ProtectedRoute: FC<PRProps> = ({ element, path }) => {
+
+//   return (
+//     <Route 
+//       path={path}
+//       element={<Redirect to />}
+//     />
+//   )
+// }
 
 export const AppRouter: FC = () => {
+
+  const { user } = useAppSelector(state => state.user);
 
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -21,7 +38,20 @@ export const AppRouter: FC = () => {
           element={<Layout />}
         >
           <Route index element={<HomePage />} />
-          <Route path="/home" element={<HomePage />} />
+          <Route 
+            path="/home" 
+            element={<HomePage />} 
+            // loader={}
+            loader={() => {
+              // const { user } = useAppSelector(state => state.user);
+
+              if (!user) {
+                redirect('/generalFeed')
+              }
+
+              return true
+            }}
+          />
           <Route path="/translator" element={<Translator />} />
           <Route path="/texts">
             <Route path=":textId" element={<TextPage />} />

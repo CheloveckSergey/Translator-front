@@ -1,4 +1,4 @@
-import { ChangeEvent, FC } from "react";
+import { ChangeEvent, FC, forwardRef } from "react";
 import './styles.scss';
 import { SharedUiHelpers } from "../helpers";
 
@@ -41,29 +41,25 @@ const CustomInput: FC<CIProps> = ({ type, value, setValue, className }) => {
   )
 }
 
+type CSRef = HTMLInputElement;
 interface CSProps {
-  body: React.ReactNode | React.ReactNode[] | string,
-  isLoading: boolean,
-  isError: boolean,
-  // onClick: () => void,
+  body: string,
   color: 'green' | 'light' | 'dark',
   className?: string,
+  disabled?: boolean,
 }
-const CustomSubmit: FC<CSProps> = ({ body, isLoading, isError, color, className }) => {
+const CustomSubmit = forwardRef<CSRef, CSProps>(({ body, color, className, disabled }, CSRef) => {
 
   return (
-    <button
+    <input
+      type="submit"
       className={["custom-submit", color, className].join(' ')}
-    >
-      <SharedUiHelpers.ErrorLoader
-        isLoading={isLoading}
-        isError={isError}
-      >
-        {body}
-      </SharedUiHelpers.ErrorLoader>
-    </button>
+      ref={CSRef}
+      value={body}
+      disabled={disabled}
+    />
   )
-}
+})
 
 export const SharedInputs = {
   CustomInput,
