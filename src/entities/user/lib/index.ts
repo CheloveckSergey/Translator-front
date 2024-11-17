@@ -28,7 +28,7 @@ const userKeys = {
   },
   user: {
     root: 'user',
-    slug: (userId: number, meUserId: number) => [userKeys.user.root, userId, meUserId],
+    slug: (userId: number, meUserId?: number) => [userKeys.user.root, userId, meUserId],
   }
 }
 
@@ -252,7 +252,7 @@ const useFindFriends = (query: GetFindFriendsQuery) => {
   }
 }
 
-const useUser = (userId: number, meUserId: number) => {
+const useUser = (userId: number, meUserId?: number) => {
   const [user, setUser] = useState<User>();
 
   const { isLoading, isError } = useQuery({

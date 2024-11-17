@@ -144,6 +144,7 @@ const LoginBlock: FC = () => {
     if (ref.current) {
       ref.current.focus();
     }
+    
   }, []);
 
   function log() {
@@ -173,6 +174,7 @@ const LoginBlock: FC = () => {
               className="login"
               type="text"
               name="login"
+              autoComplete="username"
               onChange={(e: ChangeEvent<HTMLInputElement>) => {
                 setLogin(e.target.value);
                 setErrorMessage('');
@@ -185,6 +187,7 @@ const LoginBlock: FC = () => {
               className="password"
               type="password" 
               name="password"
+              autoComplete="current-password"
               onChange={(e: ChangeEvent<HTMLInputElement>) => { 
                 setPassword(e.target.value);
                 setErrorMessage('');

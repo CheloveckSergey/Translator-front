@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements, redirect } from "react-router-dom";
+import { Navigate, Route, RouterProvider, createBrowserRouter, createRoutesFromElements, redirect, useNavigate } from "react-router-dom";
 import { Layout } from "../layout";
 import { Translator } from "../../pages/translator";
 import { TextsPage } from "../../pages/texts/ui";
@@ -12,23 +12,24 @@ import { UsersPage } from "../../pages/users/ui";
 import { UserPage } from "../../pages/user";
 import { useAppSelector } from "../store";
 
-// interface PRProps {
-//   element: React.ReactNode,
-//   path: string,
-// }
-// const ProtectedRoute: FC<PRProps> = ({ element, path }) => {
+interface PRProps {
+  element: React.ReactNode,
+}
+const ProtectedElement: FC<PRProps> = ({ element }) => {
+  const { user } = useAppSelector((state) => state.user);
 
-//   return (
-//     <Route 
-//       path={path}
-//       element={<Redirect to />}
-//     />
-//   )
-// }
+  if (!user) {
+    return <Navigate to="/registration" />;
+  }
+
+  return (
+    <>
+      {element}
+    </>
+  )
+};
 
 export const AppRouter: FC = () => {
-
-  const { user } = useAppSelector(state => state.user);
 
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -37,20 +38,10 @@ export const AppRouter: FC = () => {
           path="/" 
           element={<Layout />}
         >
-          <Route index element={<HomePage />} />
+          <Route index element={<ProtectedElement element={<HomePage />} />} />
           <Route 
-            path="/home" 
-            element={<HomePage />} 
-            // loader={}
-            loader={() => {
-              // const { user } = useAppSelector(state => state.user);
-
-              if (!user) {
-                redirect('/generalFeed')
-              }
-
-              return true
-            }}
+            path="/home"
+            element={<ProtectedElement element={<HomePage />} />} 
           />
           <Route path="/translator" element={<Translator />} />
           <Route path="/texts">

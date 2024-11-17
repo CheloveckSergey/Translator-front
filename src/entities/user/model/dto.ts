@@ -5,6 +5,7 @@ export type SentRequestStatus = 'sentTo' | 'sentFrom' | undefined;
 export interface UserDto {
   id: number;
   login: string;
+  avatar: string | undefined;
   isFriend: boolean;
   isSentRequest: SentRequestStatus;
 }
@@ -29,4 +30,8 @@ export interface OutcomeRequestUserDto {
   id: number,
   login: string,
   status: FriendRequestStatus,
+}
+
+export interface UpdateImageDto {
+  image: string,
 }

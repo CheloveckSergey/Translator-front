@@ -1,6 +1,6 @@
 import api from "../../../shared/api";
 import { UsualQuery } from "../../../shared/types";
-import { UserDto } from "../model";
+import { UpdateImageDto, UserDto } from "../model";
 
 export interface Users1Query extends UsualQuery {
   
@@ -22,6 +22,17 @@ export class UserApi {
   static async getUserById(userId: number) {
     const response = await api.get<UserDto>(
       INITIAL_URL + '/getUserById/' + userId,
+    );
+    return response.data;
+  }
+
+  static async updateAvatar(file: File): Promise<UpdateImageDto> {
+    const formData = new FormData();
+    formData.append('img', file);
+
+    const response = await api.post<UpdateImageDto>(
+      INITIAL_URL + '/updateAvatar/',
+      formData,
     );
     return response.data;
   }

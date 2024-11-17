@@ -11,35 +11,37 @@ export const Header: FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const name = user?.login ? user.login : 'guest';
+  const name = user?.login ? user.login : 'Guest';
 
   return (
-    <div className="global-header">
+    <div className="navigation-menu">
       <div className="left">
         <p>{name}</p>
       </div>
-      <Link to='/'>
-        <h3>Home</h3>
-      </Link>
-      <Link to={'/words/user/' + user?.id}>
-        <h3>Words</h3>
-      </Link>
-      <Link to='/today-list'>
-        <h3>Today List</h3>
-      </Link>
-      <Link to={'/texts/user/' + user?.id}>
-        <h3>Texts</h3>
-      </Link>
-      <Link to='/translator'>
-        <h3>Translator</h3>
-      </Link>
-      <Link to='/users'>
-        <h3>Users</h3>
-      </Link>
+      <div className="main-links">
+        <Link to='/'>
+          <h3>Home</h3>
+        </Link>
+        <Link to={'/words/user/' + user?.id}>
+          <h3>Words</h3>
+        </Link>
+        <Link to='/today-list'>
+          <h3>Today List</h3>
+        </Link>
+        <Link to={'/texts/user/' + user?.id}>
+          <h3>Texts</h3>
+        </Link>
+        <Link to='/translator'>
+          <h3>Translator</h3>
+        </Link>
+        <Link to='/users'>
+          <h3>Users</h3>
+        </Link>
+      </div>
       <h3
         onClick={() => {
           if (user) {
-            dispatch(authThunks.logoutThunk({userId: user?.id}));
+            dispatch(authThunks.logoutThunk({ userId: user?.id }));
           }
           navigate('/registration');
         }}

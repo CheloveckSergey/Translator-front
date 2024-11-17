@@ -40,39 +40,41 @@ const TextPreviewWidget: FC<TPWProps> = ({ text, updateTexts }) => {
 
   const actions: React.ReactNode[] = [];
 
-  if (isCurUserTexts) {
-    if (user?.id === text.author.id) {
-      actions.push(
-        <TextFeaturesUi.DeleteButton
-          textId={text.id}
-          deleteText={deleteText}
-        />, 
-      )
-    } else {
-      actions.push(
-        <TextFeaturesUi.UncopyButton
-          textId={text.id}
-          uncopyText={uncopyText}
-        />
-      )
-    }
-  } else {
-    if (text.author.id !== user?.id) {
-      if (text.isCopied) {
+  if (user) {
+    if (isCurUserTexts) {
+      if (user?.id === text.author.id) {
+        actions.push(
+          <TextFeaturesUi.DeleteButton
+            textId={text.id}
+            deleteText={deleteText}
+          />, 
+        )
+      } else {
         actions.push(
           <TextFeaturesUi.UncopyButton
             textId={text.id}
             uncopyText={uncopyText}
           />
         )
-      } else {
-        actions.push(
-          <TextFeaturesUi.CopyButton 
-            textId={text.id}
-            copyText={copyText}
-            size={20}
-          />
-        ) 
+      }
+    } else {
+      if (text.author.id !== user?.id) {
+        if (text.isCopied) {
+          actions.push(
+            <TextFeaturesUi.UncopyButton
+              textId={text.id}
+              uncopyText={uncopyText}
+            />
+          )
+        } else {
+          actions.push(
+            <TextFeaturesUi.CopyButton 
+              textId={text.id}
+              copyText={copyText}
+              size={20}
+            />
+          ) 
+        }
       }
     }
   }
@@ -125,7 +127,7 @@ export const TextListWidget: FC = () => {
       hasNextPage={hasNextPage}
       isFetchingNextPage={isFetchingNextPage}
       actionObjects={{
-        ...(userId === user!.id && {addText: {
+        ...(userId === user?.id && {addText: {
           mutate: addTextMutation.mutateAsync,
           isLoading: addTextMutation.isLoading,
           isError: addTextMutation.isError,

@@ -23,6 +23,15 @@ function getComfortableDate(date: Date): string {
   return comfortableDate;
 }
 
+function getImageUrlFromFile(file: File | undefined) {
+  if (file) {
+    return URL.createObjectURL(file);
+  } else {
+    return process.env.REACT_APP_DEFAULT_IMAGE;
+  }
+}
+
 export const SharedLib = {
   getComfortableDate,
+  getImageUrlFromFile,
 }

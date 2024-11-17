@@ -91,16 +91,18 @@ const refreshThunk = createAsyncThunk<
 
 const logoutThunk = createAsyncThunk<
   LogoutRes,
-  { userId: number },
+  {},
   {
     rejectValue: MyRejectValue,
+    state: { user: UserState },
   }
 >(
   'auth/logout',
-  async ({ userId }, thunkAPI) => {
+  async (_, thunkAPI) => {
     console.log('ЛОГАУТСАНК');
     try {
-      const response = await AuthApi.logout(userId);
+      const { user: userState } = thunkAPI.getState();
+      const response = await AuthApi.logout(userState.user!.id);
       localStorage.removeItem('accessToken');
       return response.data;
     } catch (error) {
@@ -117,13 +119,7 @@ const logoutThunk = createAsyncThunk<
 export const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {
-    clearUser(state) {
-      state.user = undefined;
-      state.loading = false;
-      state.error = undefined;
-    },
-  },
+  reducers: {},
   extraReducers: builder => {
     builder
       .addCase(registerThunk.pending, (state, action) => {
@@ -171,7 +167,7 @@ export const userSlice = createSlice({
       .addCase(refreshThunk.rejected, (state, action) => {
         state.user = undefined;
         state.loading = false;
-        state.error = action.payload?.message;
+        state.error = undefined;
       })
 
       .addCase(logoutThunk.pending, (state, action) => {
@@ -186,14 +182,14 @@ export const userSlice = createSlice({
       .addCase(logoutThunk.rejected, (state, action) => {
         state.user = undefined;
         state.loading = false;
-        state.error = action.payload?.message;
+        state.error = undefined;
       })
   }
 });
 
-export const AuthActions = {
-  clearUser: userSlice.actions.clearUser,
-}
+// export const AuthActions = {
+//   clearUser: userSlice.actions.clearUser,
+// }
 
 export const authThunks = {
   registerThunk, 

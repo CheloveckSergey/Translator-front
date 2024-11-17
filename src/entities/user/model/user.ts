@@ -3,14 +3,16 @@ import { SentRequestStatus } from "./dto";
 export class User {
   id: number;
   login: string;
+  _avatar: string | undefined;
   isFriend: boolean;
   isSentRequest: SentRequestStatus;
 
-  constructor(id: number, login: string, isFriend: boolean, isSentRequest: SentRequestStatus) {
+  constructor(id: number, login: string, isFriend: boolean, isSentRequest: SentRequestStatus, avatar?: string) {
     this.id = id;
     this.login = login;
     this.isFriend = isFriend;
     this.isSentRequest = isSentRequest;
+    this._avatar = avatar;
   }
 
   setIsFriend(isFriend: boolean) {
@@ -21,8 +23,20 @@ export class User {
     this.isSentRequest = isSentRequest;
   }
 
+  setAvatar(image: string) {
+    this._avatar = image;
+  }
+
+  public get avatar() {
+    if (!this._avatar) {
+      return 'https://avatars.mds.yandex.net/i?id=dd5b8839ecb2033af1341f7c9493adde_l-11387523-images-thumbs&n=13'
+    }
+
+    return 'http://localhost:5000/' + this._avatar
+  }
+
   getCopy(): User {
-    const newUser = new User(this.id, this.login, this.isFriend, this.isSentRequest);
+    const newUser = new User(this.id, this.login, this.isFriend, this.isSentRequest, this._avatar);
     return newUser
   }
 }

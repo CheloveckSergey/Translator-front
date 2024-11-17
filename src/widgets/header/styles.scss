@@ -1,18 +1,22 @@
-.global-header {
-  position: relative;
+.navigation-menu {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: 70px;
   flex-shrink: 0;
   height: 70px;
   width: 100%;
+  padding: 0 30px;
   background-color: var(--background-green);
   color: var(--font-light);
 
   .left {
-    position: absolute;
-    left: 50px;
+
+  }
+
+  .main-links {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
   }
 
   h3 {

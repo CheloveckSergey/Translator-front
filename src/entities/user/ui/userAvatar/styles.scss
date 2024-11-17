@@ -1,0 +1,65 @@
+.user-avatar {
+  width: 100%;
+
+  img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    overflow: hidden;
+    border-radius: 10px;
+  }
+
+  .change-avatar-button {
+    margin-top: 5px;
+    width: 100%;
+  }
+}
+
+.update-avatar-window {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+  width: 400px;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: var(--background-light);
+
+  img {
+    height: 250px;
+    width: 250px;
+    object-fit: cover;
+    overflow: hidden;
+    border-radius: 10px;
+  }
+
+  label {
+
+    span.load-span {
+      display: block;
+      text-align: center;
+      width: 150px;
+      margin-top: 5px;
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 10px;
+      color: var(--font-light);
+      background-color: var(--background-dark);
+      cursor: pointer;
+    
+      &:hover {
+        background-color: var(--background-light-darker);
+      }
+    
+      &:active {
+        background-color: var(--background-dark);
+      }
+    }
+  }
+
+  button.submit-avatar-button {
+    width: 150px;
+    margin-top: 10px;
+  }
+}
