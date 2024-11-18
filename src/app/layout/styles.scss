@@ -5,24 +5,21 @@
   width: 100%;
   overflow: hidden;
 
-  .main-footer {
+  .layout-content {
+    position: relative;
     display: flex;
     flex-direction: column;
     flex-grow: 3;
-    overflow: auto;
+    overflow: hidden;
 
-    main {
-      flex-grow: 3;
+    .main-footer {
+      overflow: auto;
+
+      main {
+        position: relative;
+        flex-grow: 3;
+      }
     }
-  }
-}
 
-.auth-loading {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 10px;
-  align-items: center;
-  height: 100%;
-  width: 100%;
+  }
 }

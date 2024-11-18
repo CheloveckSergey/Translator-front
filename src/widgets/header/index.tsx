@@ -3,8 +3,13 @@ import './styles.scss';
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/store";
 import { authThunks } from "../../features/auth";
+import { SharedButtons } from "../../shared/sharedUi/buttons";
+import { BsList } from "react-icons/bs";
 
-export const Header: FC = () => {
+interface HProps {
+  switchMenu: () => void,
+}
+export const Header: FC<HProps> = ({ switchMenu }) => {
 
   const { user } = useAppSelector(state => state.user);
 
@@ -14,8 +19,14 @@ export const Header: FC = () => {
   const name = user?.login ? user.login : 'Guest';
 
   return (
-    <div className="navigation-menu">
+    <div className="header">
       <div className="left">
+        <SharedButtons.TextButton
+          body={<BsList size={35} /> }
+          color="light"
+          onClick={() => {switchMenu()}}
+          className="show-menu"
+        />
         <p>{name}</p>
       </div>
       <div className="main-links">
