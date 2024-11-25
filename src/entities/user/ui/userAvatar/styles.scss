@@ -1,17 +1,53 @@
 .user-avatar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   width: 100%;
 
-  img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    overflow: hidden;
-    border-radius: 10px;
+  .avatar {
+
+    img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      overflow: hidden;
+      border-radius: 10px;
+    }
+  
+    .change-avatar-button {
+      margin-top: 5px;
+      width: 100%;
+    }
   }
 
-  .change-avatar-button {
-    margin-top: 5px;
-    width: 100%;
+  .info {
+
+    .info-line {
+      display: flex;
+      justify-content: space-between;
+
+      &:not(:first-child) {
+        margin-top: 5px;
+      }
+
+      .left {
+        color: var(--font-grey);
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    min-width: 300px;
+    flex-direction: row;
+    
+    .avatar {
+      flex: 1;
+      max-width: 300px;
+    }
+
+    .info {
+      flex: 1;
+    }
   }
 }
 

@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useQuery } from "react-query";
 import { useAppSelector } from "../../../app/store";
-import { FriendsApi, GetFindFriendsQuery, GetFriendsQuery, GetIncomeRequestsQuery, GetOutcomeRequestsQuery, UserApi, Users1Query } from "../api";
+import { FriendsApi, GetFindFriendsQuery, GetFriendsQuery, GetIncomeRequestsQuery, GetOutcomeRequestsQuery, UserApi, UserQuery, Users1Query } from "../api";
 import { useState } from "react";
 import { User } from "../model";
 import { mapFindFriendDto, mapFriendDto, mapIncomeRequest, mapOutcomeRequest, mapUserDto } from "../model/mappers";
@@ -28,7 +28,13 @@ const userKeys = {
   },
   user: {
     root: 'user',
-    slug: (userId: number, meUserId?: number) => [userKeys.user.root, userId, meUserId],
+    slug: (userId: number, query?: UserQuery) => {
+      const keys = [userKeys.user.root, userId];
+      if (query) {
+        keys.push(...Object.values(query).map(String));
+      }
+      return keys
+    },
   }
 }
 
@@ -252,13 +258,13 @@ const useFindFriends = (query: GetFindFriendsQuery) => {
   }
 }
 
-const useUser = (userId: number, meUserId?: number) => {
+const useUser = (userId: number, query?: UserQuery) => {
   const [user, setUser] = useState<User>();
 
   const { isLoading, isError } = useQuery({
-    queryKey: userKeys.user.slug(userId, meUserId),
+    queryKey: userKeys.user.slug(userId, query),
     queryFn: () => {
-      return UserApi.getUserById(userId)
+      return UserApi.getUserById(userId, query)
     },
     onSuccess: (data) => {
       setUser(mapUserDto(data));

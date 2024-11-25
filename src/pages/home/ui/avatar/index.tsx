@@ -24,7 +24,7 @@ export const AvatarWidget: FC<AWProps> = ({ user, isLoading, isError, updateStat
 
   return (
     <UserUi.UserAvatar
-      avatar={user?.avatar}
+      user={user}
       isLoading={isLoading}
       isError={isError}
       updateAvatarObject={{

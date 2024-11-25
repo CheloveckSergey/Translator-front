@@ -6,7 +6,7 @@ import { OutcomeRequestUser } from "./outcomeRequest";
 import { User } from "./user";
 
 export function mapUserDto(dto: UserDto): User {
-  const user = new User(dto.id, dto.login, dto.isFriend, dto.isSentRequest, dto.avatar);
+  const user = new User(dto.id, dto.login, dto.isFriend, dto.isSentRequest, dto.avatar, dto.wordsNumber);
   return user;
 }
 

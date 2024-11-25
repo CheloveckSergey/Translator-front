@@ -6,13 +6,22 @@ export class User {
   _avatar: string | undefined;
   isFriend: boolean;
   isSentRequest: SentRequestStatus;
+  wordsNumber?: number;
 
-  constructor(id: number, login: string, isFriend: boolean, isSentRequest: SentRequestStatus, avatar?: string) {
+  constructor(
+    id: number, 
+    login: string, 
+    isFriend: boolean, 
+    isSentRequest: SentRequestStatus, 
+    avatar?: string,
+    wordsNumber?: number,
+  ) {
     this.id = id;
     this.login = login;
     this.isFriend = isFriend;
     this.isSentRequest = isSentRequest;
     this._avatar = avatar;
+    this.wordsNumber = wordsNumber;
   }
 
   setIsFriend(isFriend: boolean) {
@@ -36,7 +45,7 @@ export class User {
   }
 
   getCopy(): User {
-    const newUser = new User(this.id, this.login, this.isFriend, this.isSentRequest, this._avatar);
+    const newUser = new User(this.id, this.login, this.isFriend, this.isSentRequest, this._avatar, this.wordsNumber);
     return newUser
   }
 }

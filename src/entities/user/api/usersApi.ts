@@ -6,6 +6,11 @@ export interface Users1Query extends UsualQuery {
   
 }
 
+export interface UserQuery {
+  meUserId?: number,
+  wordsNumber?: boolean,
+}
+
 const INITIAL_URL = '/users';
 
 export class UserApi {
@@ -19,9 +24,12 @@ export class UserApi {
     return response.data;
   }
 
-  static async getUserById(userId: number) {
+  static async getUserById(userId: number, query?: UserQuery) {
     const response = await api.get<UserDto>(
       INITIAL_URL + '/getUserById/' + userId,
+      {
+        params: query,
+      }
     );
     return response.data;
   }

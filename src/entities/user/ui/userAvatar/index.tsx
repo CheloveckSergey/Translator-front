@@ -4,6 +4,7 @@ import { UseModalWindow } from "../../../../widgets/modalWindow";
 import { SharedLib } from "../../../../shared/lib";
 import { SharedUiHelpers } from "../../../../shared/sharedUi/helpers";
 import './styles.scss';
+import { User } from "../../model";
 
 interface UAWProps {
   updateAvatarObject?: {
@@ -58,8 +59,22 @@ const UpdateAvatarWindow: FC<UAWProps> = ({ updateAvatarObject, close }) => {
   )
 }
 
+interface ILProps {
+  left: string,
+  right: string,
+}
+export const InfoLine: FC<ILProps> = ({ left, right }) => {
+
+  return (
+    <p className="info-line">
+      <span className="left">{left}</span>
+      <span className="right">{right}</span>
+    </p>
+  )
+}
+
 interface UAProps {
-  avatar?: string,
+  user?: User,
   isLoading: boolean,
   isError: boolean,
   updateAvatarObject?: {
@@ -68,7 +83,7 @@ interface UAProps {
     isError: boolean,
   }
 }
-export const UserAvatar: FC<UAProps> = ({ avatar, isLoading, isError, updateAvatarObject }) => {
+export const UserAvatar: FC<UAProps> = ({ user, isLoading, isError, updateAvatarObject }) => {
 
   const [showUAWindow, setShowUAWindow] = useState<boolean>(false);
 
@@ -78,26 +93,38 @@ export const UserAvatar: FC<UAProps> = ({ avatar, isLoading, isError, updateAvat
         isLoading={isLoading}
         isError={isError}
       >
-        {avatar && <>
-          <img src={avatar} alt="IMG" />
-          <SharedButtons.GreenButton 
-            body={'Change'}
-            isLoading={false}
-            isError={false}
-            onClick={() => setShowUAWindow(true)}
-            className="change-avatar-button"
-          />
-          <UseModalWindow 
-            onClose={() => setShowUAWindow(false)}
-            condition={showUAWindow}
-          >
-            <UpdateAvatarWindow
-              updateAvatarObject={updateAvatarObject}
-              close={() => setShowUAWindow(false)}
+        {user && <>
+          <div className="avatar">
+            <img src={user.avatar} alt="IMG" />
+            <SharedButtons.GreenButton 
+              body={'Change'}
+              isLoading={false}
+              isError={false}
+              onClick={() => setShowUAWindow(true)}
+              className="change-avatar-button"
             />
-          </UseModalWindow>
+          </div>
+          <div className="info">
+            <InfoLine 
+              left="Name"
+              right={user.login}
+            />
+            <InfoLine
+              left="Studied words"
+              right={String(user.wordsNumber)}
+            />
+          </div>
         </>}
       </SharedUiHelpers.ErrorLoader>
+      <UseModalWindow 
+        onClose={() => setShowUAWindow(false)}
+        condition={showUAWindow}
+      >
+        <UpdateAvatarWindow
+          updateAvatarObject={updateAvatarObject}
+          close={() => setShowUAWindow(false)}
+        />
+      </UseModalWindow>
     </div>
   )
 }

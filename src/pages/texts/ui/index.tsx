@@ -13,7 +13,7 @@ const AdditionalHeader: FC<AHProps> = ({ userId }) => {
 
   const { user: meUser } = useAppSelector(state => state.user);
 
-  const { user, isLoading, isError } = UserLib.useUser(userId, meUser?.id);
+  const { user, isLoading, isError } = UserLib.useUser(userId);
   
   return (
     <span className="additional-header">

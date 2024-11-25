@@ -12,7 +12,7 @@ export const HomePage: FC = () => {
 
   const { user: meUser } = useAppSelector(state => state.user);
 
-  const { user, isLoading, isError, updateState } = UserLib.useUser(meUser!.id);
+  const { user, isLoading, isError, updateState } = UserLib.useUser(meUser!.id, { wordsNumber: true });
 
   return (
     <div className="home-page">

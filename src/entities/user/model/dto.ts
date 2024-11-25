@@ -8,6 +8,7 @@ export interface UserDto {
   avatar: string | undefined;
   isFriend: boolean;
   isSentRequest: SentRequestStatus;
+  wordsNumber?: number;
 }
 
 export interface FindFriendDto {

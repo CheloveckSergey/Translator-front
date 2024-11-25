@@ -12,7 +12,7 @@ export const UserPage: FC = () => {
 
   const { userId } = useParams();
 
-  const { user, isLoading, isError, updateState } = UserLib.useUser(Number(userId), meUser!.id);
+  const { user, isLoading, isError, updateState } = UserLib.useUser(Number(userId), { meUserId: meUser!.id });
 
   return (
     <div className="user-page">
