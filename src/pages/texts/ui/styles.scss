@@ -1,16 +1,20 @@
 .texts-page {
   display: flex;
   justify-content: center;
+  margin-top: 10px;
+  padding: 10px;
+
+  .left-content {
+    width: 200px;
+    flex-shrink: 0;
+  }
 
   .main-content {
-    width: 950px;
-    margin-top: 10px;
+    max-width: 950px;
+  }
 
-    h1 {
-
-      .additional-header {
-        font-size: 1rem;
-      }
-    }
+  .right-content {
+    width: 200px;
+    flex-shrink: 0;
   }
 }

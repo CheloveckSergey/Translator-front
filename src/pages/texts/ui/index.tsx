@@ -35,6 +35,9 @@ export const TextsPage: FC = () => {
 
   return (
     <div className="texts-page">
+      <div className="left-content">
+        
+      </div>
       <div className="main-content">
         <h1>
           Texts{urlUserId !== meUser?.id && <>
@@ -42,6 +45,9 @@ export const TextsPage: FC = () => {
           </>}
         </h1>
         <TextListWidget />
+      </div>
+      <div className="right-content">
+        
       </div>
     </div>
   )
