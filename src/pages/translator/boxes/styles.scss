@@ -1,0 +1,64 @@
+.boxes {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  gap: 15px;
+
+  .left {
+    flex: 1;
+
+    textarea.input-text {
+      height: 150px;
+      width: 100%;
+      padding: 10px;
+      border: 3px solid var(--font-dark);
+      border-radius: 10px;
+      background-color: var(--background-light-darker);
+      font-size: 1rem;
+    }
+
+    button.translate {
+      width: 100px;
+      margin-top: 10px;
+    }
+  }
+
+  .right {
+    flex: 1;
+
+    .outlet-text {
+      height: 150px;
+      width: 100%;
+      padding: 10px;
+      border: 3px solid var(--font-dark);
+      border-radius: 10px;
+      background-color: var(--background-light-darker);
+      font-size: 1rem;
+
+      .outlet-empty {
+        height: 100%;
+        width: 100%;
+      }
+    }
+
+    .right-extra {
+      margin-top: 10px;
+
+      .word-status {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .actions {
+        display: flex;
+        align-items: center;
+        height: 50px;
+      }
+    }
+  }
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+}

@@ -5,9 +5,15 @@
   grid-template-columns: 3fr 3fr 2fr 3fr 3fr 2fr;
 }
 
+@mixin smallDivider {
+  display: grid;
+  grid-template-columns: 3fr 2fr 2fr;
+}
+
 .word-list {
   
   .content {
+    min-width: 300px;
     border-radius: 15px;
     overflow: hidden;
     
@@ -16,27 +22,59 @@
       background-color: var(--background-dark);
       color: var(--font-light);
       @include divider();
-  
+
       .field {
         display: flex;
         justify-content: center;
         align-items: center;
+      }
+
+      @media (max-width: 1200px) {
+        @include smallDivider();
+
+        .translation, .create-date, .quantity-date {
+          display: none;
+        }
       }
     }
   
     .word-line {
+      height: 40px;
       @include divider();
       @include changingColors();
-      height: 40px;
-  
+      
       .field {
         display: flex;
         align-items: center;
         justify-content: center;
       }
-  
+
+      .word {
+        position: relative;
+        
+        button.extra-info {
+          display: none;
+          position: absolute;
+          left: 5px;
+        }
+      }
+      
       .actions {
         gap: 10px;
+      }
+
+      @media (max-width: 1200px) {
+        @include smallDivider();
+  
+        .translation, .create-date, .quantity-date {
+          display: none;
+        }
+      }
+
+      @media (max-width: 1200px) {
+        &:hover .word button.extra-info {
+          display: inline;
+        }
       }
     }
   }
@@ -48,6 +86,20 @@
     
     button.load-more {
       width: 100px;
+    }
+  }
+}
+
+.info-window {
+  height: 300px;
+  width: 300px;
+  padding: 10px;
+  background-color: var(--background-light);
+  border-radius: 10px;
+
+  .info-line {
+    &:not(:first-child) {
+      margin-top: 10px;
     }
   }
 }

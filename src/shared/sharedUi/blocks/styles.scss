@@ -12,3 +12,12 @@ p.menu-point {
     background-color: var(--background-grey);
   }
 }
+
+.info-line {
+  display: flex;
+  justify-content: space-between;
+
+  .left {
+    color: var(--font-grey);
+  }
+}

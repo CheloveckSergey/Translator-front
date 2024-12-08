@@ -84,12 +84,18 @@ export const WordsPage: FC = () => {
 
   return (
     <div className="words-page">
+      <div className="left-content">
+
+      </div>
       <div className="main-content">
         <h1>Words</h1>
         <p>Here you look at all your words.</p>
         <div className="just-cause">
           <WordListWidget />
         </div>
+      </div>
+      <div className="right-content">
+
       </div>
     </div>
   )

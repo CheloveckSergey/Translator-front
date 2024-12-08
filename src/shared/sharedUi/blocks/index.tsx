@@ -19,6 +19,22 @@ const MenuPoint: FC<MPProps> = ({ body, onClick, active, className }) => {
   )
 }
 
+interface ILProps {
+  left: string,
+  right: string,
+  className?: string,
+}
+export const InfoLine: FC<ILProps> = ({ left, right, className }) => {
+
+  return (
+    <p className={["info-line", className].join(' ')}>
+      <span className="left">{left}</span>
+      <span className="right">{right}</span>
+    </p>
+  )
+}
+
 export const SharedBlocks = {
   MenuPoint,
+  InfoLine,
 }

@@ -14,12 +14,16 @@ export const Layout = () => {
     setShowNav(showNav => !showNav);
   }
 
+  function closeNav() {
+    setShowNav(false);
+  }
+
   return (
     <RefreshLoader >
       <div className="layout">
         <Header switchMenu={switchMenu}/>
         <div className='layout-content'>
-          {showNav && <SideNavigation />}
+          {showNav && <SideNavigation close={closeNav} />}
           <div className='main-footer'>
             <main>
               <Outlet />
