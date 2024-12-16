@@ -21,3 +21,46 @@ p.menu-point {
     color: var(--font-grey);
   }
 }
+
+.menu-container {
+  position: relative;
+
+  .menu {
+    position: absolute;
+    display: none;
+    top: 100%;
+    right: 0;
+    z-index: 8888;
+    margin-top: 5px;
+    border-radius: 10px;
+    overflow: hidden;
+    
+    &.shown {
+      display: block;
+    }
+    
+    .menu-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      height: 30px;
+      min-width: 100px;
+      padding: 0 10px;
+      background-color: var(--background-dark);
+      cursor: pointer;
+
+      &:hover {
+        background-color: var(--background-dark-lighter);
+      }
+
+      p.text {
+        white-space: nowrap;
+      }
+
+      .icon {
+        min-width: 15px;
+      }
+    }
+  }
+}

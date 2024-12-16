@@ -1,5 +1,6 @@
+import { ResAuthDto } from "../../../entities/user";
 import api from "../../../shared/api";
-import { LogoutRes, ReqAuthDto, ResAuthDto } from "../model/types";
+import { LogoutRes, ReqAuthDto } from "../model/types";
 
 class AuthApi {
   static async registration(authDto: ReqAuthDto) {

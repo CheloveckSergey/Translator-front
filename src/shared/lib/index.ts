@@ -35,3 +35,5 @@ export const SharedLib = {
   getComfortableDate,
   getImageUrlFromFile,
 }
+
+export { SharedHooks } from './hooks'

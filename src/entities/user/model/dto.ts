@@ -36,3 +36,10 @@ export interface OutcomeRequestUserDto {
 export interface UpdateImageDto {
   image: string,
 }
+
+export interface ResAuthDto {
+  id: number, 
+  login: string, 
+  accessToken: string,
+  avatar?: string | undefined,
+}

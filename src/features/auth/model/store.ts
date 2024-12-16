@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { LogoutRes, ReqAuthDto, ResAuthDto, UserState } from "./types";
+import { LogoutRes, ReqAuthDto, UserState } from "./types";
 import AuthApi from "../api";
 import { AxiosError } from "axios";
+import { ResAuthDto, mapCurUser } from "../../../entities/user";
 
 export interface MyRejectValue {
   message: string,
@@ -128,7 +129,7 @@ export const userSlice = createSlice({
         state.error = undefined;
       })
       .addCase(registerThunk.fulfilled, (state, action) => {
-        state.user = action.payload;
+        state.user = mapCurUser(action.payload);
         state.loading = false;
         state.error = undefined;
       })
@@ -144,7 +145,7 @@ export const userSlice = createSlice({
         state.error = undefined;
       })
       .addCase(loginThunk.fulfilled, (state, action) => {
-        state.user = action.payload;
+        state.user = mapCurUser(action.payload);
         state.loading = false;
         state.error = undefined;
       })
@@ -160,7 +161,7 @@ export const userSlice = createSlice({
         state.error = undefined;
       })
       .addCase(refreshThunk.fulfilled, (state, action) => {
-        state.user = action.payload;
+        state.user = mapCurUser(action.payload);
         state.loading = false;
         state.error = undefined;
       })
@@ -186,10 +187,6 @@ export const userSlice = createSlice({
       })
   }
 });
-
-// export const AuthActions = {
-//   clearUser: userSlice.actions.clearUser,
-// }
 
 export const authThunks = {
   registerThunk, 

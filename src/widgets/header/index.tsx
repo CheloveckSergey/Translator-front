@@ -1,10 +1,86 @@
-import { FC } from "react";
+import { FC, MouseEvent, useRef, useState } from "react";
 import './styles.scss';
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/store";
-import { authThunks } from "../../features/auth";
 import { SharedButtons } from "../../shared/sharedUi/buttons";
 import { BsList } from "react-icons/bs";
+import { SharedHooks } from "../../shared/lib";
+import { SharedIcons } from "../../shared/sharedUi/icons";
+import { authThunks } from "../../features/auth";
+import { SharedBlocks } from "../../shared/sharedUi/blocks";
+import { SharedUiTypes } from "../../shared/sharedUi/types";
+// import { SharedUiTypes } from "../../shared/sharedUi/types";
+
+const UserMenu: FC = () => {
+
+  const { user, loading, error } = useAppSelector(state => state.user);
+
+  const [shownMenu, setShownMenu] = useState<boolean>(false);
+
+  let img: string;
+  let name: string;
+
+  if (user) {
+    img = user.avatar;
+    name = user.login;
+  } else {
+    img = 'https://sun6-20.userapi.com/impf/dBOoqwbRx7sFh34Cz949747XtxUKNRn7I2j-cQ/jB0PLDkj6_E.jpg?size=320x240&quality=96&keep_aspect_ratio=1&background=000000&sign=70422b56ba05fba94a7f78481b15eb83&type=video_thumb';
+    name = 'Guest';
+  }
+
+  const ref = useRef<any>(null);
+
+  SharedHooks.useClickOutside(ref, () => setShownMenu(false));
+
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const actions: SharedUiTypes.MenuLine[] = [];
+
+  if (user) {
+    actions.push({
+      body: 'Exit',
+      onClick: () => {
+        dispatch(authThunks.logoutThunk({ userId: user.id }))
+        .unwrap()
+        .then(() => {
+          navigate('/registration');
+        });
+      },
+      isLoading: loading,
+      isError: !!error,
+    });
+  } else {
+    actions.push({
+      body: 'Authorization',
+      onClick: () => {
+        navigate('/registration');
+      }
+    })
+  }
+
+  return (
+    <SharedBlocks.MenuContainer
+      main={(
+        <div 
+          className="name-container"
+          onClick={() => {
+            setShownMenu(!shownMenu);
+          }}
+        >
+          <img 
+            src={img}
+            alt="IMG" 
+          />
+          <h3 className="login">
+            {name}
+          </h3>
+        </div>
+      )}
+      actions={actions}
+    />
+  )
+}
 
 interface HProps {
   switchMenu: () => void,
@@ -12,9 +88,6 @@ interface HProps {
 export const Header: FC<HProps> = ({ switchMenu }) => {
 
   const { user } = useAppSelector(state => state.user);
-
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   const name = user?.login ? user.login : 'Guest';
 
@@ -27,7 +100,7 @@ export const Header: FC<HProps> = ({ switchMenu }) => {
           onClick={() => {switchMenu()}}
           className="show-menu"
         />
-        <p>{name}</p>
+        <p>STranslator</p>
       </div>
       <div className="main-links">
         <Link to='/'>
@@ -49,16 +122,7 @@ export const Header: FC<HProps> = ({ switchMenu }) => {
           <h3>Users</h3>
         </Link>
       </div>
-      <h3
-        onClick={() => {
-          if (user) {
-            dispatch(authThunks.logoutThunk({ userId: user?.id }));
-          }
-          navigate('/registration');
-        }}
-      >
-        Exit
-      </h3>
+      <UserMenu />
     </div>
   )
 }

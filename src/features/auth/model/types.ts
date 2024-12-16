@@ -11,12 +11,6 @@ export interface ReqAuthDto {
   password: string,
 }
 
-export interface ResAuthDto {
-  id: number, 
-  login: string, 
-  accessToken: string,
-}
-
 export interface LogoutRes {
   message: string
 }

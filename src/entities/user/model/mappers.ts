@@ -1,4 +1,5 @@
-import { FindFriendDto, FriendDto, IncomeRequestUserDto, OutcomeRequestUserDto, UserDto } from "./dto";
+import { CurUser } from "./curUser";
+import { FindFriendDto, FriendDto, IncomeRequestUserDto, OutcomeRequestUserDto, ResAuthDto, UserDto } from "./dto";
 import { FindFriend } from "./findFriend";
 import { Friend } from "./friend";
 import { IncomeRequestUser } from "./incomeRequest";
@@ -34,4 +35,9 @@ export function mapOutcomeRequest(dto: OutcomeRequestUserDto): OutcomeRequestUse
     user.setIsRejected(true);
   }
   return user
+}
+
+export function mapCurUser(dto: ResAuthDto) {
+  const user = new CurUser(dto.id, dto.login, dto.accessToken, dto.avatar);
+  return user;
 }
