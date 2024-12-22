@@ -11,9 +11,8 @@ const TextPreviewWidget: FC<TPWInterface> = ({ textPreview }) => {
   return (
     <TextUi.TextPreviewUi 
       textPreview={textPreview}
-      actionObjects={{
-
-      }}
+      actionObjects={{}}
+      actions={[]}
     />
   )
 }
@@ -26,7 +25,11 @@ export const LastTextsListWidget: FC = () => {
     textList,
     isLoading,
     isError
-  } = TextsLib.useTextPreviewsList({ order: 'DESC', limit: 3, userId: user!.id });
+  } = TextsLib.useTextPreviewsList({ 
+    userId: user!.id,
+    order: 'DESC', 
+    limit: 3,
+  });
 
   return (
     <div className="last-texts-list-widget">
@@ -35,13 +38,13 @@ export const LastTextsListWidget: FC = () => {
         textList={textList}
         isLoading={isLoading}
         isError={isError}
-        mapTexts={(text: TextPreviewClass, index: number) => <TextPreviewWidget
-          key={index}
-          textPreview={text}
-        />}
-        actionObjects={{
-  
-        }}
+        mapTexts={(text: TextPreviewClass, index: number) => (
+          <TextPreviewWidget
+            key={index}
+            textPreview={text}
+          />
+        )}
+        actionObjects={{}}
         className="last-texts-list"
       />
     </div>

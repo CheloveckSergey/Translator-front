@@ -1,9 +1,7 @@
 .header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   gap: 10px;
-  flex-shrink: 0;
   height: 70px;
   width: 100%;
   padding: 10px 50px;
@@ -14,15 +12,19 @@
     padding: 10px 10px
   }
 
+  @media (max-width: 768px) {
+    justify-content: space-between;
+  }
+
   .left {
     display: flex;
     gap: 10px;
     align-items: center;
 
-    @media (min-width: 768px) {
+    .show-menu-button {
       
-      button.show-menu {
-       display: none; 
+      @media (min-width: 768px) {
+        display: none; 
       }
     }
   }
@@ -33,30 +35,26 @@
     justify-content: center;
     gap: 30px;
 
-    h3 {
-      white-space: nowrap;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .main-links {
+    @media (max-width: 768px) {
       display: none;
     }
-  }
 
-  a {
+    a {
+      font-size: 1.2rem;
 
-    &:hover {
-      text-decoration: underline;
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 
-  .name-container {
+  .user-icon {
     display: flex;
     align-items: center;
     gap: 10px;
     padding: 5px;
     border-radius: 10px;
+    background-color: var(--background-green);
     cursor: pointer;
 
     &:hover {
@@ -68,11 +66,6 @@
       width: 50px;
       object-fit: cover;
       border-radius: 50em;
-    }
-
-    h3 {
-      font-size: 1rem;
-      font-weight: 100;
     }
   }
 }

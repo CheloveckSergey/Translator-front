@@ -54,11 +54,11 @@ p.menu-point {
         background-color: var(--background-dark-lighter);
       }
 
-      p.text {
+      span.name {
         white-space: nowrap;
       }
 
-      .icon {
+      span.icon {
         min-width: 15px;
       }
     }

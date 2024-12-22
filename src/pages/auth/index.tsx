@@ -223,9 +223,11 @@ export const AuthPage: FC = () => {
           onClick={() => setLoginPage(!loginPage)}
           color="green"
         />
-        {loading && <div className="loader">
-          <SharedIcons.Spinner size={50} />
-        </div>}
+        {loading && (
+          <div className="loader">
+            <SharedIcons.Spinner size={50} />
+          </div>
+        )}
       </div>
     </div>
   )

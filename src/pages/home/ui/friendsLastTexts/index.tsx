@@ -13,7 +13,7 @@ export const FriendsLastTexts: FC = () => {
 
   return (
     <div className="friends-last-texts">
-      <h4>Friend's texts</h4>
+      <h3>Friend's texts</h3>
       <TextUi.ShortTextPreviewsList
         texts={texts}
         isLoading={isLoading}

@@ -1,6 +1,7 @@
 import { ChangeEvent, FC, forwardRef } from "react";
 import './styles.scss';
 import { SharedUiHelpers } from "../helpers";
+import { SharedIcons } from "../icons";
 
 interface CIProps {
   type: 'text' | 'textarea' | 'password',
@@ -61,7 +62,28 @@ const CustomSubmit = forwardRef<CSRef, CSProps>(({ body, color, className, disab
   )
 })
 
+type TSRef = HTMLInputElement;
+interface TSProps {
+  body: string,
+  color: 'green' | 'light' | 'dark',
+  className?: string,
+  disabled?: boolean,
+}
+const TextSubmit = forwardRef<TSRef, TSProps>(({ body, color, className, disabled }, CSRef) => {
+
+  return (
+    <input
+      ref={CSRef}
+      type="submit"
+      value={body}
+      disabled={disabled}
+      className={["text-submit", color, className].join(' ')}
+    />
+  )
+})
+
 export const SharedInputs = {
   CustomInput,
   CustomSubmit,
+  TextSubmit,
 }

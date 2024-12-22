@@ -3,6 +3,7 @@ import { useAppSelector } from "../../../../app/store";
 import { useUrlUserId } from "../../lib";
 import { TextPreviewClass, TextUi, TextsLib } from "../../../../entities/text";
 import { TextFeaturesLib, TextFeaturesUi } from "../../../../features/texts";
+import './styles.scss';
 
 interface TPWProps {
   text: TextPreviewClass,
@@ -36,13 +37,14 @@ const TextPreviewWidget: FC<TPWProps> = ({ text, updateTexts }) => {
     updateTexts();
   }
 
-  const isCurUserTexts = urlUserId === user?.id;
+  const isCurUserTextsPage = user && urlUserId === user.id;
+  const isCurUserText = user && user.id === text.author.id;
 
   const actions: React.ReactNode[] = [];
 
   if (user) {
-    if (isCurUserTexts) {
-      if (user?.id === text.author.id) {
+    if (isCurUserTextsPage) {
+      if (isCurUserText) {
         actions.push(
           <TextFeaturesUi.DeleteButton
             textId={text.id}
@@ -58,7 +60,7 @@ const TextPreviewWidget: FC<TPWProps> = ({ text, updateTexts }) => {
         )
       }
     } else {
-      if (text.author.id !== user?.id) {
+      if (isCurUserText) {
         if (text.isCopied) {
           actions.push(
             <TextFeaturesUi.UncopyButton
@@ -84,7 +86,7 @@ const TextPreviewWidget: FC<TPWProps> = ({ text, updateTexts }) => {
       textPreview={text}
       showAnotherAuthor={text.author.id !== urlUserId}
       actionObjects={{
-        ...(urlUserId === user?.id && text.author.id === user?.id && {changeName: {
+        ...(isCurUserTextsPage && isCurUserText && {changeName: {
           mutate: changeNameMutation.mutateAsync,
           isLoading: changeNameMutation.isLoading,
           isError: changeNameMutation.isError
@@ -109,7 +111,11 @@ export const TextListWidget: FC = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = TextsLib.useTextPreviewsList({ limit: 3, order: 'DESC', userId});
+  } = TextsLib.useTextPreviewsList({ 
+    limit: 3, 
+    order: 'DESC', 
+    userId
+  });
 
   const addTextMutation = TextFeaturesLib.useAddText(addText);
 
@@ -127,7 +133,7 @@ export const TextListWidget: FC = () => {
       hasNextPage={hasNextPage}
       isFetchingNextPage={isFetchingNextPage}
       actionObjects={{
-        ...(userId === user?.id && {addText: {
+        ...(user && userId === user?.id && {addText: {
           mutate: addTextMutation.mutateAsync,
           isLoading: addTextMutation.isLoading,
           isError: addTextMutation.isError,
@@ -138,6 +144,7 @@ export const TextListWidget: FC = () => {
         text={text}
         updateTexts={updateTexts}
       />}
+      className="text-list"
     />
   )
 }

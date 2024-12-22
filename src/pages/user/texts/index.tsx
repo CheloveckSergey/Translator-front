@@ -11,9 +11,8 @@ const TextPreviewWidget: FC<TPWProps> = ({ text }) => {
   return (
     <TextUi.TextPreviewUi
       textPreview={text}
-      actionObjects={{
-
-      }}
+      actionObjects={{}}
+      actions={[]}
     />
   )
 }

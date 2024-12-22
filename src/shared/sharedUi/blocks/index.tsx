@@ -71,13 +71,13 @@ const MenuContainer: FC<MCProps> = ({ main, actions }) => {
             className="menu-line"
             onClick={action.onClick}
           >
-            <p className="text">
+            <span className="name">
               {action.body}
-            </p>
-            <div className="icon">
+            </span>
+            <span className="icon">
               {action.isLoading && <SharedIcons.Spinner size={15} />}
               {action.isError && <SharedIcons.Error size={15} />}
-            </div>
+            </span>
           </div>
         ))}
       </div>

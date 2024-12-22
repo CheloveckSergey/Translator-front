@@ -1,15 +1,13 @@
-import { FC, MouseEvent, useRef, useState } from "react";
+import { FC, useRef, useState } from "react";
 import './styles.scss';
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/store";
 import { SharedButtons } from "../../shared/sharedUi/buttons";
 import { BsList } from "react-icons/bs";
 import { SharedHooks } from "../../shared/lib";
-import { SharedIcons } from "../../shared/sharedUi/icons";
 import { authThunks } from "../../features/auth";
 import { SharedBlocks } from "../../shared/sharedUi/blocks";
 import { SharedUiTypes } from "../../shared/sharedUi/types";
-// import { SharedUiTypes } from "../../shared/sharedUi/types";
 
 const UserMenu: FC = () => {
 
@@ -63,18 +61,18 @@ const UserMenu: FC = () => {
     <SharedBlocks.MenuContainer
       main={(
         <div 
-          className="name-container"
+          className="user-icon"
           onClick={() => {
             setShownMenu(!shownMenu);
           }}
         >
           <img 
             src={img}
-            alt="IMG" 
+            alt="IMG"
           />
-          <h3 className="login">
+          <span className="login">
             {name}
-          </h3>
+          </span>
         </div>
       )}
       actions={actions}
@@ -89,40 +87,38 @@ export const Header: FC<HProps> = ({ switchMenu }) => {
 
   const { user } = useAppSelector(state => state.user);
 
-  const name = user?.login ? user.login : 'Guest';
-
   return (
-    <div className="header">
+    <header className="header">
       <div className="left">
         <SharedButtons.TextButton
           body={<BsList size={35} /> }
           color="light"
-          onClick={() => {switchMenu()}}
-          className="show-menu"
+          onClick={switchMenu}
+          className="show-menu-button"
         />
-        <p>STranslator</p>
+        <span className="app-name">STranslator</span>
       </div>
       <div className="main-links">
         <Link to='/'>
-          <h3>Home</h3>
+          Home
         </Link>
         <Link to={'/words/user/' + user?.id}>
-          <h3>Words</h3>
+          Words
         </Link>
         <Link to='/today-list'>
-          <h3>Today List</h3>
+          Today List
         </Link>
         <Link to={'/texts/user/' + user?.id}>
-          <h3>Texts</h3>
+          Texts
         </Link>
         <Link to='/translator'>
-          <h3>Translator</h3>
+          Translator
         </Link>
         <Link to='/users'>
-          <h3>Users</h3>
+          Users
         </Link>
       </div>
       <UserMenu />
-    </div>
+    </header>
   )
 }

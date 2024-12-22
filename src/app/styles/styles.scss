@@ -28,6 +28,23 @@ textarea, button, input {
 
 textarea, input {
   display: block;
+  padding: 5px;
+  border-radius: 5px;
+
+  &.light {
+    color: var(--font-dark);
+    background-color: var(--background-light-darker);
+  }
+
+  &.dark {
+    color: var(--font-light);
+    background-color: var(--background-dark-lighter);
+  }
+}
+
+input[type='submit'] {
+  background-color: inherit;
+  cursor: pointer;
 }
 
 button {
@@ -39,6 +56,18 @@ label {
   display: block;
 }
 
+h1 {
+  font-size: 2.5rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.2rem;
+}
+
 h5 {
   font-size: 1rem;
 }
@@ -46,3 +75,8 @@ h5 {
 p.extra {
   font-size: 0.8rem;
 }
+
+//h1 - главный заголовок
+//h2 - заголовок для подразделов
+//h3 - заголовок для подразделов подразделов, а также для дополнительных подразделов
+//h4 - заголовок для карточек

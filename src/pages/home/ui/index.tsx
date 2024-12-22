@@ -3,7 +3,6 @@ import { WordsListWidget } from "./wordsList";
 import { LastTextsListWidget } from "./textsList";
 import './styles.scss'
 import { FriendsLastTexts } from "./friendsLastTexts";
-import { UserUi } from "../../../entities/user/ui";
 import { UserLib } from "../../../entities/user";
 import { useAppSelector } from "../../../app/store";
 import { AvatarWidget } from "./avatar";
@@ -26,7 +25,9 @@ export const HomePage: FC = () => {
       </div>
       <div className="main-content">
         <h1>Home</h1>
-        <p>Here you can fast reach your last texts and added words</p>
+        <p className="description">
+          Here you can fast reach your last texts and added words
+        </p>
         <LastTextsListWidget />
         <WordsListWidget />
       </div>

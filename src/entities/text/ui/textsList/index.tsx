@@ -1,10 +1,12 @@
-import { ChangeEvent, FC, useState } from "react";
-import { TextPreviewUi } from "../textPreview";
+import { ChangeEvent, FC, FormEvent, useState } from "react";
 import { TextListClass, TextPreviewClass } from "../../model";
 import './styles.scss';
 import { CiSquarePlus } from "react-icons/ci";
 import { SharedButtons } from "../../../../shared/sharedUi/buttons";
 import { SharedUiHelpers } from "../../../../shared/sharedUi/helpers";
+import { SharedInputs } from "../../../../shared/sharedUi/inputs";
+import { SharedIcons } from "../../../../shared/sharedUi/icons";
+import { SceletonTextPreview } from "../textPreview";
 
 
 interface TAProps {
@@ -27,47 +29,59 @@ const TextAdder: FC<TAProps> = ({ mutate, isLoading, isError }) => {
     setEditing(false);
   }
 
+  function submit() {
+    mutate({
+      name,
+      content,
+    }).then(() => {
+      closeEditing();
+    });
+  }
+
   return (
     <div 
       className="text-adder"
     >
       {editing ? (
         <div className="editor">
-          <p>Name</p>
-          <input
-            type="text"
-            className="name"
-            value={name}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
-          />
-          <p>Content</p>
-          <textarea 
-            className="content"
-            value={content}
-            onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setContent(e.target.value)}
-          />
-          <div className="buttons">
-            <SharedButtons.GreenButton 
-              body='Submit'
-              isLoading={isLoading}
-              isError={isError}
-              onClick={() => {
-                mutate({
-                  name,
-                  content,
-                }).then(() => {
-                  closeEditing();
-                });
-              }}
-              className="submit"
+          <form
+            onSubmit={(e: FormEvent) => {
+              e.preventDefault();
+              submit();
+            }}
+          >
+            <label htmlFor="name">Name</label>
+            <input
+              type="text"
+              name="name"
+              value={name}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+              className="name light"
             />
-            <SharedButtons.TextButton
-              onClick={() => closeEditing()}
-              color="green"
-              body="Cancel"
-              className=""
+            <label htmlFor="content">Content</label>
+            <textarea 
+              name="content"
+              value={content}
+              onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setContent(e.target.value)}
+              className="content light"
             />
-          </div>
+            <div className="buttons">
+              <SharedInputs.CustomSubmit
+                body="Submit"
+                color="green"
+              />
+              <SharedButtons.TextButton
+                body="Cancel"
+                onClick={() => closeEditing()}
+                color="green"
+              />
+            </div>
+          </form>
+          {isLoading && (
+            <div className="loader">
+              <SharedIcons.Spinner size={50} />
+            </div>
+          )}
         </div>
       ) : (
         <button 
@@ -85,9 +99,6 @@ interface TLUProps {
   textList: TextListClass,
   isLoading: boolean,
   isError: boolean,
-  fetchNextPage?: () => void,
-  hasNextPage?: boolean | undefined,
-  isFetchingNextPage?: boolean,
   mapTexts: (text: TextPreviewClass, index: number) => React.ReactNode | React.ReactNode[],
   actionObjects: {
     addText?: {
@@ -98,6 +109,9 @@ interface TLUProps {
       isError: boolean,
     }
   },
+  fetchNextPage?: () => void,
+  hasNextPage?: boolean,
+  isFetchingNextPage?: boolean,
   className?: string,
 }
 export const TextListUi: FC<TLUProps> = ({ 
@@ -112,6 +126,16 @@ export const TextListUi: FC<TLUProps> = ({
   className,
 }) => {
 
+  if (isLoading) {
+    return (
+      <div className={["text-list", className].join(' ')}>
+        <div className="text-list-content">
+          {[1,2,3].map((_, index) => <SceletonTextPreview key={index} />)}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className={["text-list", className].join(' ')}>
       <SharedUiHelpers.ErrorLoader
@@ -119,23 +143,28 @@ export const TextListUi: FC<TLUProps> = ({
         isError={isError}
       >
         <div className="text-list-content">
-          {actionObjects.addText && <TextAdder 
-            mutate={actionObjects.addText.mutate}
-            isLoading={actionObjects.addText.isLoading}
-            isError={actionObjects.addText.isError}
-          />}
+          {actionObjects.addText && (
+            <TextAdder 
+              mutate={actionObjects.addText.mutate}
+              isLoading={actionObjects.addText.isLoading}
+              isError={actionObjects.addText.isError}
+            />
+          )}
+          {/* {[1,2,3].map((_, index) => <SceletonTextPreview key={index} />)} */}
           {textList.texts.map(mapTexts)}
         </div>
-        {fetchNextPage && hasNextPage &&  <div className="more-button-wrapper">
-          <SharedButtons.GreenButton
-            body='Load more'
-            isLoading={Boolean(isFetchingNextPage)}
-            isError={false}
-            className="load-more"
-            onClick={() => fetchNextPage()}
-            disabled={!hasNextPage && isFetchingNextPage}
-          />
-        </div>}
+        {fetchNextPage && hasNextPage && (
+          <div className="more-button-wrapper">
+            <SharedButtons.GreenButton
+              body='Load more'
+              onClick={() => fetchNextPage()}
+              isLoading={Boolean(isFetchingNextPage)}
+              isError={isError}
+              disabled={isFetchingNextPage}
+              className="load-more"
+            />
+          </div>
+        )}
       </SharedUiHelpers.ErrorLoader>
     </div>
   )

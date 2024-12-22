@@ -15,7 +15,7 @@
 
   &:nth-child(3n+2) {
 
-    .header {
+    .text-preview-header {
       background-color: var(--background-green);
     }
     
@@ -30,7 +30,7 @@
 
   &:nth-child(3n) {
 
-    .header {
+    .text-preview-header {
       background-color: var(--background-blue);
     }
 
@@ -45,7 +45,7 @@
 
   &:nth-child(3n+1) {
 
-    .header {
+    .text-preview-header {
       background-color: var(--background-red);
     }
 
@@ -58,7 +58,7 @@
     }
   }
 
-  .header {
+  .text-preview-header {
     height: 50px;
     color: var(--font-light);
     
@@ -66,6 +66,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 10px;
       height: 100%;
       width: 100%;
       padding: 10px;
@@ -98,19 +99,28 @@
     }
 
     .name-editor {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      position: relative;
       height: 100%;
       width: 100%;
-      padding: 10px;
+      
+      form {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        gap: 10px;
 
-      input {
-        padding: 5px;
-        color: inherit;
-        background-color: var(--background-light-darker);
-        border-radius: 5px;
-        color: var(--font-dark);
+        input.name {
+          flex-grow: 3;
+        }
+      }
+      
+      .loader {
+        position: absolute;
+        inset: 0;
+        z-index: 5000;
+        display: grid;
+        place-items: center;
+        background: rgba(0, 0, 0, 0.5);
       }
     }
   }
@@ -147,5 +157,43 @@
       font-size: 0.8rem;
       color: var(--font-green);
     }
+  }
+}
+
+.sceleton-text-preview {
+  display: flex;
+  flex-direction: column;
+  height: 400px;
+  padding: 10px;
+  background-color: var(--background-light-darker);
+  border-radius: 10px;
+  overflow: hidden;
+  
+  .header {
+    height: 50px;
+  }
+  
+  .content {
+    flex-grow: 3;
+    margin-top: 10px;
+  }
+
+  .header, .content {
+    background: linear-gradient(90deg, #cbb28a, #635023);
+    background-size: 400% 400%;
+    animation: wave 1s ease infinite;
+    border-radius: 10px;
+  }
+}
+
+@keyframes wave {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
