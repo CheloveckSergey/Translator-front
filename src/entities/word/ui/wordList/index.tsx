@@ -55,7 +55,7 @@ export const WordLine: FC<WListProps> = ({ word, actions }) => {
   return (
     <>
       <div className="word-line">
-        <p className="word field">
+        <span className="word field">
           <SharedButtons.TextButton 
             body={<FaMehRollingEyes size={25} />}
             color="dark"
@@ -63,11 +63,11 @@ export const WordLine: FC<WListProps> = ({ word, actions }) => {
             className="extra-info"
           />
           {word.value}
-        </p>
-        <p className="translation field">{word.translation}</p>
-        <p className="status field">{word.status}</p>
-        <p className="create-date field">{SharedLib.getComfortableDate(word.createDate)}</p>
-        <p className="quantity-date field">{SharedLib.getComfortableDate(word.updateDate)}</p>
+        </span>
+        <span className="translation field">{word.translation}</span>
+        <span className="status field">{word.status}</span>
+        <span className="create-date field">{SharedLib.getComfortableDate(word.createDate)}</span>
+        <span className="quantity-date field">{SharedLib.getComfortableDate(word.updateDate)}</span>
         <div className="actions field">{actions}</div>
       </div>
       <UseModalWindow 
@@ -85,10 +85,10 @@ interface WLProps {
   isLoading: boolean,
   isError: boolean,
   mapWord: (word: WholeWord, index: number) => React.ReactNode,
-  className?: string,
   fetchNextPage?: () => void,
   hasNextPage?: boolean | undefined,
   isFetchingNextPage?: boolean,
+  className?: string,
 }
 export const WordList: FC<WLProps> = ({ 
   words, 
@@ -101,6 +101,15 @@ export const WordList: FC<WLProps> = ({
   isFetchingNextPage
 }) => {
 
+  if (isLoading) {
+    return (
+      <div className="sceleton">
+        <div className="sceleton-header"></div>
+        <div className="sceleton-content"></div>
+      </div>
+    )
+  }
+
   return (
     <div className={["word-list", className].join(' ')}>
       <div className="content">
@@ -109,11 +118,11 @@ export const WordList: FC<WLProps> = ({
           isError={isError}
         >
           <div className="word-list-header">
-            <h4 className="word field">Word</h4>
-            <h4 className="translation field">Translation</h4>
-            <h4 className="status field">Status</h4>
-            <h4 className="create-date field">Create date</h4>
-            <h4 className="quantity-date field">Last iteration</h4>
+            <span className="word field">Word</span>
+            <span className="translation field">Translation</span>
+            <span className="status field">Status</span>
+            <span className="create-date field">Create date</span>
+            <span className="quantity-date field">Last iteration</span>
             <div className="actions field"></div>
           </div>
           {words.map(mapWord)}

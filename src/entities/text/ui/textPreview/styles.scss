@@ -1,3 +1,5 @@
+@import '../../../../shared/styles/styles.scss';
+
 .text-preview {
   display: flex;
   flex-direction: column;
@@ -5,12 +7,96 @@
   border-radius: 10px;
   overflow: hidden;
 
-  &.deleted {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--background-dark);
+  .text-preview-header {
+    height: 50px;
     color: var(--font-light);
+    
+    .basic {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      height: 100%;
+      width: 100%;
+      padding: 10px;
+
+      .name-author {
+        flex-grow: 3;
+        overflow: hidden;
+
+        .name {
+          white-space: nowrap;
+          width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          cursor: pointer;
+    
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+
+        .author {
+          margin-top: 5px;
+        }
+      }
+
+      .buttons {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+    }
+
+    .name-editor {
+      position: relative;
+      height: 100%;
+      width: 100%;
+      
+      form {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        gap: 10px;
+
+        input.name {
+          flex-grow: 3;
+        }
+      }
+    }
+  }
+
+  .content {
+    position: relative;
+    flex-grow: 3;
+    padding: 10px;
+    line-height: 1.5rem;
+    overflow: hidden;
+    
+    p.text {
+      position: relative;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    p.text:after {
+      content: "";
+      text-align: right;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 100%;
+      height: 2rem;
+      pointer-events: none;
+    }
+
+    span.date {
+      position: absolute;
+      bottom: 0px;
+      right: 5px;
+      color: var(--font-green);
+    }
   }
 
   &:nth-child(3n+2) {
@@ -58,105 +144,12 @@
     }
   }
 
-  .text-preview-header {
-    height: 50px;
+  &.deleted {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--background-dark);
     color: var(--font-light);
-    
-    .basic {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      height: 100%;
-      width: 100%;
-      padding: 10px;
-
-      .name-author {
-        flex-grow: 3;
-        overflow: hidden;
-
-        .name {
-          white-space: nowrap;
-          width: 100%;
-          cursor: pointer;
-          overflow: hidden;
-          text-overflow: ellipsis;
-    
-          &:hover {
-            text-decoration: underline;
-          }
-        }
-
-        .author {
-          margin-top: 5px;
-        }
-      }
-
-      .buttons {
-        display: flex;
-        gap: 10px;
-      }
-    }
-
-    .name-editor {
-      position: relative;
-      height: 100%;
-      width: 100%;
-      
-      form {
-        display: flex;
-        align-items: center;
-        padding: 10px;
-        gap: 10px;
-
-        input.name {
-          flex-grow: 3;
-        }
-      }
-      
-      .loader {
-        position: absolute;
-        inset: 0;
-        z-index: 5000;
-        display: grid;
-        place-items: center;
-        background: rgba(0, 0, 0, 0.5);
-      }
-    }
-  }
-
-  .content {
-    position: relative;
-    flex-grow: 3;
-    padding: 10px;
-    line-height: 1.5rem;
-    overflow: hidden;
-    
-    p.text {
-      position: relative;
-      height: 100%;
-      width: 100%;
-      overflow: hidden;
-    }
-
-    p.text:after {
-      content: "";
-      text-align: right;
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      width: 100%;
-      height: 2rem;
-      pointer-events: none;
-    }
-
-    p.date {
-      position: absolute;
-      bottom: 0px;
-      right: 5px;
-      font-size: 0.8rem;
-      color: var(--font-green);
-    }
   }
 }
 
@@ -183,17 +176,5 @@
     background-size: 400% 400%;
     animation: wave 1s ease infinite;
     border-radius: 10px;
-  }
-}
-
-@keyframes wave {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
   }
 }

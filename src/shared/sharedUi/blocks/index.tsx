@@ -85,8 +85,27 @@ const MenuContainer: FC<MCProps> = ({ main, actions }) => {
   )
 }
 
+interface BLProps {
+  isLoading: boolean,
+  iconSize?: number,
+  className?: string,
+}
+const BlackoutLoader: FC<BLProps> = ({ isLoading, iconSize = 25, className }) => {
+
+  return (
+    <>
+      {isLoading && (
+        <div className={["blackout-loader", className].join(' ')}>
+          <SharedIcons.Spinner size={iconSize} />
+        </div>
+      )}
+    </>
+  )
+}
+
 export const SharedBlocks = {
   MenuPoint,
   InfoLine,
   MenuContainer,
+  BlackoutLoader,
 }

@@ -42,14 +42,9 @@ textarea, input {
   }
 }
 
-input[type='submit'] {
-  background-color: inherit;
-  cursor: pointer;
-}
-
-button {
-  cursor: pointer;
+input[type='submit'], button {
   background: none;
+  cursor: pointer;
 }
 
 label {
@@ -72,7 +67,7 @@ h5 {
   font-size: 1rem;
 }
 
-p.extra {
+.extra {
   font-size: 0.8rem;
 }
 

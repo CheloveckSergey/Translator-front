@@ -64,3 +64,12 @@ p.menu-point {
     }
   }
 }
+
+.blackout-loader {
+  position: absolute;
+  inset: 0;
+  z-index: 5000;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.5);
+}

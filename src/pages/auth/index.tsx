@@ -7,6 +7,7 @@ import { SharedButtons } from "../../shared/sharedUi/buttons";
 import { SharedInputs } from "../../shared/sharedUi/inputs";
 import { SharedUiHelpers } from "../../shared/sharedUi/helpers";
 import { SharedIcons } from "../../shared/sharedUi/icons";
+import { SharedBlocks } from "../../shared/sharedUi/blocks";
 
 type PasswordReliability = 'low' | 'normal' | 'high';
 
@@ -223,11 +224,10 @@ export const AuthPage: FC = () => {
           onClick={() => setLoginPage(!loginPage)}
           color="green"
         />
-        {loading && (
-          <div className="loader">
-            <SharedIcons.Spinner size={50} />
-          </div>
-        )}
+        <SharedBlocks.BlackoutLoader
+          isLoading={loading}
+          iconSize={50}
+        />
       </div>
     </div>
   )

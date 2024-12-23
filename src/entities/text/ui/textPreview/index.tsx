@@ -9,6 +9,7 @@ import { SharedButtons } from "../../../../shared/sharedUi/buttons";
 import { useNavigate } from "react-router-dom";
 import { SharedLib } from "../../../../shared/lib";
 import { SharedInputs } from "../../../../shared/sharedUi/inputs";
+import { SharedBlocks } from "../../../../shared/sharedUi/blocks";
 
 interface NEProps {
   textPreview: TextPreviewClass,
@@ -56,11 +57,9 @@ const NameEditor: FC<NEProps> = ({ textPreview, changeName, close }) => {
           color="light"
         />
       </form>
-      {changeName.isLoading && (
-        <div className="loader">
-          <SharedIcons.Spinner size={30} />
-        </div>
-      )}
+      <SharedBlocks.BlackoutLoader
+        isLoading={changeName.isLoading}
+      />
     </div>
   )
 }
@@ -121,9 +120,9 @@ export const TextPreviewUi: FC<TPUProps> = ({
                 {textPreview.name}
               </h4>
               {showAnotherAuthor && (
-                <p className="author extra">
+                <span className="author extra">
                   By {textPreview.author.login}
-                </p>
+                </span>
               )}
             </div>
             <div className="buttons">
@@ -144,9 +143,9 @@ export const TextPreviewUi: FC<TPUProps> = ({
         <p className="text">
           {textPreview.content}
         </p>
-        <p className="date">
+        <span className="date extra">
           {SharedLib.getComfortableDate(textPreview.createDate)}
-        </p>
+        </span>
       </div>
     </div>
   )
