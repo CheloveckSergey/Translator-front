@@ -5,11 +5,8 @@ import { MyRejectValue, authThunks } from "../../features/auth/model/store";
 import { useNavigate } from "react-router-dom";
 import { SharedButtons } from "../../shared/sharedUi/buttons";
 import { SharedInputs } from "../../shared/sharedUi/inputs";
-import { SharedUiHelpers } from "../../shared/sharedUi/helpers";
-import { SharedIcons } from "../../shared/sharedUi/icons";
 import { SharedBlocks } from "../../shared/sharedUi/blocks";
-
-type PasswordReliability = 'low' | 'normal' | 'high';
+import { AuthHelpers } from "../../features/auth";
 
 const RegistrationBlock: FC = () => {
 
@@ -24,48 +21,20 @@ const RegistrationBlock: FC = () => {
   function registration() {
     dispatch(authThunks.registerThunk({login, password}))
     .unwrap()
-    .then((data) => {
+    .then(() => {
       navigate('/home');
-    } )
+    })
     .catch((error: MyRejectValue) => {
-      // if (error.message) {
-      //   setEMessage(error.message);
-      // }
-      console.log(error);
+      if (error.message) {
+        setErrorMessage(error.message);
+      }
     });
   }
 
-  function validation(
-    login: string, 
-    password: string, 
-    confirmPassword: string, 
-    setEMessage: React.Dispatch<React.SetStateAction<string>>
-  ): boolean {
-    if (login.length < 5 || login.length > 15) {
-      setEMessage('Логин должен быть не меньше 5 и небольше 15 символов');
-      return false;
-    }
-    if (password.length < 7 || password.length > 15) {
-      setEMessage('Пароль должен быть не меньше 7 и небольше 15 символов');
-      return false;
-    }
-    if (password !== confirmPassword) {
-      setEMessage('Пароли должны совпадать');
-      return false;
-    }
-    return true;
-  }
-
-  function getPasswordReliability(password: string): PasswordReliability | undefined {
-    if (password.length === 0) {
-      return undefined
-    }
-    if ((password.length < 7) || (password.length > 15)) {
-      return 'low';
-    } else if ((password.length >=7) && (password.length <=10)) {
-      return 'normal';
-    } else {
-      return 'high';
+  function submit(e: FormEvent) {
+    e.preventDefault();
+    if (AuthHelpers.validation(login, password, confirmPassword, setErrorMessage)) {
+      registration();
     }
   }
 
@@ -74,53 +43,48 @@ const RegistrationBlock: FC = () => {
       <h1>Registration</h1>
       <div className="login-password">
         <form
-          onSubmit={(e: FormEvent) => {
-            e.preventDefault();
-            if (validation(login, password, confirmPassword, setErrorMessage)) {
-              registration();
-            }
-          }}
+          onSubmit={submit}
         >
           <div className="input-block">
             <label htmlFor="login">Login</label>
             <input
-              className="login"
               type="text"
               name="login"
               onChange={(e: ChangeEvent<HTMLInputElement>) => {
                 setLogin(e.target.value);
                 setErrorMessage('');
               }}
+              className="login"
             />
           </div>
           <div className="input-block">
             <label htmlFor="password">Password</label>
             <input
-              className={['password', getPasswordReliability(password)].join(' ')}
               type="password" 
               name="password"
               onChange={(e: ChangeEvent<HTMLInputElement>) => { 
                 setPassword(e.target.value);
                 setErrorMessage('');
               }}
+              className={['password', AuthHelpers.getPasswordReliability(password)].join(' ')}
             />
           </div>
           <div className="input-block">
             <label htmlFor="confirm-password">Confirm password</label>
             <input
-              className="confirm-password"
               type="password" 
               name="confirm-password"
               onChange={(e: ChangeEvent<HTMLInputElement>) => { 
                 setConfirmPassword(e.target.value);
                 setErrorMessage('');
               }}
+              className="confirm-password"
             />
           </div>
           <SharedInputs.CustomSubmit
-            className="submit"
-            body={'Registration'}
+            body='Registration'
             color="green"
+            className="submit"
           />
         </form>
         <div className="error-message">{errorMessage}</div>
@@ -130,7 +94,6 @@ const RegistrationBlock: FC = () => {
 }
 
 const LoginBlock: FC = () => {
-  const { loading, error } = useAppSelector(state => state.user);
 
   const [login, setLogin] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -145,7 +108,6 @@ const LoginBlock: FC = () => {
     if (ref.current) {
       ref.current.focus();
     }
-    
   }, []);
 
   function log() {
@@ -159,20 +121,21 @@ const LoginBlock: FC = () => {
     });
   }
 
+  function submit(e: FormEvent) {
+    e.preventDefault();
+    log();
+  }
+
   return (
     <>
       <h1>Login</h1>
       <div className="login-password">
         <form
-          onSubmit={(e: FormEvent) => {
-            e.preventDefault();
-            log();
-          }}
+          onSubmit={submit}
         >
           <div className="input-block">
             <label htmlFor="login">Login</label>
             <input
-              className="login"
               type="text"
               name="login"
               autoComplete="username"
@@ -180,12 +143,12 @@ const LoginBlock: FC = () => {
                 setLogin(e.target.value);
                 setErrorMessage('');
               }}
+              className="login"
             />
           </div>
           <div className="input-block">
             <label htmlFor="password">Password</label>
             <input
-              className="password"
               type="password" 
               name="password"
               autoComplete="current-password"
@@ -193,14 +156,14 @@ const LoginBlock: FC = () => {
                 setPassword(e.target.value);
                 setErrorMessage('');
               }}
+              className="password"
             />
           </div>
           <SharedInputs.CustomSubmit
-            className="submit"
             body={'Login'}
             color="green"
             ref={ref}
-            disabled={loading || !!error}
+            className="submit"
           />
         </form>
         <div className="error-message">{errorMessage}</div>
