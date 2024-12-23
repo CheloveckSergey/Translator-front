@@ -104,9 +104,44 @@ const TextActionButton: FC<TABProps> = ({ body, color, className, isLoading, isE
   )
 }
 
+interface LMBProps {
+  fetchNextPage: () => void,
+  hasNextPage: boolean,
+  isFetchingNextPage: boolean,
+  isError: boolean,
+  blockClassName?: string,
+  buttonClassName?: string,
+}
+const LoadMoreButton: FC<LMBProps> = ({ 
+  fetchNextPage, 
+  hasNextPage, 
+  isFetchingNextPage, 
+  isError,
+  blockClassName,
+  buttonClassName,
+}) => {
+  return (
+    <>
+      {fetchNextPage && hasNextPage && (
+        <div className={["load-more-wrapper", blockClassName].join(' ')}>
+          <SharedButtons.GreenButton
+            body='Load more'
+            onClick={() => fetchNextPage()}
+            isLoading={Boolean(isFetchingNextPage)}
+            isError={isError}
+            disabled={isFetchingNextPage}
+            className={["load-more", buttonClassName].join(' ')}
+          />
+        </div>
+      )}
+    </>
+  )
+}
+
 export const SharedButtons = {
   GreenButton,
   TextButton,
   TextActionButton,
   SquareButton,
+  LoadMoreButton,
 }

@@ -128,16 +128,12 @@ export const WordList: FC<WLProps> = ({
           {words.map(mapWord)}
         </SharedUiHelpers.ErrorLoader>
       </div>
-      {fetchNextPage && hasNextPage &&  <div className="more-button-wrapper">
-        <SharedButtons.GreenButton
-          body='Load more'
-          isLoading={Boolean(isFetchingNextPage)}
-          isError={false}
-          className="load-more"
-          onClick={() => fetchNextPage()}
-          disabled={isFetchingNextPage}
-        />
-      </div>}
+      <SharedButtons.LoadMoreButton
+        fetchNextPage={fetchNextPage as () => void}
+        isFetchingNextPage={!!isFetchingNextPage}
+        hasNextPage={!!hasNextPage}
+        isError={isError}
+      />
     </div>
   )
 }

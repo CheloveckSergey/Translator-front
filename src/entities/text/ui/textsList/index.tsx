@@ -153,18 +153,12 @@ export const TextListUi: FC<TLUProps> = ({
           {/* {[1,2,3].map((_, index) => <SceletonTextPreview key={index} />)} */}
           {textList.texts.map(mapTexts)}
         </div>
-        {fetchNextPage && hasNextPage && (
-          <div className="more-button-wrapper">
-            <SharedButtons.GreenButton
-              body='Load more'
-              onClick={() => fetchNextPage()}
-              isLoading={Boolean(isFetchingNextPage)}
-              isError={isError}
-              disabled={isFetchingNextPage}
-              className="load-more"
-            />
-          </div>
-        )}
+        <SharedButtons.LoadMoreButton
+          fetchNextPage={fetchNextPage as () => void}
+          isFetchingNextPage={!!isFetchingNextPage}
+          hasNextPage={!!hasNextPage}
+          isError={isError}
+        />
       </SharedUiHelpers.ErrorLoader>
     </div>
   )
