@@ -32,6 +32,7 @@ export const AvatarWidget: FC<AWProps> = ({ user, isLoading, isError, updateStat
         isLoading: updateLoading,
         isError: updateError,
       }}
+      actions={[]}
     />
   )
 }

@@ -5,6 +5,82 @@ import { SharedUiHelpers } from "../../../shared/sharedUi/helpers";
 import { FriendsFeaturesUi } from "../../../features/friendship";
 import './styles.scss';
 
+interface FRBProps {
+  user: User,
+  meUserId: number,
+  updateState: () => void,
+}
+const FriendRequestBlock: FC<FRBProps> = ({ user, meUserId, updateState }) => {
+
+  function acceptRequest() {
+    user.setIsFriend(true);
+    updateState();
+  }
+
+  function cancelRequest() {
+    user.setIsSentRequest(undefined);
+    updateState();
+  }
+
+  function sendRequest() {
+    user.setIsSentRequest('sentTo');
+    updateState();
+  }
+
+  function deleteFriend() {
+    user.setIsFriend(false);
+    user.setIsSentRequest(undefined);
+    updateState();
+  }
+
+  if (user.isFriend) {
+    return (
+      <div className="request-block">
+        <p>Friend of yours</p>
+        <FriendsFeaturesUi.DeleteFriendBlock
+          fromUserId={user.id}
+          toUserId={meUserId}
+          deleteFriend={deleteFriend}
+        />
+      </div>
+    )
+  }
+  
+  if (user.isSentRequest === 'sentFrom') {
+    return (
+      <div className="request-block">
+        <p>Sent you request</p>
+        <FriendsFeaturesUi.AcceptRequestBlock
+          fromUserId={user.id}
+          toUserId={meUserId}
+          acceptRequest={acceptRequest}
+        />
+      </div>
+    )
+  }
+  
+  if (user.isSentRequest === 'sentTo') {
+    return (
+      <div className="request-block">
+        <p>You've sent request</p>
+        <FriendsFeaturesUi.CancelRequestBlock
+          fromUserId={meUserId}
+          toUserId={user.id}
+          cancelRequest={cancelRequest}
+        />
+      </div>
+    )
+  }
+
+  return (
+    <FriendsFeaturesUi.SendRequestBlock
+      fromUserId={meUserId}
+      toUserId={user.id}
+      sendRequest={sendRequest}
+    />
+  )
+}
+
 interface HProps {
   user: User | undefined,
   isLoading: boolean,
@@ -15,27 +91,6 @@ export const Header: FC<HProps> = ({ user, isLoading, isError, updateState }) =>
 
   const { user: meUser } = useAppSelector(state => state.user);
 
-  function acceptRequest() {
-    user?.setIsFriend(true);
-    updateState();
-  }
-
-  function cancelRequest() {
-    user?.setIsSentRequest(undefined);
-    updateState();
-  }
-
-  function sendRequest() {
-    user?.setIsSentRequest('sentTo');
-    updateState();
-  }
-
-  function deleteFriend() {
-    user?.setIsFriend(false);
-    user?.setIsSentRequest(undefined);
-    updateState();
-  }
-
   return (
     <div className="user-header">
       <SharedUiHelpers.ErrorLoader
@@ -44,42 +99,14 @@ export const Header: FC<HProps> = ({ user, isLoading, isError, updateState }) =>
         iconSize={50}
         isEmpty={!user}
         emptyHolder='No User'
-
       >
         {user && <>
-          <h4 className="login">{user.login}</h4>
-          {user.isFriend ? (
-            <div className="request-block">
-              <p>Friend of yours</p>
-              <FriendsFeaturesUi.DeleteFriendBlock
-                fromUserId={user.id}
-                toUserId={meUser!.id}
-                deleteFriend={deleteFriend}
-              />
-            </div>
-          ) : user.isSentRequest === 'sentFrom' ? (
-            <div className="request-block">
-              <p>Sent you request</p>
-              <FriendsFeaturesUi.AcceptRequestBlock
-                fromUserId={user.id}
-                toUserId={meUser!.id}
-                acceptRequest={acceptRequest}
-              />
-            </div>
-          ) : user.isSentRequest === 'sentTo' ? (
-            <div className="request-block">
-              <p>You've sent request</p>
-              <FriendsFeaturesUi.CancelRequestBlock
-                fromUserId={meUser!.id}
-                toUserId={user.id}
-                cancelRequest={cancelRequest}
-              />
-            </div>
-          ) : !user.isSentRequest && (
-            <FriendsFeaturesUi.SendRequestBlock
-              fromUserId={meUser!.id}
-              toUserId={user.id}
-              sendRequest={sendRequest}
+          <span className="login">{user.login}</span>
+          {meUser && (
+            <FriendRequestBlock 
+              user={user}
+              meUserId={meUser.id}
+              updateState={updateState}
             />
           )}
         </>}

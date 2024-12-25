@@ -3,7 +3,7 @@ import { SharedIcons } from "../icons";
 import './styles.scss';
 import { SharedUiHelpers } from "../helpers";
 
-type ButtonColor = 'light' | 'dark' | 'green' | 'grey';
+export type ButtonColor = 'light' | 'dark' | 'green' | 'grey';
 
 interface GBProps {
   body: React.ReactNode | React.ReactNode[] | string,

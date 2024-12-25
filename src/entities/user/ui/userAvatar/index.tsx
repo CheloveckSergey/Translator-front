@@ -1,10 +1,11 @@
 import { ChangeEvent, FC, useState } from "react";
-import { SharedButtons } from "../../../../shared/sharedUi/buttons";
+import { ButtonColor, SharedButtons } from "../../../../shared/sharedUi/buttons";
 import { UseModalWindow } from "../../../../widgets/modalWindow";
 import { SharedLib } from "../../../../shared/lib";
 import { SharedUiHelpers } from "../../../../shared/sharedUi/helpers";
 import './styles.scss';
 import { User } from "../../model";
+import { useAppSelector } from "../../../../app/store";
 
 interface UAWProps {
   updateAvatarObject?: {
@@ -81,28 +82,38 @@ interface UAProps {
     mutate: (file: File) => Promise<any>,
     isLoading: boolean,
     isError: boolean,
-  }
+  },
+  actions: React.ReactNode[],
+  className?: string,
 }
-export const UserAvatar: FC<UAProps> = ({ user, isLoading, isError, updateAvatarObject }) => {
+export const UserAvatar: FC<UAProps> = ({ user, isLoading, isError, updateAvatarObject, actions, className }) => {
+
+  const { user: meUser } = useAppSelector(state => state.user);
 
   const [showUAWindow, setShowUAWindow] = useState<boolean>(false);
 
   return (
-    <div className="user-avatar">
+    <div className={["user-avatar", className].join(' ')}>
       <SharedUiHelpers.ErrorLoader
         isLoading={isLoading}
         isError={isError}
       >
         {user && <>
           <div className="avatar">
-            <img src={user.avatar} alt="IMG" />
-            <SharedButtons.GreenButton 
-              body={'Change'}
-              isLoading={false}
-              isError={false}
-              onClick={() => setShowUAWindow(true)}
-              className="change-avatar-button"
+            <img 
+              src={user.avatar} 
+              alt="IMG" 
             />
+            {updateAvatarObject && (
+              <SharedButtons.GreenButton 
+                body={'Change avatar'}
+                isLoading={false}
+                isError={false}
+                onClick={() => setShowUAWindow(true)}
+                className="change-avatar-button"
+              />
+            )}
+            {actions}
           </div>
           <div className="info">
             <InfoLine 

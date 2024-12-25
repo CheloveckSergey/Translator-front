@@ -7,7 +7,7 @@ export interface Users1Query extends UsualQuery {
 }
 
 export interface UserQuery {
-  meUserId?: number,
+  meUserId?: number | undefined,
   wordsNumber?: boolean,
 }
 
