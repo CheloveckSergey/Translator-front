@@ -1,4 +1,4 @@
-import { FriendRequestStatus } from "./types";
+import { FriendRequestStatus } from "./types/types";
 
 export type SentRequestStatus = 'sentTo' | 'sentFrom' | undefined;
 
@@ -11,12 +11,12 @@ export interface UserDto {
   wordsNumber?: number;
 }
 
-export interface FindFriendDto {
+export interface FriendDto {
   id: number;
   login: string;
 }
 
-export interface FriendDto {
+export interface PotentialFriendDto {
   id: number;
   login: string;
 }

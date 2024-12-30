@@ -1,43 +1,15 @@
 import api from "../../../shared/api";
 import { UsualQuery } from "../../../shared/types";
-import { FriendDto, IncomeRequestUserDto, OutcomeRequestUserDto } from "../model";
+import { FriendDto, IncomeRequestUserDto, OutcomeRequestUserDto, PotentialFriendDto } from "../model";
 
-interface GetFUsersQuery extends UsualQuery {
-  friendsUserId?: number,
-  unfriendsUserId?: number,
-}
-
-export interface GetFriendsQuery extends UsualQuery {
+export interface UsersQuery extends UsualQuery {
   userId: number,
-}
-
-export interface GetFindFriendsQuery extends UsualQuery {
-  userId: number,
-}
-
-interface GetRequestsQuery extends UsualQuery {
-  userId: number,
-  type: 'from' | 'to',
-}
-
-export interface GetIncomeRequestsQuery {
-  limit?: number,
-  offset?: number,
-  userId: number,
-  order: 'ASC' | 'DESC',
-}
-
-export interface GetOutcomeRequestsQuery {
-  limit?: number,
-  offset?: number,
-  userId: number,
-  order: 'ASC' | 'DESC',
 }
 
 const INITIAL_URL = '/friends';
 
 export class FriendsApi {
-  static async getFriends(query: GetFriendsQuery) {
+  static async getFriends(query: UsersQuery) {
     const response = await api.get<FriendDto[]>(
       INITIAL_URL + '/getFriends',
       {
@@ -46,8 +18,9 @@ export class FriendsApi {
     );
     return response.data;
   }
-  static async getFindFriends(query: GetFindFriendsQuery) {
-    const response = await api.get<FriendDto[]>(
+
+  static async getFindFriends(query: UsersQuery) {
+    const response = await api.get<PotentialFriendDto[]>(
       INITIAL_URL + '/getFindFriends',
       {
         params: query,
@@ -56,21 +29,7 @@ export class FriendsApi {
     return response.data;
   }
 
-  static async getFUsers(query: GetFUsersQuery) {
-    const response = await api.get(
-      INITIAL_URL + '/getFUsers',
-      {
-        params: query,
-      }
-    );
-    return response.data; 
-  }
-
-  static async getRequests(query: GetRequestsQuery) {
-    
-  }
-
-  static async getIncomeRequests(query: GetIncomeRequestsQuery) {
+  static async getIncomeRequests(query: UsersQuery) {
     const response = await api.get<IncomeRequestUserDto[]>(
       INITIAL_URL + '/getIncomeRequests',
       {
@@ -80,7 +39,7 @@ export class FriendsApi {
     return response.data; 
   }
 
-  static async getOutcomeRequests(query: GetOutcomeRequestsQuery) {
+  static async getOutcomeRequests(query: UsersQuery) {
     const response = await api.get<OutcomeRequestUserDto[]>(
       INITIAL_URL + '/getOutcomeRequests',
       {
@@ -88,17 +47,6 @@ export class FriendsApi {
       }
     );
     return response.data; 
-  }
-
-  static async cancelRequest(fromUserId: number, toUserId: number) {
-    const response = await api.post(
-      INITIAL_URL + '/cancelRequest',
-      {
-        fromUserId,
-        toUserId,
-      }
-    );
-    return response.data;
   }
 
   static async sendRequest(fromUserId: number, toUserId: number) {
@@ -112,9 +60,9 @@ export class FriendsApi {
     return response.data;
   }
 
-  static async rejectRequest(fromUserId: number, toUserId: number) {
+  static async cancelRequest(fromUserId: number, toUserId: number) {
     const response = await api.post(
-      INITIAL_URL + '/rejectRequest',
+      INITIAL_URL + '/cancelRequest',
       {
         fromUserId,
         toUserId,
@@ -126,6 +74,17 @@ export class FriendsApi {
   static async acceptRequest(fromUserId: number, toUserId: number) {
     const response = await api.post(
       INITIAL_URL + '/acceptRequest',
+      {
+        fromUserId,
+        toUserId,
+      }
+    );
+    return response.data;
+  }
+
+  static async rejectRequest(fromUserId: number, toUserId: number) {
+    const response = await api.post(
+      INITIAL_URL + '/rejectRequest',
       {
         fromUserId,
         toUserId,

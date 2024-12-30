@@ -1,4 +1,4 @@
-import { SentRequestStatus } from "./dto";
+import { SentRequestStatus } from "..";
 
 export class User {
   id: number;

@@ -2,7 +2,7 @@ import { FC } from "react";
 import { User } from "../../model";
 import './styles.scss';
 import { SharedButtons } from "../../../../shared/sharedUi/buttons";
-import { OnlyUser } from "../../model/onlyUser";
+import { OnlyUser } from "../../model/types/onlyUser";
 import { useNavigate } from "react-router-dom";
 
 interface UCProps<T extends OnlyUser> {

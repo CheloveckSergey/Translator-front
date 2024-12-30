@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { User } from "../../model";
 import { SharedUiHelpers } from "../../../../shared/sharedUi/helpers";
-import { OnlyUser } from "../../model/onlyUser";
+import { OnlyUser } from "../../model/types/onlyUser";
 import './styles.scss';
 
 interface ULProps<T extends OnlyUser> {

@@ -1,44 +1,46 @@
-import { FC } from "react";
-import { FindFriend } from "../../../../entities/user/model/findFriend";
-import { useAppSelector } from "../../../../app/store";
-import { UserUi } from "../../../../entities/user/ui";
-import { FriendsFeaturesUi } from "../../../../features/friendship";
+import { FC } from 'react';
+import { Friend } from '../../../../entities/user';
 import './styles.scss'
-import { UserLib } from "../../../../entities/user";
+import { useAppSelector } from '../../../../app/store';
+import { UserUi } from '../../../../entities/user/ui';
+import { FriendsFeaturesUi } from '../../../../features/friendship';
+import { UserLib } from '../../../../entities/user';
 
-interface UCWProps {
-  user: FindFriend,
+interface FCWProps {
+  user: Friend,
   updateState: () => void,
 }
-const FindFriendCardWidget: FC<UCWProps> = ({ user, updateState }) => {
+const FriendCardWidget: FC<FCWProps> = ({ user, updateState }) => {
 
   const { user: meUser } = useAppSelector(state => state.user);
 
-  function sendRequest() {
-    user.setIsSentRequest(true);
-    updateState();
+  function deleteFriend() {
+    user.setIsDeleted(true);
+    updateState()
   }
 
-  function cancelRequest() {
-    user.setIsSentRequest(false);
-    updateState();
+  function cancelDeleteFriend() {
+    user.setIsDeleted(false);
+    updateState()
   }
+
+  // const actions
 
   return (
-    <UserUi.UserCard<FindFriend>
+    <UserUi.UserCard<Friend>
       user={user}
       actions={[
-        (user.isSentRequest ? (
-          <FriendsFeaturesUi.CancelRequestBlock
+        (user.isDeleted ? (
+          <FriendsFeaturesUi.CancelDeleteBlock
             fromUserId={meUser!.id}
             toUserId={user.id}
-            cancelRequest={cancelRequest}
+            cancelDeleteFriend={cancelDeleteFriend}
           />
         ) : (
-          <FriendsFeaturesUi.SendRequestBlock
+          <FriendsFeaturesUi.DeleteFriendBlock
             fromUserId={meUser!.id}
             toUserId={user.id}
-            sendRequest={sendRequest}
+            deleteFriend={deleteFriend}
           />
         ))
       ]}
@@ -46,7 +48,7 @@ const FindFriendCardWidget: FC<UCWProps> = ({ user, updateState }) => {
   )
 }
 
-export const FindFriendsListWidget: FC = () => {
+export const FriendsListWidget: FC = () => {
 
   const { user } = useAppSelector(state => state.user);
 
@@ -57,15 +59,15 @@ export const FindFriendsListWidget: FC = () => {
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
-    updateState
-  } = UserLib.useFindFriends({ limit: 5, order: 'DESC', userId: user!.id });
+    updateState,
+  } = UserLib.useFriends({ limit: 5, order: 'DESC', userId: user!.id });
 
   return (
-    <UserUi.UserList<FindFriend>
+    <UserUi.UserList<Friend>
       users={users}
       isLoading={isLoading}
       isError={isError}
-      mapUser={(user: FindFriend, index: number) => <FindFriendCardWidget 
+      mapUser={(user: Friend, index: number) => <FriendCardWidget 
         key={index}
         user={user}
         updateState={updateState}

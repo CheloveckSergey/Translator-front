@@ -1,5 +1,5 @@
-import { FC, useState } from "react";
-import { IncomeRequestUser } from "../../../../entities/user/model/incomeRequest";
+import React, { FC } from "react";
+import { IncomeRequestUser } from "../../../../entities/user";
 import { UserUi } from "../../../../entities/user/ui";
 import { useAppSelector } from "../../../../app/store";
 import { FriendsFeaturesUi } from "../../../../features/friendship";
@@ -7,7 +7,7 @@ import { UserLib } from "../../../../entities/user";
 import './styles.scss';
 import { SharedBlocks } from "../../../../shared/sharedUi/blocks";
 import { UsersPageLib } from "../../lib";
-import { OutcomeRequestUser } from "../../../../entities/user/model/outcomeRequest";
+import { OutcomeRequestUser } from "../../../../entities/user";
 
 interface IRWProps {
   user: IncomeRequestUser,
@@ -18,40 +18,48 @@ const IncomeRequestWidget: FC<IRWProps> = ({ user, updateState }) => {
   const { user: meUser } = useAppSelector(state => state.user);
 
   function acceptRequest() {
-    user.setIsAccepted(true);
+    user.setStatus('accepted');
     updateState();
   }
 
   function rejectRequest() {
-    user.setIsRejected(true);
+    user.setStatus('rejected');
     updateState();
+  }
+
+  const actions: React.ReactNode[] = [];
+
+  if (user.status === 'accepted') {
+    actions.push((
+      <p>Accepted</p>
+    ))
+  } else {
+    if (user.status === 'rejected') {
+      actions.push((
+        <p>User has been rejected</p>
+      ));
+    } else {
+      actions.push((
+        <FriendsFeaturesUi.RejectRequestButton
+          fromUserId={user.id}
+          toUserId={(meUser!.id)}
+          rejectRequest={rejectRequest}
+        />
+      ))
+    }
+    actions.push((
+      <FriendsFeaturesUi.AcceptRequestBlock
+        fromUserId={user.id}
+        toUserId={meUser!.id}
+        acceptRequest={acceptRequest}
+      />
+    ))
   }
 
   return (
     <UserUi.UserCard<IncomeRequestUser>
       user={user}
-      actions={[
-        (user.isAccepted ? (
-          <p>Accepted</p>
-        ) : (
-          <>
-            {user.isRejected ? (
-              <p>User has been rejected</p>
-            ) : (
-              <FriendsFeaturesUi.RejectRequestButton
-                fromUserId={user.id}
-                toUserId={(meUser!.id)}
-                rejectRequest={rejectRequest}
-              />
-            )}
-            <FriendsFeaturesUi.AcceptRequestBlock
-              fromUserId={user.id}
-              toUserId={meUser!.id}
-              acceptRequest={acceptRequest}
-            />
-          </>
-        ))
-      ]}
+      actions={actions}
     />
   )
 }
@@ -98,25 +106,31 @@ const OutcomeRequestWidget: FC<ORWProps> = ({ user, updateState }) => {
     updateState();
   }
 
+  const actions: React.ReactNode[] = [];
+
+  if (user.isCanceled) {
+    actions.push((
+      <p>You've canceled your request</p>
+    ));
+  } else {
+    if (user.status === 'rejected') {
+      actions.push((
+        <p>You've been rejected</p>
+      ));
+    }
+    actions.push((
+      <FriendsFeaturesUi.CancelRequestBlock 
+        fromUserId={meUser!.id}
+        toUserId={user.id}
+        cancelRequest={cancelRequests}
+      />
+    ))
+  }
+
   return (
     <UserUi.UserCard<OutcomeRequestUser>
       user={user}
-      actions={[
-        (!user.isCanceled ? (
-          <>
-            {user.isRejected && (
-              <p>You've been rejected</p>
-            )}
-            <FriendsFeaturesUi.CancelRequestBlock 
-              fromUserId={meUser!.id}
-              toUserId={user.id}
-              cancelRequest={cancelRequests}
-            />
-          </>
-        ) : (
-          <p>You've canceled your request</p>
-        ))
-      ]}
+      actions={actions}
     />
   )
 }

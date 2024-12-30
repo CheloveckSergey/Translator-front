@@ -1,11 +1,10 @@
 import { FC, useEffect } from "react"
 import './styles.scss'
-import { useSearchParams } from "react-router-dom"
 import { Menu } from "./menu";
-import { FriendsListWidget } from "./findUsers";
-import { FindFriendsListWidget } from "./friends";
 import { RequestsListWidget } from "./requests";
 import { UsersPageLib } from "../lib";
+import { FriendsListWidget } from "./friends";
+import { FindFriendsListWidget } from "./findUsers";
 
 export const UsersPage: FC = () => {
 

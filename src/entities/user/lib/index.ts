@@ -1,13 +1,10 @@
 import { useInfiniteQuery, useQuery } from "react-query";
 import { useAppSelector } from "../../../app/store";
-import { FriendsApi, GetFindFriendsQuery, GetFriendsQuery, GetIncomeRequestsQuery, GetOutcomeRequestsQuery, UserApi, UserQuery, Users1Query } from "../api";
+import { FriendsApi, UserApi, UserQuery, UsersQuery } from "../api";
 import { useState } from "react";
-import { User } from "../model";
+import { Friend, FriendDto, IncomeRequestUser, IncomeRequestUserDto, OutcomeRequestUser, OutcomeRequestUserDto, PotentialFriend, PotentialFriendDto, User } from "../model";
 import { mapFindFriendDto, mapFriendDto, mapIncomeRequest, mapOutcomeRequest, mapUserDto } from "../model/mappers";
-import { FindFriend } from "../model/findFriend";
-import { Friend } from "../model/friend";
-import { IncomeRequestUser } from "../model/incomeRequest";
-import { OutcomeRequestUser } from "../model/outcomeRequest";
+import { SharedHooks, SharedLib } from "../../../shared/lib";
 
 const userKeys = {
   findUsers: {
@@ -38,223 +35,63 @@ const userKeys = {
   }
 }
 
-const useFriends = (query: GetFriendsQuery) => {
-  const { user } = useAppSelector(state => state.user);
+const useFriends = (query: UsersQuery) => {
 
-  const [users, setUsers] = useState<Friend[]>([]);
-
-  const { 
-    isLoading, 
-    isError, 
-    fetchNextPage, 
-    isFetchingNextPage, 
-    hasNextPage 
-  } = useInfiniteQuery({
-    queryKey: userKeys.friends.slug(user!.id),
-    queryFn: ({ pageParam = query.offset ?? 0 }) => {
-      return FriendsApi.getFriends({ 
-        offset: pageParam, 
-        limit: query.limit, 
-        order: query.order,
-        userId: query.userId,
-      });
-    },
-    getNextPageParam: (lastPage, pages) => {
-      if (!query.limit) {
-        return null
-      }
-      if (lastPage.length < query.limit) return null;
-      const nextPageParam = lastPage.length ? pages.length * query.limit : null;
-      return nextPageParam;
-    },
-    onSuccess: (data) => {
-      let users: Friend[] = [];
-      for (let page of data.pages) {
-        const curUsers = page.map(mapFriendDto);
-        users = [...users, ...curUsers];
-      }
-      setUsers(users);
-    }
-  });
-
-  function updateState() {
-    const newUsers = users.map(user => user.getCopy());
-    setUsers(newUsers); 
-  }
+  const data = SharedHooks.useMyInfineQuery<Friend, UsersQuery, FriendDto>({
+    query,
+    apiFunction: FriendsApi.getFriends,
+    mapDto: mapFriendDto,
+    queryKey: userKeys.friends.slug(query.userId),
+  })
 
   return {
-    users,
-    isLoading,
-    isError,
-    fetchNextPage,
-    isFetchingNextPage,
-    hasNextPage,
-    updateState,
+    ...data,
+    users: data.entities,
   }
 }
 
-const useIncomeRequests = (query: GetIncomeRequestsQuery) => {
-  const { user } = useAppSelector(state => state.user);
+const useFindFriends = (query: UsersQuery) => {
 
-  const [users, setUsers] = useState<IncomeRequestUser[]>([]);
-
-  const { 
-    isLoading, 
-    isError, 
-    fetchNextPage, 
-    isFetchingNextPage, 
-    hasNextPage 
-  } = useInfiniteQuery({
-    queryKey: userKeys.incomeRequests.slug(user!.id),
-    queryFn: ({ pageParam = query.offset ?? 0 }) => {
-      return FriendsApi.getIncomeRequests({ 
-        offset: pageParam, 
-        limit: query.limit, 
-        order: query.order,
-        userId: query.userId,
-      });
-    },
-    getNextPageParam: (lastPage, pages) => {
-      if (!query.limit) {
-        return null
-      }
-      if (lastPage.length < query.limit) return null;
-      const nextPageParam = lastPage.length ? pages.length * query.limit : null;
-      return nextPageParam;
-    },
-    onSuccess: (data) => {
-      let users: IncomeRequestUser[] = [];
-      for (let page of data.pages) {
-        const curUsers = page.map(mapIncomeRequest);
-        users = [...users, ...curUsers];
-      }
-      setUsers(users);
-    }
-  });
-
-  function updateState() {
-    const newUsers = users.map(user => user.getCopy());
-    setUsers(newUsers); 
-  }
+  const data = SharedHooks.useMyInfineQuery<PotentialFriend, UsersQuery, PotentialFriendDto>({
+    query,
+    apiFunction: FriendsApi.getFindFriends,
+    mapDto: mapFindFriendDto,
+    queryKey: userKeys.friends.slug(query.userId),
+  })
 
   return {
-    users,
-    isLoading,
-    isError,
-    fetchNextPage,
-    isFetchingNextPage,
-    hasNextPage,
-    updateState,
+    ...data,
+    users: data.entities,
   }
 }
 
-const useOutcomeRequests = (query: GetOutcomeRequestsQuery) => {
-  const { user } = useAppSelector(state => state.user);
+const useIncomeRequests = (query: UsersQuery) => {
 
-  const [users, setUsers] = useState<OutcomeRequestUser[]>([]);
-
-  const { 
-    isLoading, 
-    isError, 
-    fetchNextPage, 
-    isFetchingNextPage, 
-    hasNextPage 
-  } = useInfiniteQuery({
-    queryKey: userKeys.outcomeRequests.slug(user!.id),
-    queryFn: ({ pageParam = query.offset ?? 0 }) => {
-      return FriendsApi.getOutcomeRequests({ 
-        offset: pageParam, 
-        limit: query.limit, 
-        order: query.order,
-        userId: query.userId,
-      });
-    },
-    getNextPageParam: (lastPage, pages) => {
-      if (!query.limit) {
-        return null
-      }
-      if (lastPage.length < query.limit) return null;
-      const nextPageParam = lastPage.length ? pages.length * query.limit : null;
-      return nextPageParam;
-    },
-    onSuccess: (data) => {
-      let users: OutcomeRequestUser[] = [];
-      for (let page of data.pages) {
-        const curUsers = page.map(mapOutcomeRequest);
-        users = [...users, ...curUsers];
-      }
-      setUsers(users);
-    }
-  });
-
-  function updateState() {
-    const newUsers = users.map(user => user.getCopy());
-    setUsers(newUsers); 
-  }
+  const data = SharedHooks.useMyInfineQuery<IncomeRequestUser, UsersQuery, IncomeRequestUserDto>({
+    query,
+    apiFunction: FriendsApi.getIncomeRequests,
+    mapDto: mapIncomeRequest,
+    queryKey: userKeys.friends.slug(query.userId),
+  })
 
   return {
-    users,
-    isLoading,
-    isError,
-    fetchNextPage,
-    isFetchingNextPage,
-    hasNextPage,
-    updateState,
+    ...data,
+    users: data.entities,
   }
 }
 
-const useFindFriends = (query: GetFindFriendsQuery) => {
-  const { user } = useAppSelector(state => state.user);
+const useOutcomeRequests = (query: UsersQuery) => {
 
-  const [users, setUsers] = useState<FindFriend[]>([]);
-
-  const { 
-    isLoading, 
-    isError, 
-    fetchNextPage, 
-    isFetchingNextPage, 
-    hasNextPage 
-  } = useInfiniteQuery({
-    queryKey: userKeys.findUsers.slug(user!.id),
-    queryFn: ({ pageParam = query.offset ?? 0 }) => {
-      return FriendsApi.getFindFriends({ 
-        offset: pageParam, 
-        limit: query.limit, 
-        order: query.order,
-        userId: query.userId,
-      });
-    },
-    getNextPageParam: (lastPage, pages) => {
-      if (!query.limit) {
-        return null
-      }
-      if (lastPage.length < query.limit) return null;
-      const nextPageParam = lastPage.length ? pages.length * query.limit : null;
-      return nextPageParam;
-    },
-    onSuccess: (data) => {
-      let users: FindFriend[] = [];
-      for (let page of data.pages) {
-        const curUsers = page.map(mapFindFriendDto);
-        users = [...users, ...curUsers];
-      }
-      setUsers(users);
-    }
-  });
-
-  function updateState() {
-    const newUsers = users.map(user => user.getCopy());
-    setUsers(newUsers); 
-  }
+  const data = SharedHooks.useMyInfineQuery<OutcomeRequestUser, UsersQuery, OutcomeRequestUserDto>({
+    query,
+    apiFunction: FriendsApi.getOutcomeRequests,
+    mapDto: mapOutcomeRequest,
+    queryKey: userKeys.friends.slug(query.userId),
+  })
 
   return {
-    users,
-    isLoading,
-    isError,
-    fetchNextPage,
-    isFetchingNextPage,
-    hasNextPage,
-    updateState,
+    ...data,
+    users: data.entities,
   }
 }
 

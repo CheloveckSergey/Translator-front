@@ -1,18 +1,14 @@
-import { CurUser } from "./curUser";
-import { FindFriendDto, FriendDto, IncomeRequestUserDto, OutcomeRequestUserDto, ResAuthDto, UserDto } from "./dto";
-import { FindFriend } from "./findFriend";
-import { Friend } from "./friend";
-import { IncomeRequestUser } from "./incomeRequest";
-import { OutcomeRequestUser } from "./outcomeRequest";
-import { User } from "./user";
+import { CurUser } from "./types/curUser";
+import { PotentialFriendDto, FriendDto, IncomeRequestUserDto, OutcomeRequestUserDto, ResAuthDto, UserDto } from "./dto";
+import { Friend, IncomeRequestUser, OutcomeRequestUser, PotentialFriend, User } from ".";
 
 export function mapUserDto(dto: UserDto): User {
   const user = new User(dto.id, dto.login, dto.isFriend, dto.isSentRequest, dto.avatar, dto.wordsNumber);
   return user;
 }
 
-export function mapFindFriendDto(findFriendDto: FindFriendDto): FindFriend {
-  const user = new FindFriend(findFriendDto.id, findFriendDto.login);
+export function mapFindFriendDto(findFriendDto: PotentialFriendDto): PotentialFriend {
+  const user = new PotentialFriend(findFriendDto.id, findFriendDto.login);
   return user;
 }
 
@@ -22,18 +18,12 @@ export function mapFriendDto(friendDto: FriendDto): Friend {
 }
 
 export function mapIncomeRequest(dto: IncomeRequestUserDto): IncomeRequestUser {
-  const user = new IncomeRequestUser(dto.id, dto.login);
-  if (dto.status === 'rejected') {
-    user.setIsRejected(true);
-  }
+  const user = new IncomeRequestUser(dto.id, dto.login, dto.status);
   return user
 }
 
 export function mapOutcomeRequest(dto: OutcomeRequestUserDto): OutcomeRequestUser {
-  const user = new OutcomeRequestUser(dto.id, dto.login);
-  if (dto.status === 'rejected') {
-    user.setIsRejected(true);
-  }
+  const user = new OutcomeRequestUser(dto.id, dto.login, dto.status);
   return user
 }
 

@@ -38,7 +38,10 @@ export const AppRouter: FC = () => {
           path="/" 
           element={<Layout />}
         >
-          <Route index element={<ProtectedElement element={<HomePage />} />} />
+          <Route
+            index 
+            element={<Navigate to={'/home'} replace />}
+          />
           <Route 
             path="/home"
             element={<ProtectedElement element={<HomePage />} />} 
@@ -51,7 +54,7 @@ export const AppRouter: FC = () => {
           <Route path="/today-list" element={<TodayListPage />} />
           <Route path="/words/user/:userId" element={<WordsPage />} />
           <Route path="/users" >
-            <Route index element={<UsersPage />} />
+            <Route index element={<ProtectedElement element={<UsersPage />} />} />
             <Route path=":userId" element={<UserPage />} />
           </Route>
         </Route>
