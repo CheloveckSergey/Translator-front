@@ -6,6 +6,7 @@ import { FriendsLastTexts } from "./friendsLastTexts";
 import { UserLib } from "../../../entities/user";
 import { useAppSelector } from "../../../app/store";
 import { AvatarWidget } from "./avatar";
+import { SharedBlocks } from "../../../shared/sharedUi/blocks";
 
 export const HomePage: FC = () => {
 
@@ -14,26 +15,30 @@ export const HomePage: FC = () => {
   const { user, isLoading, isError, updateState } = UserLib.useUser(meUser!.id, { wordsNumber: true });
 
   return (
-    <div className="home-page">
-      <div className="left-content">
+    <SharedBlocks.RegularLayout
+      left={(
         <AvatarWidget 
           user={user}
           isLoading={isLoading}
           isError={isError}
           updateState={updateState}
         />
-      </div>
-      <div className="main-content">
-        <h1>Home</h1>
-        <p className="description">
-          Here you can fast reach your last texts and added words
-        </p>
-        <LastTextsListWidget />
-        <WordsListWidget />
-      </div>
-      <div className="right-content">
+      )}
+      center={(
+        <>
+          <h1>Home</h1>
+          <p className="description">
+            Here you can fast reach your last texts and added words
+          </p>
+          <LastTextsListWidget />
+          <WordsListWidget />
+        </>
+      )}
+      centerClassName="home-page-center"
+      right={(
         <FriendsLastTexts />
-      </div>
-    </div>
+      )}
+      className="home-page"
+    />
   )
 }

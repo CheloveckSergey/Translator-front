@@ -103,9 +103,44 @@ const BlackoutLoader: FC<BLProps> = ({ isLoading, iconSize = 25, className }) =>
   )
 }
 
+interface RLProps {
+  left?: React.ReactNode | React.ReactNode[],
+  center: React.ReactNode | React.ReactNode[],
+  right?: React.ReactNode | React.ReactNode[],
+  className?: string,
+  leftClassName?: string,
+  centerClassName?: string,
+  rightClassName?: string,
+}
+const RegularLayout: FC<RLProps> = ({ 
+  left, 
+  center, 
+  right, 
+  className,
+  leftClassName,
+  centerClassName,
+  rightClassName,
+}) => {
+
+  return (
+    <div className={['regular-layout', className].join(' ')}>
+      <div className={["left-content", leftClassName].join(' ')}>
+        {left}
+      </div>
+      <div className={["main-content", centerClassName].join(' ')}>
+        {center}
+      </div>
+      <div className={["right-content", rightClassName].join(' ')}>
+        {right}
+      </div>
+    </div>
+  )
+}
+
 export const SharedBlocks = {
   MenuPoint,
   InfoLine,
   MenuContainer,
   BlackoutLoader,
+  RegularLayout,
 }
