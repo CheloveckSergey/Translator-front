@@ -1,3 +1,5 @@
+@import '../../../../app/styles/mixins.scss';
+
 .user-avatar {
   display: flex;
   flex-direction: column;
@@ -108,5 +110,25 @@
   button.submit-avatar-button {
     width: 150px;
     margin-top: 10px;
+  }
+}
+
+.avatar-sceleton {
+  width: 100%;
+  padding: 10px;
+  background-color: var(--background-light-darker);
+  border-radius: 10px;
+
+  .image-sceleton {
+    height: 150px;
+    border-radius: 5px;
+    @include sceleton-wave();
+  }
+
+  .line-sceleton {
+    height: 30px;
+    margin-top: 10px;
+    border-radius: 5px;
+    @include sceleton-wave();
   }
 }

@@ -98,7 +98,7 @@ const useOutcomeRequests = (query: UsersQuery) => {
 const useUser = (userId: number, query?: UserQuery) => {
   const [user, setUser] = useState<User>();
 
-  const { isLoading, isError } = useQuery({
+  const { isFetching, isError } = useQuery({
     queryKey: userKeys.user.slug(userId, query),
     queryFn: () => {
       return UserApi.getUserById(userId, query)
@@ -115,7 +115,7 @@ const useUser = (userId: number, query?: UserQuery) => {
 
   return {
     user,
-    isLoading,
+    isLoading: isFetching,
     isError,
     updateState,
   }

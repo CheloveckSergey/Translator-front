@@ -74,6 +74,16 @@ export const InfoLine: FC<ILProps> = ({ left, right }) => {
   )
 }
 
+const AvatarSceleton: FC = () => {
+
+  return (
+    <div className="avatar-sceleton">
+      <div className="image-sceleton"></div>
+      <div className="line-sceleton"></div>
+    </div>
+  )
+}
+
 interface UAProps {
   user?: User,
   isLoading: boolean,
@@ -88,8 +98,6 @@ interface UAProps {
 }
 export const UserAvatar: FC<UAProps> = ({ user, isLoading, isError, updateAvatarObject, actions, className }) => {
 
-  const { user: meUser } = useAppSelector(state => state.user);
-
   const [showUAWindow, setShowUAWindow] = useState<boolean>(false);
 
   return (
@@ -97,6 +105,7 @@ export const UserAvatar: FC<UAProps> = ({ user, isLoading, isError, updateAvatar
       <SharedUiHelpers.ErrorLoader
         isLoading={isLoading}
         isError={isError}
+        loadingSceleton={<AvatarSceleton />}
       >
         {user && <>
           <div className="avatar">
