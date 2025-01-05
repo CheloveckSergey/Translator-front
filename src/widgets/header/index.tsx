@@ -48,6 +48,13 @@ const UserMenu: FC = () => {
       isLoading: loading,
       isError: !!error,
     });
+
+    actions.push({
+      body: 'Settings',
+      onClick: () => {
+        navigate('/settings');
+      }
+    })
   } else {
     actions.push({
       body: 'Authorization',

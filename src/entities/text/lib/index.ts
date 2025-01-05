@@ -30,7 +30,7 @@ const useTextPreviewsList = (query: TextPreviewsQuery) => {
 
   const [textList, setTextList] = useState<TextListClass>(new TextListClass([]));
 
-  const { isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+  const { isFetching, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
     queryKey: textsKeys.texts.slug(query.userId),
     queryFn: ({ pageParam = query.offset ?? 0 }) => {
       return TextApi.getAllTextPreviewsByUser({ 
@@ -66,7 +66,7 @@ const useTextPreviewsList = (query: TextPreviewsQuery) => {
   return {
     textList,
     setTextList,
-    isLoading,
+    isLoading: isFetching,
     isError,
     updateTexts,
     fetchNextPage,

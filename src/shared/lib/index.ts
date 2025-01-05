@@ -31,9 +31,17 @@ function getImageUrlFromFile(file: File | undefined) {
   }
 }
 
+function capitalizeFirstLetter(input: string): string {
+  if (!input) {
+    return input;
+  }
+  return input.charAt(0).toUpperCase() + input.slice(1);
+}
+
 export const SharedLib = {
   getComfortableDate,
   getImageUrlFromFile,
+  capitalizeFirstLetter,
 }
 
 export { SharedHooks } from './hooks'

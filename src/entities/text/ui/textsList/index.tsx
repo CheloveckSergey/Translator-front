@@ -95,6 +95,15 @@ const TextAdder: FC<TAProps> = ({ mutate, isLoading, isError }) => {
   )
 }
 
+const LoadingSceleton: FC = () => {
+
+  return (
+    <div className="text-list-content">
+      {[1,2,3].map((_, index) => <SceletonTextPreview key={index} />)}
+    </div>
+  )
+}
+
 interface TLUProps {
   textList: TextListClass,
   isLoading: boolean,
@@ -126,21 +135,12 @@ export const TextListUi: FC<TLUProps> = ({
   className,
 }) => {
 
-  if (isLoading) {
-    return (
-      <div className={["text-list", className].join(' ')}>
-        <div className="text-list-content">
-          {[1,2,3].map((_, index) => <SceletonTextPreview key={index} />)}
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className={["text-list", className].join(' ')}>
       <SharedUiHelpers.ErrorLoader
         isLoading={isLoading}
         isError={isError}
+        loadingSceleton={<LoadingSceleton />}
       >
         <div className="text-list-content">
           {actionObjects.addText && (
@@ -150,7 +150,6 @@ export const TextListUi: FC<TLUProps> = ({
               isError={actionObjects.addText.isError}
             />
           )}
-          {/* {[1,2,3].map((_, index) => <SceletonTextPreview key={index} />)} */}
           {textList.texts.map(mapTexts)}
         </div>
         <SharedButtons.LoadMoreButton

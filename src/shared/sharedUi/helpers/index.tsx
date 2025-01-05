@@ -7,10 +7,11 @@ interface ELProps {
   isLoading: boolean,
   isError: boolean,
   iconSize?: number,
-  className?: string,
   isEmpty?: boolean,
   emptyHolder?: React.ReactNode,
   emptyClassname?: string,
+  loadingSceleton?: React.ReactNode,
+  className?: string,
 }
 const ErrorLoader: FC<ELProps> = ({ 
   children, 
@@ -20,28 +21,45 @@ const ErrorLoader: FC<ELProps> = ({
   className, 
   isEmpty, 
   emptyHolder,
+  loadingSceleton,
   emptyClassname,
 }) => {
 
+  if (isLoading) {
+    if (loadingSceleton) {
+      return (
+        <>
+          {loadingSceleton}
+        </>
+      )
+    }
+
+    return (
+      <div className={["load-error-wrapper", className].join(' ')}>
+        <SharedIcons.Spinner size={iconSize} />
+      </div>
+    )
+  }
+
+  if (isError) {
+    return (
+      <div className={["load-error-wrapper", className].join(' ')}>
+        <SharedIcons.Error size={iconSize} />
+      </div>
+    )
+  }
+
+  if (isEmpty) {
+    return (
+      <div className={["empty-holder", emptyClassname].join(' ')}>
+        <p>{emptyHolder}</p>
+      </div>
+    )
+  }
+
   return (
     <>
-      {isLoading ? (
-        <div className={["load-error-wrapper", className].join(' ')}>
-          <SharedIcons.Spinner size={iconSize} />
-        </div>
-      ) : isError ? (
-        <div className={["load-error-wrapper", className].join(' ')}>
-          <SharedIcons.Error size={iconSize} />
-        </div>
-      ) : isEmpty ? (
-        <div className={["empty-holder", emptyClassname].join(' ')}>
-          <p>{emptyHolder}</p>
-        </div>
-      ) : (
-        <>
-          {children}
-        </>
-      )}
+      {children}
     </>
   )
 }

@@ -11,6 +11,7 @@ import { HomePage } from "../../pages/home";
 import { UsersPage } from "../../pages/users/ui";
 import { UserPage } from "../../pages/user";
 import { useAppSelector } from "../store";
+import { SettingsPage } from "../../pages/settings";
 
 interface PRProps {
   element: React.ReactNode,
@@ -57,6 +58,10 @@ export const AppRouter: FC = () => {
             <Route index element={<ProtectedElement element={<UsersPage />} />} />
             <Route path=":userId" element={<UserPage />} />
           </Route>
+          <Route 
+            path="/settings" 
+            element={<ProtectedElement element={<SettingsPage />} />}
+          />
         </Route>
         <Route path="/registration" element={<AuthPage />} />
       </>

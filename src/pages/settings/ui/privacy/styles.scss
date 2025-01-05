@@ -1,0 +1,59 @@
+@import '../../../../app/styles/mixins.scss';
+
+.privacy {
+  position: relative;
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  background-color: var(--background-light-darker);
+  border-radius: 10px;
+  overflow: hidden;
+  
+  form {
+    margin-top: 10px;
+
+    .line-select {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      &:not(:first-child) {
+        margin-top: 10px;
+      }
+
+      .submit-select {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        select {
+          font-size: 1rem;
+          background-color: var(--background-light);
+          outline: none;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+
+          option {
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+
+    .submit-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+  }
+}
+
+.privacy-sceleton {
+  height: 200px;
+  width: 100%;
+  border-radius: 10px;
+  @include sceleton-wave();
+}
