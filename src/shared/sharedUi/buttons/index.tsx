@@ -5,57 +5,57 @@ import { SharedUiHelpers } from "../helpers";
 
 export type ButtonColor = 'light' | 'dark' | 'green' | 'grey';
 
-interface GBProps {
-  body: React.ReactNode | React.ReactNode[] | string,
-  isLoading: boolean,
-  isError: boolean,
-  onClick: () => void,
-  className?: string,
-  disabled?: boolean,
-}
-const GreenButton: FC<GBProps> = ({ body, isLoading, isError, onClick, className, disabled }) => {
-
-  return (
-    <SquareButton
-      body={body}
-      isLoading={isLoading}
-      isError={isError}
-      onClick={onClick}
-      className={className}
-      disabled={disabled}
-      color="green"
-    />
-  )
-}
-
 interface SBProps {
   body: React.ReactNode | React.ReactNode[] | string,
-  isLoading: boolean,
-  isError: boolean,
   onClick: () => void,
-  className?: string,
-  disabled?: boolean,
   color: ButtonColor,
+  disabled?: boolean,
+  className?: string,
 }
-const SquareButton: FC<SBProps> = ({ body, isLoading, isError, onClick, className, disabled, color }) => {
+const SquareButton: FC<SBProps> = ({ body, onClick, className, disabled, color }) => {
 
   return (
     <button
-      className={["square-button", color, className].join(' ')}
       onClick={onClick}
       disabled={disabled}
+      className={["square-button", color, className].join(' ')}
     >
       {body}
-      {isLoading ? (
-        <div className="button-loader">
-          <SharedIcons.Spinner size={25} />
-        </div>
-      ) : isError ? (
-        <SharedIcons.Error />
-      ) : (
-        ''
-      )}
     </button>
+  )
+}
+
+interface SABProps {
+  body: React.ReactNode | React.ReactNode[] | string,
+  isLoading: boolean,
+  isError: boolean,
+  onClick: () => void,
+  color: ButtonColor,
+  className?: string,
+  disabled?: boolean,
+}
+const SquareActionButton: FC<SABProps> = ({ body, isLoading, isError, onClick, className, disabled, color }) => {
+
+  return (
+    <SquareButton
+      body={(
+        <>
+          {isLoading ? (
+            <div className="button-loader">
+              <SharedIcons.Spinner size={25} />
+            </div>
+          ) : isError ? (
+            <SharedIcons.Error />
+          ) : (
+            body
+          )}
+        </>
+      )}
+      onClick={onClick}
+      disabled={disabled}
+      color={color}
+      className={['square-action-button', className].join(' ')}
+    />
   )
 }
 
@@ -124,12 +124,13 @@ const LoadMoreButton: FC<LMBProps> = ({
     <>
       {fetchNextPage && hasNextPage && (
         <div className={["load-more-wrapper", blockClassName].join(' ')}>
-          <SharedButtons.GreenButton
+          <SharedButtons.SquareActionButton
             body='Load more'
             onClick={() => fetchNextPage()}
             isLoading={Boolean(isFetchingNextPage)}
             isError={isError}
             disabled={isFetchingNextPage}
+            color="green"
             className={["load-more", buttonClassName].join(' ')}
           />
         </div>
@@ -139,9 +140,9 @@ const LoadMoreButton: FC<LMBProps> = ({
 }
 
 export const SharedButtons = {
-  GreenButton,
+  SquareButton,
+  SquareActionButton,
   TextButton,
   TextActionButton,
-  SquareButton,
   LoadMoreButton,
 }

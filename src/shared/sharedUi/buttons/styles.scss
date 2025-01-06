@@ -20,18 +20,22 @@
   border-radius: 10px;
   overflow: hidden;
 
-  .button-loader {
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: 5000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 100%;
-    background-color: inherit;
+  &.square-action-button {
+
+    .button-loader {
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 5000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+      background-color: inherit;
+    }
   }
+
 
   &.green {
     color: var(--font-light);

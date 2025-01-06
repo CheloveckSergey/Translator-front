@@ -14,11 +14,12 @@ const SendRequestBlock: FC<SRBProps> = ({ fromUserId, toUserId, sendRequest }) =
 
   return (
     <div className="friend-feature-block">
-      <SharedButtons.GreenButton
+      <SharedButtons.SquareActionButton
         body='Send request'
         onClick={() => mutateAsync()}
         isLoading={isLoading}
         isError={isError}
+        color="green"
         className="friend-feature-button"
       />
     </div>
@@ -36,7 +37,7 @@ const CancelRequestBlock: FC<CRBProps> = ({ fromUserId, toUserId, cancelRequest 
 
   return (
     <div className="friend-feature-block">
-      <SharedButtons.SquareButton
+      <SharedButtons.SquareActionButton
         body='Cancel'
         onClick={() => mutateAsync()}
         isLoading={isLoading}
@@ -59,11 +60,12 @@ const AcceptRequestBlock: FC<ARBProps> = ({ fromUserId, toUserId, acceptRequest 
 
   return (
     <div className="friend-feature-block">
-      <SharedButtons.GreenButton
+      <SharedButtons.SquareActionButton
         body='Accept'
         onClick={() => mutateAsync()}
         isLoading={isLoading}
         isError={isError}
+        color='green'
         className="friend-feature-button"
       />
     </div>
@@ -81,11 +83,12 @@ const DeleteFriendBlock: FC<DFBProps> = ({ fromUserId, toUserId, deleteFriend })
 
   return (
     <div className="friend-feature-block">
-      <SharedButtons.GreenButton
+      <SharedButtons.SquareActionButton
         body='Delete'
         onClick={() => mutateAsync()}
         isLoading={isLoading}
         isError={isError}
+        color="grey"
         className="friend-feature-button"
       />
     </div>
@@ -104,7 +107,7 @@ const CancelDeleteBlock: FC<CDBProps> = ({ fromUserId, toUserId, cancelDeleteFri
   return (
     <div className="friend-feature-block">
       <p>Friend's been deleted</p>
-      <SharedButtons.SquareButton
+      <SharedButtons.SquareActionButton
         body='Cancel'
         onClick={() => mutateAsync()}
         isLoading={isLoading}
@@ -127,12 +130,12 @@ const SendRequestButton: FC<SRBProps> = ({ fromUserId, toUserId, sendRequest, cl
   const { mutateAsync, isLoading, isError } = FriendsFeaturesLib.useSendRequest(fromUserId, toUserId, sendRequest)
 
   return (
-    <SharedButtons.SquareButton
+    <SharedButtons.SquareActionButton
       body='Send request'
-      color="green"
       onClick={() => mutateAsync()}
       isLoading={isLoading}
       isError={isError}
+      color="green"
       className={["friend-feature-button", className].join(' ')}
     />
   )
@@ -149,12 +152,12 @@ const CancelRequestButton: FC<CRBProps> = ({ fromUserId, toUserId, cancelRequest
   const { mutateAsync, isLoading, isError } = FriendsFeaturesLib.useCancelRequest(fromUserId, toUserId, cancelRequest)
 
   return (
-    <SharedButtons.SquareButton
+    <SharedButtons.SquareActionButton
       body='Cancel'
-      color="grey"
       onClick={() => mutateAsync()}
       isLoading={isLoading}
       isError={isError}
+      color="grey"
       className={["friend-feature-button", className].join(' ')}
     />
   )
@@ -171,12 +174,12 @@ const AcceptRequestButton: FC<ARBProps> = ({ fromUserId, toUserId, acceptRequest
   const { mutateAsync, isLoading, isError } = FriendsFeaturesLib.useAcceptRequest(fromUserId, toUserId, acceptRequest);
 
   return (
-    <SharedButtons.SquareButton
+    <SharedButtons.SquareActionButton
       body='Accept'
-      color="green"
       onClick={() => mutateAsync()}
       isLoading={isLoading}
       isError={isError}
+      color="green"
       className={["friend-feature-button", className].join(' ')}
     />
   )
@@ -193,12 +196,12 @@ const RejectRequestButton: FC<RRBProps> = ({ fromUserId, toUserId, rejectRequest
   const { mutateAsync, isLoading, isError } = FriendsFeaturesLib.useRejectRequest(fromUserId, toUserId, rejectRequest);
 
   return (
-    <SharedButtons.SquareButton
+    <SharedButtons.SquareActionButton
       body='Reject'
-      color="grey"
       onClick={() => mutateAsync()}
       isLoading={isLoading}
       isError={isError}
+      color="grey"
       className={["friend-feature-button", className].join(' ')}
     />
   )
@@ -215,12 +218,12 @@ const DeleteFriendButton: FC<DFBProps> = ({ fromUserId, toUserId, deleteFriend, 
   const { mutateAsync, isLoading, isError } = FriendsFeaturesLib.useDeleteFriend(fromUserId, toUserId, deleteFriend);
 
   return (
-    <SharedButtons.SquareButton
+    <SharedButtons.SquareActionButton
       body='Delete'
-      color="grey"
       onClick={() => mutateAsync()}
       isLoading={isLoading}
       isError={isError}
+      color="grey"
       className={["friend-feature-button", className].join(' ')}
     />
   )
@@ -237,12 +240,12 @@ const CancelDeleteButton: FC<CDBProps> = ({ fromUserId, toUserId, cancelDeleteFr
   const { mutateAsync, isLoading, isError } = FriendsFeaturesLib.useCancelDeleteFriend(fromUserId, toUserId, cancelDeleteFriend);
 
   return (
-    <SharedButtons.SquareButton
+    <SharedButtons.SquareActionButton
       body='Cancel'
-      color="grey"
       onClick={() => mutateAsync()}
       isLoading={isLoading}
       isError={isError}
+      color="grey"
       className={["friend-feature-button", className].join(' ')}
     />
   )

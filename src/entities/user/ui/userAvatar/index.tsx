@@ -44,7 +44,7 @@ const UpdateAvatarWindow: FC<UAWProps> = ({ updateAvatarObject, close }) => {
         />
         <span className="load-span" >Load</span>
       </label>
-      {updateAvatarObject && image && <SharedButtons.GreenButton 
+      {updateAvatarObject && image && <SharedButtons.SquareActionButton 
         body='Update'
         onClick={() => {
           if (!image) {
@@ -54,6 +54,7 @@ const UpdateAvatarWindow: FC<UAWProps> = ({ updateAvatarObject, close }) => {
         }}
         isLoading={updateAvatarObject.isLoading}
         isError={updateAvatarObject.isError}
+        color="green"
         className="submit-avatar-button"
       />}
     </div>
@@ -114,11 +115,10 @@ export const UserAvatar: FC<UAProps> = ({ user, isLoading, isError, updateAvatar
               alt="IMG" 
             />
             {updateAvatarObject && (
-              <SharedButtons.GreenButton 
+              <SharedButtons.SquareButton 
                 body={'Change avatar'}
-                isLoading={false}
-                isError={false}
                 onClick={() => setShowUAWindow(true)}
+                color='green'
                 className="change-avatar-button"
               />
             )}

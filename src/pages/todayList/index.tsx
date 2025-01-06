@@ -74,11 +74,12 @@ const TodayListWidget: FC<TLWProps> = ({ todayList, isLoading, isError, updateSt
               value={input}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
             />
-            <SharedButtons.GreenButton 
+            <SharedButtons.SquareActionButton 
               body='Try'
               isLoading={successMutation.isLoading || unsuccessMutation.isLoading}
               isError={successMutation.isError || unsuccessMutation.isError}
               onClick={tryTranslation}
+              color="green"
               className="try"
             />
             {(isSuccess === 'right') && <p className="right-wrong">Right</p>}

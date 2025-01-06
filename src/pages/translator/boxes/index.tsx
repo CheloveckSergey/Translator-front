@@ -35,8 +35,7 @@ export const Boxes: FC = () => {
           value={input}
           onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setInput(e.target.value)}
         />
-        <SharedButtons.GreenButton
-          className="translate"
+        <SharedButtons.SquareActionButton
           body='Translate'
           isLoading={isLoading}
           isError={isError}
@@ -45,6 +44,8 @@ export const Boxes: FC = () => {
               refetch({ value: input })
             }
           }}
+          className="translate"
+          color="green"
         />
       </div>
       <div className="right">
