@@ -37,7 +37,7 @@ function useMyInfineQuery<
   const [entities, setEntities] = useState<Entity[]>([]);
 
   const { 
-    isLoading, 
+    isFetching, 
     isError, 
     fetchNextPage, 
     isFetchingNextPage, 
@@ -75,7 +75,7 @@ function useMyInfineQuery<
 
   return {
     entities,
-    isLoading,
+    isLoading: isFetching,
     isError,
     fetchNextPage,
     isFetchingNextPage,

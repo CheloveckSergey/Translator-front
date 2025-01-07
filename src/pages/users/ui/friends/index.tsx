@@ -24,26 +24,33 @@ const FriendCardWidget: FC<FCWProps> = ({ user, updateState }) => {
     updateState()
   }
 
-  // const actions
+  let description: string = '';
+  const actions: React.ReactNode[] = [];
+
+  if (user.isDeleted) {
+    description = 'Пользователён удалён';
+    actions.push(
+      <FriendsFeaturesUi.CancelDeleteButton
+        fromUserId={meUser!.id}
+        toUserId={user.id}
+        cancelDeleteFriend={cancelDeleteFriend}
+      />
+    );
+  } else {
+    actions.push(
+      <FriendsFeaturesUi.DeleteFriendButton
+        fromUserId={meUser!.id}
+        toUserId={user.id}
+        deleteFriend={deleteFriend}
+      />
+    )
+  }
 
   return (
     <UserUi.UserCard<Friend>
       user={user}
-      actions={[
-        (user.isDeleted ? (
-          <FriendsFeaturesUi.CancelDeleteBlock
-            fromUserId={meUser!.id}
-            toUserId={user.id}
-            cancelDeleteFriend={cancelDeleteFriend}
-          />
-        ) : (
-          <FriendsFeaturesUi.DeleteFriendBlock
-            fromUserId={meUser!.id}
-            toUserId={user.id}
-            deleteFriend={deleteFriend}
-          />
-        ))
-      ]}
+      description={description}
+      actions={actions}
     />
   )
 }

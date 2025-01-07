@@ -24,24 +24,33 @@ const FindFriendCardWidget: FC<UCWProps> = ({ user, updateState }) => {
     updateState();
   }
 
+  let description: string = '';
+  const actions: React.ReactNode[] = [];
+
+  if (user.isSentRequest) {
+    description = 'Вы отправили заявку';
+    actions.push(
+      <FriendsFeaturesUi.CancelRequestButton
+        fromUserId={meUser!.id}
+        toUserId={user.id}
+        cancelRequest={cancelRequest}
+      />
+    );
+  } else {
+    actions.push(
+      <FriendsFeaturesUi.SendRequestButton
+        fromUserId={meUser!.id}
+        toUserId={user.id}
+        sendRequest={sendRequest}
+      />
+    )
+  }
+
   return (
     <UserUi.UserCard<PotentialFriend>
       user={user}
-      actions={[
-        (user.isSentRequest ? (
-          <FriendsFeaturesUi.CancelRequestBlock
-            fromUserId={meUser!.id}
-            toUserId={user.id}
-            cancelRequest={cancelRequest}
-          />
-        ) : (
-          <FriendsFeaturesUi.SendRequestBlock
-            fromUserId={meUser!.id}
-            toUserId={user.id}
-            sendRequest={sendRequest}
-          />
-        ))
-      ]}
+      description={description}
+      actions={actions}
     />
   )
 }

@@ -2,8 +2,7 @@ import { FC } from "react";
 import { UserUi } from "../../../entities/user/ui";
 import { User } from "../../../entities/user";
 import { useAppSelector } from "../../../app/store";
-import { ButtonColor } from "../../../shared/sharedUi/buttons";
-import { FriendsFeaturesLib, FriendsFeaturesUi } from "../../../features/friendship";
+import { FriendsFeaturesUi } from "../../../features/friendship";
 import './styles.scss';
 
 interface AProps {

@@ -5,11 +5,19 @@ import { SharedButtons } from "../../../../shared/sharedUi/buttons";
 import { OnlyUser } from "../../model/types/onlyUser";
 import { useNavigate } from "react-router-dom";
 
+export const UserCardSceleton: FC = () => {
+
+  return (
+    <div className="user-card-sceleton" />
+  )
+}
+
 interface UCProps<T extends OnlyUser> {
   user: T,
   actions: React.ReactNode | React.ReactNode[],
+  description?: string | undefined,
 }
-export function UserCard<T extends OnlyUser>({ user, actions } : UCProps<T>) {
+export function UserCard<T extends OnlyUser>({ user, actions, description } : UCProps<T>) {
 
   const navigate = useNavigate();
 
@@ -24,6 +32,7 @@ export function UserCard<T extends OnlyUser>({ user, actions } : UCProps<T>) {
         </h4>
       </div>
       <div className="actions">
+        {description && <span>{description}</span>}
         {actions}
       </div>
     </div>

@@ -252,11 +252,6 @@ const CancelDeleteButton: FC<CDBProps> = ({ fromUserId, toUserId, cancelDeleteFr
 }
 
 export const FriendsFeaturesUi = {
-  SendRequestBlock,
-  CancelRequestBlock,
-  AcceptRequestBlock,
-  DeleteFriendBlock,
-  CancelDeleteBlock,
   SendRequestButton,
   CancelRequestButton,
   AcceptRequestButton,

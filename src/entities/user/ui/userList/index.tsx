@@ -1,8 +1,19 @@
 import { FC } from "react";
-import { User } from "../../model";
 import { SharedUiHelpers } from "../../../../shared/sharedUi/helpers";
 import { OnlyUser } from "../../model/types/onlyUser";
 import './styles.scss';
+import { UserCardSceleton } from "../userCard";
+
+const UserListSceleton: FC = () => {
+
+  return (
+    <>
+      {[1,2,3].map((_, index) => (
+        <UserCardSceleton key={index} />
+      ))}
+    </>
+  )
+}
 
 interface ULProps<T extends OnlyUser> {
   users: T[],
@@ -26,6 +37,7 @@ export function UserList<T extends OnlyUser>({
       <SharedUiHelpers.ErrorLoader
         isLoading={isLoading}
         isError={isError}
+        loadingSceleton={<UserListSceleton />}
         emptyHolder={emptyHolder}
         isEmpty={!Boolean(users.length)}
         emptyClassname="user-list-empty"

@@ -27,12 +27,6 @@ export const UserPage: FC = () => {
         />
       </div>
       <div className="main-content">
-        {/* <Header
-          user={user}
-          isLoading={isLoading}
-          isError={isError}
-          updateState={updateState}
-        /> */}
         <TextsWidget />
       </div>
       <div className="right-content">

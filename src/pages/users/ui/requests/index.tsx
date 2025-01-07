@@ -27,17 +27,14 @@ const IncomeRequestWidget: FC<IRWProps> = ({ user, updateState }) => {
     updateState();
   }
 
+  let description: string = '';
   const actions: React.ReactNode[] = [];
 
   if (user.status === 'accepted') {
-    actions.push((
-      <p>Accepted</p>
-    ))
+    description = 'Accepted';
   } else {
     if (user.status === 'rejected') {
-      actions.push((
-        <p>User has been rejected</p>
-      ));
+      description = 'Rejected';
     } else {
       actions.push((
         <FriendsFeaturesUi.RejectRequestButton
@@ -48,7 +45,7 @@ const IncomeRequestWidget: FC<IRWProps> = ({ user, updateState }) => {
       ))
     }
     actions.push((
-      <FriendsFeaturesUi.AcceptRequestBlock
+      <FriendsFeaturesUi.AcceptRequestButton
         fromUserId={user.id}
         toUserId={meUser!.id}
         acceptRequest={acceptRequest}
@@ -59,6 +56,7 @@ const IncomeRequestWidget: FC<IRWProps> = ({ user, updateState }) => {
   return (
     <UserUi.UserCard<IncomeRequestUser>
       user={user}
+      description={description}
       actions={actions}
     />
   )
@@ -106,20 +104,17 @@ const OutcomeRequestWidget: FC<ORWProps> = ({ user, updateState }) => {
     updateState();
   }
 
+  let description: string = '';
   const actions: React.ReactNode[] = [];
 
   if (user.isCanceled) {
-    actions.push((
-      <p>You've canceled your request</p>
-    ));
+    description = "You've canceled your request";
   } else {
     if (user.status === 'rejected') {
-      actions.push((
-        <p>You've been rejected</p>
-      ));
+      description = "You've been rejected";
     }
     actions.push((
-      <FriendsFeaturesUi.CancelRequestBlock 
+      <FriendsFeaturesUi.CancelRequestButton 
         fromUserId={meUser!.id}
         toUserId={user.id}
         cancelRequest={cancelRequests}
@@ -130,6 +125,7 @@ const OutcomeRequestWidget: FC<ORWProps> = ({ user, updateState }) => {
   return (
     <UserUi.UserCard<OutcomeRequestUser>
       user={user}
+      description={description}
       actions={actions}
     />
   )
