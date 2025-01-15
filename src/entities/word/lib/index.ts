@@ -1,11 +1,9 @@
 import { useInfiniteQuery, useQuery } from "react-query"
-import { WholeWordQuery, WordApi } from "../api"
-import { TransWordDto } from "../model";
+import { UserWordsQuery, WordApi } from "../api"
+import { TodayList, UserWordInfo, UserWordInfoDto } from "../model";
 import { useState } from "react";
-import { TodayList } from "../model/todayList";
-import { mapTodayWord, mapWholeWord } from "../model/mappers";
-import { TodayWordClass } from "../model/todayWord";
-import { WholeWord } from "../model/wholeWord";
+import { mapTodayWord, mapUserWordInfo } from "../model/mappers";
+import { SharedHooks } from "../../../shared/lib";
 
 const wordKeys = {
   wordTranslation: {
@@ -70,49 +68,32 @@ const useTodayList = (
   }
 }
 
-const useWholeWords = (query: WholeWordQuery) => {
+const useUserWords = (query: UserWordsQuery) => {
 
-  const [words, setWords] = useState<WholeWord[]>([]);
-
-  const { isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: wordKeys.allWords.slug(query.userId ?? 0),
-    queryFn: ({ pageParam = query.offset ?? 0 }) => {
-      return WordApi.getAllWords({ 
-        offset: pageParam, 
-        limit: query.limit, 
-        order: query.order, 
-        userId: query.userId,
-      });
-    },
-    getNextPageParam: (lastPage, pages) => {
-      if (!query.limit) {
-        return null
-      }
-      if (lastPage.length < query.limit) return null;
-      const nextPageParam = lastPage.length ? pages.length * query.limit : null;
-      return nextPageParam;
-    },
-    onSuccess: (data) => {
-      let words: WholeWord[] = [];
-      for (let page of data.pages) {
-        const curWords = page.map(word => mapWholeWord(word));
-        words = [...words, ...curWords];
-      }
-      setWords(words);
-    }
-  });
-
-  function updateWords() {
-    const newWords = words.map(word => word.getCopy());
-    setWords(newWords);
-  }
+  const {
+    entities: words,
+    updateState,
+    isFetching,
+    isError,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+  } = SharedHooks.useMyInfineQuery<
+    UserWordInfo,
+    UserWordsQuery,
+    UserWordInfoDto
+  >({
+    query,
+    apiFunction: WordApi.getAllWords,
+    queryKey: wordKeys.allWords.slug(query.userId),
+    mapDto: mapUserWordInfo,
+  })
 
   return {
     words,
-    setWords,
-    isLoading,
+    isFetching,
     isError,
-    updateWords,
+    updateState,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
@@ -122,5 +103,5 @@ const useWholeWords = (query: WholeWordQuery) => {
 export const WordLib = {
   useWordTranslation,
   useTodayList,
-  useWholeWords,
+  useUserWords,
 }

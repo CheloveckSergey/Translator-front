@@ -31,7 +31,9 @@ export const TextsPage: FC = () => {
 
   const { user: meUser } = useAppSelector(state => state.user);
 
-  const urlUserId = useUrlUserId();
+  const userId = useUrlUserId();
+
+  const isMyTexts = meUser?.id === userId;
 
   return (
     <div className="texts-page">
@@ -40,8 +42,8 @@ export const TextsPage: FC = () => {
       </div>
       <div className="main-content">
         <h1>
-          Texts{urlUserId !== meUser?.id && <>
-            {' '}/ <AdditionalHeader userId={urlUserId} />
+          Texts{!isMyTexts && <>
+            {' '}/ <AdditionalHeader userId={userId} />
           </>}
         </h1>
         <TextListWidget />

@@ -1,6 +1,6 @@
-import { StringSpan } from "../../word";
+import { StringSpan } from "../../../word";
 
-export class TextSpanClass {
+export class TextSpan {
   readonly id: number;
   name: string;
   stringSpans: StringSpan[];
@@ -18,7 +18,7 @@ export class TextSpanClass {
   }
 
   getCopy() {
-    const newTextSpan = new TextSpanClass(this.id, this.name, this.stringSpans, this.translation);
+    const newTextSpan = new TextSpan(this.id, this.name, this.stringSpans, this.translation);
     return newTextSpan;
   }
 }

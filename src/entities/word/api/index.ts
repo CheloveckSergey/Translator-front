@@ -1,16 +1,16 @@
 import api from "../../../shared/api";
 import { UsualQuery } from "../../../shared/types";
-import { TodayWordDto, TransWordDto, WholeWordDto } from "../model";
+import { TodayWordDto, TransWordDto, UserWordInfoDto } from "../model";
 
-export interface WholeWordQuery extends UsualQuery {
+export interface UserWordsQuery extends UsualQuery {
   userId: number,
 }
 
 const INITIAL_URL = '/words'
 
 export class WordApi {
-  static async getAllWords(query: WholeWordQuery): Promise<WholeWordDto[]> {
-    const response = await api.get<WholeWordDto[]>(
+  static async getAllWords(query: UserWordsQuery): Promise<UserWordInfoDto[]> {
+    const response = await api.get<UserWordInfoDto[]>(
       INITIAL_URL + '/getAllWords',
       {
         params: query

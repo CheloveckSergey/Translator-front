@@ -1,12 +1,12 @@
 import { FC } from "react";
 import { useAppSelector } from "../../../../app/store";
 import { useUrlUserId } from "../../lib";
-import { TextPreviewClass, TextUi, TextsLib } from "../../../../entities/text";
+import { TextPreview, TextUi, TextsLib } from "../../../../entities/text";
 import { TextFeaturesLib, TextFeaturesUi } from "../../../../features/texts";
 import './styles.scss';
 
 interface TPWProps {
-  text: TextPreviewClass,
+  text: TextPreview,
   updateTexts: () => void,
 }
 const TextPreviewWidget: FC<TPWProps> = ({ text, updateTexts }) => {
@@ -105,7 +105,7 @@ export const TextListWidget: FC = () => {
 
   const {
     textList,
-    isLoading,
+    isFetching,
     isError,
     updateTexts,
     fetchNextPage,
@@ -119,7 +119,7 @@ export const TextListWidget: FC = () => {
 
   const addTextMutation = TextFeaturesLib.useAddText(addText);
 
-  function addText(textPreview: TextPreviewClass) {
+  function addText(textPreview: TextPreview) {
     textList.addText(textPreview);
     updateTexts();
   }
@@ -127,7 +127,7 @@ export const TextListWidget: FC = () => {
   return (
     <TextUi.TextListUi 
       textList={textList}
-      isLoading={isLoading}
+      isLoading={isFetching}
       isError={isError}
       fetchNextPage={fetchNextPage}
       hasNextPage={hasNextPage}
@@ -139,7 +139,7 @@ export const TextListWidget: FC = () => {
           isError: addTextMutation.isError,
         }})
       }}
-      mapTexts={(text: TextPreviewClass, index: number) => <TextPreviewWidget 
+      mapTexts={(text: TextPreview, index: number) => <TextPreviewWidget 
         key={index}
         text={text}
         updateTexts={updateTexts}

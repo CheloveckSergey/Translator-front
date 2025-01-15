@@ -1,37 +1,32 @@
-import { StringSpanDto, TodayWordDto, TransStatusWordDto, WholeWordDto } from "./dto";
-import { TodayWordClass } from "./todayWord";
-import { Connection, StringSpan, TransStatusWord } from "./types";
-import { WholeWord } from "./wholeWord";
-import { WordSpanClass } from "./wordSpan";
+import { StringSpanDto, TodayWordDto, TransStatusWordDto, UserWordInfoDto } from "./dto";
+import { Connection, StringSpan, TodayWord, TransStatusWord, UserWordInfo, WordSpan } from "./types";
 
 export function mapStringSpanDto(stringSpanDto: StringSpanDto): StringSpan {
   if (stringSpanDto.type === 'word') {
-    const wordSpan: WordSpanClass = new WordSpanClass(stringSpanDto.value, stringSpanDto.status);
+    const wordSpan: WordSpan = new WordSpan(stringSpanDto.value, stringSpanDto.status);
     return wordSpan;
   } else {
-    const connection: Connection = {
-      value: stringSpanDto.value,
-    }
+    const connection: Connection = new Connection(stringSpanDto.value);
     return connection;
   }
 }
 
-export function mapTodayWord(wordDto: TodayWordDto): TodayWordClass {
-  const todayWord = new TodayWordClass(
+export function mapTodayWord(wordDto: TodayWordDto): TodayWord {
+  const todayWord = new TodayWord(
     wordDto.value, 
     wordDto.translation, 
   );
   return todayWord;
 }
 
-export function mapWholeWord(wholeWordDto: WholeWordDto): WholeWord {
-  const wholeWord = new WholeWord(
-    wholeWordDto.value,
-    wholeWordDto.status,
-    wholeWordDto.translation,
-    wholeWordDto.quantity,
-    new Date(wholeWordDto.createDate),
-    new Date(wholeWordDto.updateDate),
+export function mapUserWordInfo(userWordInfo: UserWordInfoDto): UserWordInfo {
+  const wholeWord = new UserWordInfo(
+    userWordInfo.value,
+    userWordInfo.status,
+    userWordInfo.translation,
+    userWordInfo.quantity,
+    new Date(userWordInfo.createDate),
+    new Date(userWordInfo.updateDate),
   );
   return wholeWord;
 }
@@ -39,7 +34,7 @@ export function mapWholeWord(wholeWordDto: WholeWordDto): WholeWord {
 export function mapTransWordDto(transWordDto: TransStatusWordDto): TransStatusWord {
   const translationWord: TransStatusWord = {
     type: 'word',
-    word: new WordSpanClass(transWordDto.value, transWordDto.status, transWordDto.translation),
+    word: new WordSpan(transWordDto.value, transWordDto.status, transWordDto.translation),
   }
   return translationWord
 };

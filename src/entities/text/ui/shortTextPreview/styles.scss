@@ -1,7 +1,28 @@
+@import '../../../../app/styles/mixins.scss';
+
 .short-text-previews-list {
-  padding: 10px;
-  background-color: var(--background-light-darker);
-  border-radius: 10px;
+  
+  .content {
+    padding: 10px;
+    background-color: var(--background-light-darker);
+    border-radius: 10px;
+  }
+
+  .sceleton {
+    padding: 10px;
+    background-color: var(--background-light-darker);
+    border-radius: 10px;
+
+    .line {
+      @include sceleton-wave();
+      height: 40px;
+      border-radius: 5px;
+      
+      &:not(:first-child) {
+        margin-top: 10px;
+      }
+    }
+  }
 }
 
 .short-text-preview {

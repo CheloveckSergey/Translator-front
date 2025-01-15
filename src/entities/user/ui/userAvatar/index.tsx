@@ -6,6 +6,7 @@ import { SharedUiHelpers } from "../../../../shared/sharedUi/helpers";
 import './styles.scss';
 import { User } from "../../model";
 import { useAppSelector } from "../../../../app/store";
+import { SharedBlocks } from "../../../../shared/sharedUi/blocks";
 
 interface UAWProps {
   updateAvatarObject?: {
@@ -61,20 +62,6 @@ const UpdateAvatarWindow: FC<UAWProps> = ({ updateAvatarObject, close }) => {
   )
 }
 
-interface ILProps {
-  left: string,
-  right: string,
-}
-export const InfoLine: FC<ILProps> = ({ left, right }) => {
-
-  return (
-    <p className="info-line">
-      <span className="left">{left}</span>
-      <span className="right">{right}</span>
-    </p>
-  )
-}
-
 const AvatarSceleton: FC = () => {
 
   return (
@@ -125,11 +112,11 @@ export const UserAvatar: FC<UAProps> = ({ user, isLoading, isError, updateAvatar
             {actions}
           </div>
           <div className="info">
-            <InfoLine 
+            <SharedBlocks.InfoLine 
               left="Name"
               right={user.login}
             />
-            <InfoLine
+            <SharedBlocks.InfoLine
               left="Studied words"
               right={String(user.wordsNumber)}
             />

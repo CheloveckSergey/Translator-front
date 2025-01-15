@@ -1,9 +1,9 @@
 import { FC } from "react";
-import { UserUi } from "../../../entities/user/ui";
-import { User } from "../../../entities/user";
-import { useAppSelector } from "../../../app/store";
-import { FriendsFeaturesUi } from "../../../features/friendship";
 import './styles.scss';
+import { useAppSelector } from "../../../../app/store";
+import { User } from "../../../../entities/user";
+import { FriendsFeaturesUi } from "../../../../features/friendship";
+import { UserUi } from "../../../../entities/user/ui";
 
 interface AProps {
   user: User | undefined,
@@ -24,7 +24,6 @@ export const Avatar: FC<AProps> = ({ user, isLoading, isError, updateState }) =>
     user?.setIsSentRequest(undefined);
     updateState();
   }
-
   function sendRequest() {
     user?.setIsSentRequest('sentTo');
     updateState();

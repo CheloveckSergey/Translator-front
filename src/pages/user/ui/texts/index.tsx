@@ -1,10 +1,11 @@
 import { FC } from "react";
-import { TextPreviewClass, TextUi, TextsLib } from "../../../entities/text";
-import { useNavigate, useParams } from "react-router-dom";
+import { TextPreview, TextUi, TextsLib } from "../../../../entities/text";
+import { useNavigate } from "react-router-dom";
 import './styles.scss'
+import { useUrlUserId } from "../../lib";
 
 interface TPWProps {
-  text: TextPreviewClass,
+  text: TextPreview,
 }
 const TextPreviewWidget: FC<TPWProps> = ({ text }) => {
 
@@ -17,14 +18,11 @@ const TextPreviewWidget: FC<TPWProps> = ({ text }) => {
   )
 }
 
-interface TWProps {
-  
-}
-export const TextsWidget: FC<TWProps> = ({  }) => {
+export const TextsWidget: FC = () => {
 
-  const { userId } = useParams();
+  const userId = useUrlUserId();
 
-  const { textList, isLoading, isError } = TextsLib.useTextPreviewsList({
+  const { textList, isFetching, isError } = TextsLib.useTextPreviewsList({
     userId: Number(userId),
     limit: 3,
     order: 'DESC',
@@ -35,7 +33,7 @@ export const TextsWidget: FC<TWProps> = ({  }) => {
   return (
     <div className="user-texts">
       <div className="head">
-        <h3>Last texts</h3>
+        <h2>Last texts</h2>
         <p 
           className="watch-all"
           onClick={() => navigate('/texts/user/' + userId)}
@@ -45,12 +43,10 @@ export const TextsWidget: FC<TWProps> = ({  }) => {
       </div>
       <TextUi.TextListUi
         textList={textList}
-        isLoading={isLoading}
+        isLoading={isFetching}
         isError={isError}
-        actionObjects={{
-  
-        }}
-        mapTexts={(text: TextPreviewClass, index: number) => <TextPreviewWidget
+        actionObjects={{}}
+        mapTexts={(text: TextPreview, index: number) => <TextPreviewWidget
           key={index}
           text={text}
         />}

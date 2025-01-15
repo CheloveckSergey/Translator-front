@@ -1,6 +1,6 @@
-import { WordStatus } from "./types";
+import { Word, WordStatus } from ".";
 
-export class WholeWord {
+export class UserWordInfo implements Word {
   readonly value: string;
   translation: string;
   status: WordStatus;
@@ -34,7 +34,7 @@ export class WholeWord {
   }
 
   getCopy() {
-    const newWord = new WholeWord(
+    const newWord = new UserWordInfo(
       this.value,
       this.status,
       this.translation,

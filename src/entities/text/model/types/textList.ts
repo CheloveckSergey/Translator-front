@@ -1,4 +1,4 @@
-export class TextPreviewClass {
+export class TextPreview {
   readonly id: number;
   name: string;
   content: string;
@@ -41,5 +41,22 @@ export class TextPreviewClass {
 
   setIsCopied(isCopied: boolean) {
     this.isCopied = isCopied;
+  }
+}
+
+export class TextList {
+  texts: TextPreview[];
+
+  constructor(texts: TextPreview[]) {
+    this.texts = texts;
+  }
+
+  addText(text: TextPreview) {
+    this.texts = [text, ...this.texts];
+  }
+
+  getCopy() {
+    const newTextList = new TextList(this.texts);
+    return newTextList;
   }
 }

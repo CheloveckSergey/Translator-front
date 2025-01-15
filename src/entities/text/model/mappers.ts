@@ -1,16 +1,11 @@
-import { StringSpan, WordSpanClass } from "../../word";
+import { ShortTextPreview, ShortTextPreviewDto, TextList, TextPreview, TextPreviewDto, TextSpan, TextSpanDto, TransText, TransTextDto, Translation, TranslationDto } from ".";
+import { StringSpan } from "../../word";
 import { mapStringSpanDto, mapTransWordDto } from "../../word/model/mappers";
-import { ShortTextPreviewDto, TextPreviewDto, TextSpanDto, TransTextDto, TranslationDto } from "./dto";
-import { ShortTextPreview } from "./shortTextPreview";
-import { TextListClass } from "./textList";
-import { TextPreviewClass } from "./textPreview";
-import { TextSpanClass } from "./textSpan";
-import { TransText, Translation } from "./types";
 
-export function mapTextSpanDto(textSpanDto: TextSpanDto): TextSpanClass {
-  const stringSpans: StringSpan[] = textSpanDto.stringSpans.map(mapStringSpanDto)
+export function mapTextSpanDto(textSpanDto: TextSpanDto): TextSpan {
+  const stringSpans: StringSpan[] = textSpanDto.stringSpans.map(mapStringSpanDto);
 
-  const textSpan: TextSpanClass = new TextSpanClass(textSpanDto.id, textSpanDto.name, stringSpans, textSpanDto.translation);
+  const textSpan: TextSpan = new TextSpan(textSpanDto.id, textSpanDto.name, stringSpans, textSpanDto.translation);
   return textSpan;
 }
 
@@ -31,8 +26,8 @@ export function mapTranslationDto(translationDto: TranslationDto): Translation {
   }
 }
 
-export function mapTextPreview(textPreviewDto: TextPreviewDto): TextPreviewClass {
-  const textPreview = new TextPreviewClass(
+export function mapTextPreviewDto(textPreviewDto: TextPreviewDto): TextPreview {
+  const textPreview = new TextPreview(
     textPreviewDto.id, 
     textPreviewDto.name, 
     textPreviewDto.content, 
@@ -44,8 +39,8 @@ export function mapTextPreview(textPreviewDto: TextPreviewDto): TextPreviewClass
   return textPreview;
 }
 
-export function mapTextListDto(textPreviewDtos: TextPreviewDto[]): TextListClass {
-  const textList = new TextListClass(textPreviewDtos.map(mapTextPreview));
+export function mapTextListDto(textPreviewDtos: TextPreviewDto[]): TextList {
+  const textList = new TextList(textPreviewDtos.map(mapTextPreviewDto));
   return textList;
 }
 

@@ -2,7 +2,7 @@ import { ChangeEvent, FC, useState } from "react";
 import './styles.scss';
 import { WordLib } from "../../entities/word/lib";
 import { SharedUiHelpers } from "../../shared/sharedUi/helpers";
-import { TodayList } from "../../entities/word/model/todayList";
+import { TodayList } from "../../entities/word";
 import { SharedButtons } from "../../shared/sharedUi/buttons";
 import { WordFeaturesLib } from "../../features/word/lib";
 

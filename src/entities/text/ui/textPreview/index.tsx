@@ -1,6 +1,6 @@
 import { ChangeEvent, FC, FormEvent, useState } from "react";
 import './styles.scss';
-import { TextPreviewClass } from "../../model";
+import { TextPreview } from "../../model";
 import { SharedIcons } from "../../../../shared/sharedUi/icons";
 import { MdEdit } from "react-icons/md";
 import { IoSend } from "react-icons/io5";
@@ -12,7 +12,7 @@ import { SharedInputs } from "../../../../shared/sharedUi/inputs";
 import { SharedBlocks } from "../../../../shared/sharedUi/blocks";
 
 interface NEProps {
-  textPreview: TextPreviewClass,
+  textPreview: TextPreview,
   changeName: {
     mutate: (
       { name, textId } : { name: string, textId: number }
@@ -65,7 +65,7 @@ const NameEditor: FC<NEProps> = ({ textPreview, changeName, close }) => {
 }
 
 interface TPUProps {
-  textPreview: TextPreviewClass,
+  textPreview: TextPreview,
   actionObjects: {
     changeName?: {
       mutate: (

@@ -1,12 +1,12 @@
 import { FC } from "react"
 import './styles.scss';
-import { User, UserLib } from "../../entities/user";
 import { useParams } from "react-router-dom";
-import { useAppSelector } from "../../app/store";
 import { Header } from "./header";
 import { TextsWidget } from "./texts";
-import { UserUi } from "../../entities/user/ui";
 import { Avatar } from "./avatar";
+import { useAppSelector } from "../../../app/store";
+import { UserLib } from "../../../entities/user";
+import { WordsWidget } from "./words";
 
 export const UserPage: FC = () => {
 
@@ -28,6 +28,7 @@ export const UserPage: FC = () => {
       </div>
       <div className="main-content">
         <TextsWidget />
+        <WordsWidget />
       </div>
       <div className="right-content">
 

@@ -1,13 +1,13 @@
 import { FC } from "react";
-import { WholeWord } from "../../../../entities/word/model/wholeWord";
 import { WordUi } from "../../../../entities/word/ui";
 import { useAppSelector } from "../../../../app/store";
 import { WordLib } from "../../../../entities/word/lib";
 import './styles.scss'
+import { UserWordInfo } from "../../../../entities/word";
 
 
 interface WLWProps {
-  word: WholeWord
+  word: UserWordInfo
 }
 const WordLineWidget: FC<WLWProps> = ({ word }) => {
 
@@ -27,18 +27,18 @@ export const WordsListWidget: FC = () => {
 
   const {
     words,
-    isLoading,
+    isFetching,
     isError,
-  } = WordLib.useWholeWords({ limit: 5, userId: user!.id });
+  } = WordLib.useUserWords({ limit: 5, userId: user!.id });
 
   return (
     <div className="last-words-list-widget">
       <h2>Last words</h2>
       <WordUi.WordList
         words={words}
-        isLoading={isLoading}
+        isLoading={isFetching}
         isError={isError}
-        mapWord={(word: WholeWord, index: number) => <WordLineWidget 
+        mapWord={(word: UserWordInfo, index: number) => <WordLineWidget 
           key={index}
           word={word}
         />}

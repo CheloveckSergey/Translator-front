@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { TextListClass, TextPreviewClass, TextSpanClass, Translation, TranslationDto } from "../model";
+import { ShortTextPreviewDto, TextList, TextPreview, TextSpan, Translation } from "../model";
 import { useInfiniteQuery, useMutation, useQuery } from "react-query";
-import { TextApi, TextPreviewsQuery } from "../api";
+import { LastFriendsTextsQuery, TextApi, TextPreviewsQuery } from "../api";
 import { StringSpan } from "../../word";
-import { mapShortTextPreview, mapTextListDto, mapTextPreview, mapTextSpanDto, mapTranslationDto } from "../model/mappers";
-import { useAppSelector } from "../../../app/store";
-import { ShortTextPreview } from "../model/shortTextPreview";
+import { mapShortTextPreview, mapTextListDto, mapTextPreviewDto, mapTextSpanDto, mapTranslationDto } from "../model/mappers";
+import { ShortTextPreview } from "../model/types/shortTextPreview";
+import { SharedHooks } from "../../../shared/lib";
 
 const textsKeys = {
   texts: {
@@ -26,9 +26,11 @@ const textsKeys = {
   }
 }
 
+// const useTexts = (query)
+
 const useTextPreviewsList = (query: TextPreviewsQuery) => {
 
-  const [textList, setTextList] = useState<TextListClass>(new TextListClass([]));
+  const [textList, setTextList] = useState<TextList>(new TextList([]));
 
   const { isFetching, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
     queryKey: textsKeys.texts.slug(query.userId),
@@ -49,12 +51,12 @@ const useTextPreviewsList = (query: TextPreviewsQuery) => {
       return nextPageParam;
     },
     onSuccess: (data) => {
-      let textPreviews: TextPreviewClass[] = [];
+      let textPreviews: TextPreview[] = [];
       for (let page of data.pages) {
-        const curTextPreviews = page.map(mapTextPreview);
+        const curTextPreviews = page.map(mapTextPreviewDto);
         textPreviews = [...textPreviews, ...curTextPreviews];
       }
-      setTextList(new TextListClass(textPreviews));
+      setTextList(new TextList(textPreviews));
     }
   });
 
@@ -65,8 +67,7 @@ const useTextPreviewsList = (query: TextPreviewsQuery) => {
 
   return {
     textList,
-    setTextList,
-    isLoading: isFetching,
+    isFetching,
     isError,
     updateTexts,
     fetchNextPage,
@@ -75,46 +76,42 @@ const useTextPreviewsList = (query: TextPreviewsQuery) => {
   }
 }
 
-const useFriendsLastTexts = () => {
-  const { user } = useAppSelector(state => state.user);
+const useFriendsLastTexts = (query: LastFriendsTextsQuery) => {
 
-  const [texts, setTexts] = useState<ShortTextPreview[]>([]);
-
-  const { isLoading, isError } = useQuery({
-    queryKey: textsKeys.friendsLastTexts.slug(user!.id),
-    queryFn: () => {
-      return TextApi.getFriendsLastTexts();
-    },
-    onSuccess: (data) => {
-      setTexts(data.map(mapShortTextPreview));
-    }
+  const { 
+    entities: texts,
+    updateState,
+    isFetching,
+    isError,
+  } = SharedHooks.useMyInfineQuery<
+    ShortTextPreview,
+    LastFriendsTextsQuery,
+    ShortTextPreviewDto
+  >({
+    query,
+    apiFunction: TextApi.getFriendsLastTexts,
+    mapDto: mapShortTextPreview,
+    queryKey: textsKeys.friendsLastTexts.slug(query.userId)
   });
-
-  function updateTexts() {
-    const textCopies = texts.map(text => text.getCopy());
-    setTexts(textCopies);
-  }
 
   return {
     texts,
-    setTexts,
-    isLoading,
+    isFetching,
     isError,
-    updateTexts,
+    updateState,
   }
 }
 
 const useTextSpan = (textId: number) => {
 
-  const [textSpan, setTextSpan] = useState<TextSpanClass>(new TextSpanClass(0, '', [], ''));
+  const [textSpan, setTextSpan] = useState<TextSpan>(new TextSpan(0, '', [], ''));
 
-  const { data, isLoading, isError } = useQuery({
+  const { isLoading, isError } = useQuery({
     queryKey: textsKeys.text.slug(textId),
     queryFn: () => {
       return TextApi.getTextSpan(textId);
     },
     onSuccess: (data) => {
-      console.log(data);
       setTextSpan(mapTextSpanDto(data));
     }
   });

@@ -1,13 +1,35 @@
-import { TodayWordClass } from "./todayWord";
-import { WordSpanClass } from "./wordSpan";
+import { Word } from "./types";
+
+export class TodayWord implements Word {
+  readonly value: string;
+  translation: string;
+
+  constructor(value: string, translation: string) {
+    this.value = value;
+    this.translation = translation;
+  }
+
+  try(translation: string): boolean {
+    if (this.translation = translation) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  getCopy() {
+    const newWord = new TodayWord(this.value, this.translation);
+    return newWord;
+  }
+}
 
 export class TodayList {
-  words: TodayWordClass[];
+  words: TodayWord[];
   curIndex: number;
-  curWord: TodayWordClass;
+  curWord: TodayWord;
   isEnd: boolean = false;
 
-  constructor(words: TodayWordClass[]) {
+  constructor(words: TodayWord[]) {
     this.words = words;
     this.curIndex = 0;
     this.curWord = words[this.curIndex];

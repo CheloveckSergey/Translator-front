@@ -2,14 +2,14 @@ import { FC, useState } from "react";
 import { SharedUiHelpers } from "../../../../shared/sharedUi/helpers";
 import './styles.scss';
 import { SharedLib } from "../../../../shared/lib";
-import { WholeWord } from "../../model/wholeWord";
+import { UserWordInfo } from "../../model";
 import { SharedButtons } from "../../../../shared/sharedUi/buttons";
 import { FaMehRollingEyes } from "react-icons/fa";
 import { UseModalWindow } from "../../../../widgets/modalWindow";
 import { SharedBlocks } from "../../../../shared/sharedUi/blocks";
 
 interface IWProps {
-  word: WholeWord,
+  word: UserWordInfo,
 }
 const InfoWindow: FC<IWProps> = ({ word }) => {
 
@@ -45,7 +45,7 @@ const InfoWindow: FC<IWProps> = ({ word }) => {
 }
 
 interface WListProps {
-  word: WholeWord,
+  word: UserWordInfo,
   actions: React.ReactNode[],
 }
 export const WordLine: FC<WListProps> = ({ word, actions }) => {
@@ -80,11 +80,21 @@ export const WordLine: FC<WListProps> = ({ word, actions }) => {
   )
 }
 
+const Sceleton: FC = () => {
+
+  return (
+    <div className="sceleton">
+      <div className="sceleton-header"></div>
+      <div className="sceleton-content"></div>
+    </div>
+  )
+}
+
 interface WLProps {
-  words: WholeWord[],
+  words: UserWordInfo[],
   isLoading: boolean,
   isError: boolean,
-  mapWord: (word: WholeWord, index: number) => React.ReactNode,
+  mapWord: (word: UserWordInfo, index: number) => React.ReactNode,
   fetchNextPage?: () => void,
   hasNextPage?: boolean | undefined,
   isFetchingNextPage?: boolean,
@@ -101,14 +111,35 @@ export const WordList: FC<WLProps> = ({
   isFetchingNextPage
 }) => {
 
-  if (isLoading) {
-    return (
-      <div className="sceleton">
-        <div className="sceleton-header"></div>
-        <div className="sceleton-content"></div>
-      </div>
-    )
-  }
+  return (
+    <div className={["word-list", className].join(' ')}>
+      <SharedUiHelpers.ErrorLoader
+        isLoading={isLoading}
+        isError={isError}
+        isEmpty={!words.length}
+        emptyHolder="There's no words here"
+        loadingSceleton={<Sceleton />}
+      >
+        <div className="content">
+          <div className="word-list-header">
+            <span className="word field">Word</span>
+            <span className="translation field">Translation</span>
+            <span className="status field">Status</span>
+            <span className="create-date field">Create date</span>
+            <span className="quantity-date field">Last iteration</span>
+            <div className="actions field"></div>
+          </div>
+          {words.map(mapWord)}
+        </div>
+        <SharedButtons.LoadMoreButton
+          fetchNextPage={fetchNextPage as () => void}
+          isFetchingNextPage={!!isFetchingNextPage}
+          hasNextPage={!!hasNextPage}
+          isError={isError}
+        />
+      </SharedUiHelpers.ErrorLoader>
+    </div>
+  )
 
   return (
     <div className={["word-list", className].join(' ')}>
@@ -116,6 +147,7 @@ export const WordList: FC<WLProps> = ({
         <SharedUiHelpers.ErrorLoader
           isLoading={isLoading}
           isError={isError}
+          loadingSceleton
         >
           <div className="word-list-header">
             <span className="word field">Word</span>

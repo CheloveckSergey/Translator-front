@@ -1,10 +1,10 @@
 import { FC } from "react";
-import { TextPreviewClass, TextUi, TextsLib } from "../../../../entities/text";
+import { TextPreview, TextUi, TextsLib } from "../../../../entities/text";
 import { useAppSelector } from "../../../../app/store";
 import './styles.scss'
 
 interface TPWInterface {
-  textPreview: TextPreviewClass,
+  textPreview: TextPreview,
 }
 const TextPreviewWidget: FC<TPWInterface> = ({ textPreview }) => {
 
@@ -23,7 +23,7 @@ export const LastTextsListWidget: FC = () => {
 
   const {
     textList,
-    isLoading,
+    isFetching,
     isError
   } = TextsLib.useTextPreviewsList({ 
     userId: user!.id,
@@ -36,9 +36,9 @@ export const LastTextsListWidget: FC = () => {
       <h2>Last texts</h2>
       <TextUi.TextListUi 
         textList={textList}
-        isLoading={isLoading}
+        isLoading={isFetching}
         isError={isError}
-        mapTexts={(text: TextPreviewClass, index: number) => (
+        mapTexts={(text: TextPreview, index: number) => (
           <TextPreviewWidget
             key={index}
             textPreview={text}

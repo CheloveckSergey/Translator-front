@@ -1,9 +1,7 @@
 import { FC } from "react";
-import { User } from "../../../entities/user";
-import { useAppSelector } from "../../../app/store";
-import { SharedUiHelpers } from "../../../shared/sharedUi/helpers";
-import { FriendsFeaturesUi } from "../../../features/friendship";
 import './styles.scss';
+import { useAppSelector } from "../../../../app/store";
+import { User } from "../../../../entities/user";
 
 // interface FRBProps {
 //   user: User,

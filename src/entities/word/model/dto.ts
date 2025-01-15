@@ -14,12 +14,10 @@ export interface ConnectionDto {
 }
 
 
-
 export interface TransWordDto {
   value: string,
   translation: string,
 }
-
 
 
 export interface TodayWordDto {
@@ -28,8 +26,7 @@ export interface TodayWordDto {
 }
 
 
-
-export interface WholeWordDto {
+export interface UserWordInfoDto {
   value: string,
   status: WordStatus,
   translation: string,
@@ -37,7 +34,6 @@ export interface WholeWordDto {
   updateDate: string,
   quantity: number,
 }
-
 
 
 export interface TransStatusWordDto {

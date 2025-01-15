@@ -2,15 +2,14 @@ import { FC, useEffect } from "react";
 import './styles.scss';
 import { TextUi, TextsLib } from "../../entities/text";
 import { useParams } from "react-router-dom";
-import { TextSpan } from "../../entities/text/ui/textSpan";
-import { StringSpan, WordSpanClass } from "../../entities/word";
+import { StringSpan, WordSpan } from "../../entities/word";
 import { WordUi } from "../../entities/word/ui";
 import { WordLib } from "../../entities/word/lib";
 import { WordFeaturesLib } from "../../features/word/lib";
 import { WordFeaturesUi } from "../../features/word/ui";
 
 interface WSWProps {
-  wordSpan: WordSpanClass,
+  wordSpan: WordSpan,
   updateState: () => void,
 }
 const WordSpanWidget: FC<WSWProps> = ({ wordSpan, updateState }) => {
@@ -77,7 +76,7 @@ interface SSWProps {
 }
 const StringSpanWidget: FC<SSWProps> = ({ stringSpan, updateState }) => {
 
-  if (stringSpan instanceof WordSpanClass) {
+  if (stringSpan instanceof WordSpan) {
     return (
       <WordSpanWidget
         wordSpan={stringSpan}
@@ -112,7 +111,7 @@ const TextsBox: FC = () => {
   return (
     <div className="texts-box">
       <div className="left">
-        <TextUi.TextSpan 
+        <TextUi.TextSpanUi
           textSpan={textSpan}
           mapWords={(stringSpan: StringSpan, index: number) => (
             <StringSpanWidget 

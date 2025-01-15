@@ -1,6 +1,8 @@
-import { WordStatus } from "./types";
+import { Word, WordStatus } from ".";
 
-export class WordSpanClass {
+export type StringSpan = WordSpan | Connection; 
+
+export class WordSpan implements Word {
   readonly value: string;
   translation: string | undefined;
   status: WordStatus;
@@ -28,7 +30,11 @@ export class WordSpanClass {
   }
 
   getCopy() {
-    const newWordSpan = new WordSpanClass(this.value, this.status, this.translation);
+    const newWordSpan = new WordSpan(this.value, this.status, this.translation);
     return newWordSpan
   }
+}
+
+export class Connection {
+  constructor(public readonly value: string) {}
 }

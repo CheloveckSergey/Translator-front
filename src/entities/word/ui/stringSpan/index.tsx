@@ -1,12 +1,11 @@
 import { FC, useEffect, useState } from "react";
-import { Connection, StringSpan } from "../../model";
-import { WordSpanClass } from "../../model/wordSpan";
+import { Connection, StringSpan, WordSpan } from "../../model";
 import './styles.scss';
 import { UseModalWindow } from "../../../../widgets/modalWindow";
 import { SharedUiHelpers } from "../../../../shared/sharedUi/helpers";
 
 interface WWProps {
-  wordSpan: WordSpanClass,
+  wordSpan: WordSpan,
   loadTranslationObject: {
     // data: string | undefined,
     isLoading: boolean,
@@ -48,7 +47,7 @@ const WordWindow: FC<WWProps> = ({ wordSpan, loadTranslationObject, actions }) =
 }
 
 interface WSProps {
-  wordSpan: WordSpanClass,
+  wordSpan: WordSpan,
   loadTranslationObject: {
     // data: string | undefined,
     isLoading: boolean,
@@ -109,7 +108,7 @@ interface SSProps {
 }
 export const StringSpanUi: FC<SSProps> = ({ stringSpan, loadTranslationObject, actions }) => {
 
-  if (stringSpan instanceof WordSpanClass) {
+  if (stringSpan instanceof WordSpan) {
     return (
       <WordSpanUi
         wordSpan={stringSpan}

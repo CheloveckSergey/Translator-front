@@ -1,3 +1,5 @@
+import { useParams } from 'react-router-dom';
+
 function getComfortableDate(date: Date): string {
 
   function getStringValue(value: number): string {
@@ -38,10 +40,22 @@ function capitalizeFirstLetter(input: string): string {
   return input.charAt(0).toUpperCase() + input.slice(1);
 }
 
+function useUrlUserId(): number {
+  const { userId: _userId } = useParams();
+
+  if (!_userId) {
+    throw Error('В URL нет ID пользователя')
+  }
+
+  const userId = Number(_userId);
+  return userId
+}
+
 export const SharedLib = {
   getComfortableDate,
   getImageUrlFromFile,
   capitalizeFirstLetter,
+  useUrlUserId,
 }
 
 export { SharedHooks } from './hooks'

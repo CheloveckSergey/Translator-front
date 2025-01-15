@@ -1,13 +1,13 @@
 import { useMutation } from "react-query"
 import { TextApi } from "../../../entities/text/api"
-import { TextPreviewClass } from "../../../entities/text";
-import { mapTextPreview } from "../../../entities/text/model/mappers";
+import { TextPreview } from "../../../entities/text";
+import { mapTextPreviewDto } from "../../../entities/text/model/mappers";
 
 interface CreateTextProps {
   name: string,
   content: string,
 }
-const useAddText = (addTextPreview?: (textPreview: TextPreviewClass) => void) => {
+const useAddText = (addTextPreview?: (textPreview: TextPreview) => void) => {
   return useMutation(
     (dto: CreateTextProps) => {
       return TextApi.create(dto.name, dto.content);
@@ -15,7 +15,7 @@ const useAddText = (addTextPreview?: (textPreview: TextPreviewClass) => void) =>
     {
       onSuccess: (data) => {
         if (addTextPreview) {
-          addTextPreview(mapTextPreview(data));
+          addTextPreview(mapTextPreviewDto(data));
         }
       }
     }

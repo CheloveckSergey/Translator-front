@@ -36,13 +36,7 @@ function useMyInfineQuery<
 
   const [entities, setEntities] = useState<Entity[]>([]);
 
-  const { 
-    isFetching, 
-    isError, 
-    fetchNextPage, 
-    isFetchingNextPage, 
-    hasNextPage 
-  } = useInfiniteQuery({
+  const data = useInfiniteQuery({
     queryKey: queryKey,
     queryFn: ({ pageParam = query.offset ?? 0 }) => {
       return apiFunction({ 
@@ -75,12 +69,8 @@ function useMyInfineQuery<
 
   return {
     entities,
-    isLoading: isFetching,
-    isError,
-    fetchNextPage,
-    isFetchingNextPage,
-    hasNextPage,
     updateState,
+    ...data,
   }
 }
 

@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { ShortTextPreview } from "../../model/shortTextPreview";
+import { ShortTextPreview } from "../../model/types/shortTextPreview";
 import { SharedUiHelpers } from "../../../../shared/sharedUi/helpers";
 import './styles.scss'
 import { useNavigate } from "react-router-dom";
@@ -24,6 +24,17 @@ export const ShortTextPreviewCard: FC<STPCProps> = ({ text }) => {
   )
 }
 
+const Sceleton: FC = () => {
+
+  return (
+    <div className="sceleton">
+      <div className="line"></div>
+      <div className="line"></div>
+      <div className="line"></div>
+    </div>
+  )
+}
+
 interface STPLProps {
   texts: ShortTextPreview[],
   isLoading: boolean,
@@ -38,10 +49,13 @@ export const ShortTextPreviewsList: FC<STPLProps> = ({ texts, isLoading, isError
       <SharedUiHelpers.ErrorLoader
         isLoading={isLoading}
         isError={isError}
+        loadingSceleton={<Sceleton />}
         isEmpty={!texts.length}
         emptyHolder='No texts last time'
       >
-        {texts.map(mapText)}
+        <div className="content">
+          {texts.map(mapText)}
+        </div>
       </SharedUiHelpers.ErrorLoader>
     </div>
   )

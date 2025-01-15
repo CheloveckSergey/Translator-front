@@ -1,4 +1,4 @@
-import { TransStatusWord } from "../../word";
+import { TransStatusWord } from "../../../word";
 
 export type Translation = TransText | TransStatusWord;
 

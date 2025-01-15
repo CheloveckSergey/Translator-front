@@ -1,5 +1,5 @@
 import { ChangeEvent, FC, FormEvent, useState } from "react";
-import { TextListClass, TextPreviewClass } from "../../model";
+import { TextList, TextPreview } from "../../model";
 import './styles.scss';
 import { CiSquarePlus } from "react-icons/ci";
 import { SharedButtons } from "../../../../shared/sharedUi/buttons";
@@ -105,10 +105,10 @@ const LoadingSceleton: FC = () => {
 }
 
 interface TLUProps {
-  textList: TextListClass,
+  textList: TextList,
   isLoading: boolean,
   isError: boolean,
-  mapTexts: (text: TextPreviewClass, index: number) => React.ReactNode | React.ReactNode[],
+  mapTexts: (text: TextPreview, index: number) => React.ReactNode | React.ReactNode[],
   actionObjects: {
     addText?: {
       mutate: (

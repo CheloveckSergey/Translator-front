@@ -1,0 +1,7 @@
+@import './styles.scss';
+
+@mixin sceleton-wave() {
+  background: linear-gradient(90deg, #cbb28a, #635023);
+  background-size: 400% 400%;
+  animation: wave 1s ease infinite;
+}
