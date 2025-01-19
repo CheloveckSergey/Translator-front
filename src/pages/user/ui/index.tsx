@@ -1,20 +1,22 @@
 import { FC } from "react"
 import './styles.scss';
-import { useParams } from "react-router-dom";
-import { Header } from "./header";
 import { TextsWidget } from "./texts";
 import { Avatar } from "./avatar";
-import { useAppSelector } from "../../../app/store";
 import { UserLib } from "../../../entities/user";
 import { WordsWidget } from "./words";
+import { useUrlUserId } from "../lib";
 
 export const UserPage: FC = () => {
 
-  const { user: meUser } = useAppSelector(state => state.user);
+  const userId = useUrlUserId();
 
-  const { userId } = useParams();
-
-  const { user, isLoading, isError, updateState } = UserLib.useUser(Number(userId), { meUserId: meUser?.id });
+  const { user, isLoading, isError, updateState } = UserLib.useUser(
+    userId, 
+    { 
+      friendship: true,
+      wordsNumber: true,
+    }
+  );
 
   return (
     <div className="user-page">

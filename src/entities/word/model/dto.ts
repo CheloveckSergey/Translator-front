@@ -42,3 +42,9 @@ export interface TransStatusWordDto {
   translation: string,
   status: WordStatus | 'never',
 }
+
+export interface WordsInfoDto {
+  generalWordsNumber: number,
+  process: number,
+  studied: number,
+}

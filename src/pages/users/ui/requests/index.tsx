@@ -68,7 +68,7 @@ const IncomeRequests: FC = () => {
 
   const {
     users,
-    isLoading,
+    isFetching,
     isError,
     hasNextPage,
     isFetchingNextPage,
@@ -79,7 +79,7 @@ const IncomeRequests: FC = () => {
   return (
     <UserUi.UserList<IncomeRequestUser>
       users={users}
-      isLoading={isLoading}
+      isFetching={isFetching}
       isError={isError}
       mapUser={(user: IncomeRequestUser, index: number) => <IncomeRequestWidget 
         key={index}
@@ -137,7 +137,7 @@ const OutcomeRequests: FC = () => {
 
   const {
     users,
-    isLoading,
+    isFetching,
     isError,
     hasNextPage,
     isFetchingNextPage,
@@ -148,7 +148,7 @@ const OutcomeRequests: FC = () => {
   return (
     <UserUi.UserList<OutcomeRequestUser>
       users={users}
-      isLoading={isLoading}
+      isFetching={isFetching}
       isError={isError}
       mapUser={(user: OutcomeRequestUser, index: number) => <OutcomeRequestWidget 
         key={index}

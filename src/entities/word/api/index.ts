@@ -1,8 +1,12 @@
 import api from "../../../shared/api";
 import { UsualQuery } from "../../../shared/types";
-import { TodayWordDto, TransWordDto, UserWordInfoDto } from "../model";
+import { TodayWordDto, TransWordDto, UserWordInfoDto, WordsInfoDto } from "../model";
 
 export interface UserWordsQuery extends UsualQuery {
+  userId: number,
+}
+
+export interface WordsInfoQuery {
   userId: number,
 }
 
@@ -26,6 +30,16 @@ export class WordApi {
 
   static async getTodayList(): Promise<TodayWordDto[]> {
     const response = await api.get<TodayWordDto[]>(INITIAL_URL + '/getTodayList');
+    return response.data;
+  }
+
+  static async getWordsInfo(query: WordsInfoQuery): Promise<WordsInfoDto> {
+    const response = await api.get<WordsInfoDto>(
+      INITIAL_URL + '/getWordsInfo',
+      {
+        params: query,
+      }
+    );
     return response.data;
   }
 

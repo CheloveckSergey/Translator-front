@@ -1,5 +1,5 @@
-import { StringSpanDto, TodayWordDto, TransStatusWordDto, UserWordInfoDto } from "./dto";
-import { Connection, StringSpan, TodayWord, TransStatusWord, UserWordInfo, WordSpan } from "./types";
+import { StringSpanDto, TodayWordDto, TransStatusWordDto, UserWordInfoDto, WordsInfoDto } from "./dto";
+import { Connection, StringSpan, TodayWord, TransStatusWord, UserWordInfo, WordSpan, WordsInfo } from "./types";
 
 export function mapStringSpanDto(stringSpanDto: StringSpanDto): StringSpan {
   if (stringSpanDto.type === 'word') {
@@ -38,3 +38,8 @@ export function mapTransWordDto(transWordDto: TransStatusWordDto): TransStatusWo
   }
   return translationWord
 };
+
+export function mapWordsInfo(dto: WordsInfoDto): WordsInfo {
+  const info = new WordsInfo(dto.generalWordsNumber, dto.process, dto.studied);
+  return info
+}

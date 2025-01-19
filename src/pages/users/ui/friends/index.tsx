@@ -61,7 +61,7 @@ export const FriendsListWidget: FC = () => {
 
   const {
     users,
-    isLoading,
+    isFetching,
     isError,
     hasNextPage,
     isFetchingNextPage,
@@ -72,7 +72,7 @@ export const FriendsListWidget: FC = () => {
   return (
     <UserUi.UserList<Friend>
       users={users}
-      isLoading={isLoading}
+      isFetching={isFetching}
       isError={isError}
       mapUser={(user: Friend, index: number) => <FriendCardWidget 
         key={index}

@@ -3,33 +3,30 @@ import { FriendRequestStatus } from "./types/types";
 export type SentRequestStatus = 'sentTo' | 'sentFrom' | undefined;
 
 export interface UserDto {
-  id: number;
-  login: string;
-  avatar: string | undefined;
-  isFriend: boolean;
+  id: number,
+  login: string,
+  avatar: string | undefined,
+  isFriend: boolean,
   isSentRequest: SentRequestStatus;
   wordsNumber?: number;
 }
 
-export interface FriendDto {
-  id: number;
-  login: string;
-}
-
-export interface PotentialFriendDto {
-  id: number;
-  login: string;
-}
-
-export interface IncomeRequestUserDto {
+export interface GeneralFriendRequstDto {
   id: number,
   login: string,
+  wordsNumber: number,
+  avatar?: string | undefined,
+}
+
+export interface FriendDto extends GeneralFriendRequstDto {}
+
+export interface FindFriendDto extends GeneralFriendRequstDto {}
+
+export interface IncomeRequestUserDto extends GeneralFriendRequstDto {
   status: FriendRequestStatus,
 }
 
-export interface OutcomeRequestUserDto {
-  id: number,
-  login: string,
+export interface OutcomeRequestUserDto extends GeneralFriendRequstDto {
   status: FriendRequestStatus,
 }
 

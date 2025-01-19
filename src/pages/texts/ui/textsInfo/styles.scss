@@ -1,0 +1,30 @@
+@import '../../../../shared/styles/mixins.scss';
+
+.texts-info {
+  padding: 10px;
+  border-radius: 10px;
+  background-color: var(--background-light-darker);
+
+  .info-line {
+
+    &:not(:first-child) {
+      margin-top: 10px;
+    }
+  }
+}
+
+.info-sceleton {
+  padding: 10px;
+  border-radius: 10px;
+  background-color: var(--background-light-darker);
+
+  .info-sceleton-line {
+    @include sceleton-wave();
+    height: 30px;
+    border-radius: 5px;
+
+    &:not(:first-child) {
+      margin-top: 10px;
+    }
+  }
+}

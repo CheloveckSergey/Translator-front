@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { ShortTextPreviewDto, TextList, TextPreview, TextSpan, Translation } from "../model";
+import { ShortTextPreviewDto, TextList, TextPreview, TextSchema, TextSpan, TextsInfo, Translation } from "../model";
 import { useInfiniteQuery, useMutation, useQuery } from "react-query";
-import { LastFriendsTextsQuery, TextApi, TextPreviewsQuery } from "../api";
+import { LastFriendsTextsQuery, TextApi, TextPreviewsQuery, TextsInfoQuery, TextsQuery } from "../api";
 import { StringSpan } from "../../word";
-import { mapShortTextPreview, mapTextListDto, mapTextPreviewDto, mapTextSpanDto, mapTranslationDto } from "../model/mappers";
+import { mapShortTextPreview, mapTextListDto, mapTextPreviewDto, mapTextSpanDto, mapTextsInfo, mapTranslationDto } from "../model/mappers";
 import { ShortTextPreview } from "../model/types/shortTextPreview";
 import { SharedHooks } from "../../../shared/lib";
 
@@ -23,10 +23,20 @@ const textsKeys = {
   friendsLastTexts: {
     root: 'friendsLastTexts',
     slug: (userId: number) => [textsKeys.friendsLastTexts.root, userId],
+  },
+  textsInfo: {
+    root: 'textsInfo',
+    slug: (userId: number) => [textsKeys.textsInfo.root, userId],
   }
 }
 
-// const useTexts = (query)
+// function getTexts<K extends keyof TextSchema>(query: TextsQuery<K>) {
+//   {
+
+//   } = SharedHooks.useMyInfineQuery<
+
+//   >
+// }
 
 const useTextPreviewsList = (query: TextPreviewsQuery) => {
 
@@ -163,9 +173,37 @@ const useTranslation = () => {
   }
 }
 
+const useTextsInfo = (query: TextsInfoQuery) => {
+
+  const [info, setInfo] = useState<TextsInfo>(new TextsInfo(0, 0, 0));
+
+  const { isFetching, isError } = useQuery({
+    queryKey: textsKeys.textsInfo.slug(query.userId),
+    queryFn: () => {
+      return TextApi.getTextsInfo(query);
+    },
+    onSuccess(data) {
+      setInfo(mapTextsInfo(data));
+    },
+  });
+
+  function updateState() {
+    const copy = info.getCopy();
+    setInfo(copy);
+  }
+
+  return {
+    info,
+    updateState,
+    isFetching,
+    isError,
+  }
+}
+
 export const TextsLib = {
   useTextPreviewsList,
   useFriendsLastTexts,
   useTextSpan,
   useTranslation,
+  useTextsInfo,
 }

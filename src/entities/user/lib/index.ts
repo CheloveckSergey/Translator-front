@@ -1,8 +1,7 @@
 import { useInfiniteQuery, useQuery } from "react-query";
-import { useAppSelector } from "../../../app/store";
-import { FriendsApi, UserApi, UserQuery, UsersQuery } from "../api";
+import { FriendsApi, GetFindFriendsQuery, GetFriendsQuery, GetIncomeRequestsQuery, GetOutcomeRequestsQuery, UserApi, UserQuery } from "../api";
 import { useState } from "react";
-import { Friend, FriendDto, IncomeRequestUser, IncomeRequestUserDto, OutcomeRequestUser, OutcomeRequestUserDto, PotentialFriend, PotentialFriendDto, User } from "../model";
+import { FindFriendDto, Friend, FriendDto, IncomeRequestUser, IncomeRequestUserDto, OutcomeRequestUser, OutcomeRequestUserDto, PotentialFriend, User } from "../model";
 import { mapFindFriendDto, mapFriendDto, mapIncomeRequest, mapOutcomeRequest, mapUserDto } from "../model/mappers";
 import { SharedHooks, SharedLib } from "../../../shared/lib";
 
@@ -35,9 +34,9 @@ const userKeys = {
   }
 }
 
-const useFriends = (query: UsersQuery) => {
+const useFriends = (query: GetFriendsQuery) => {
 
-  const data = SharedHooks.useMyInfineQuery<Friend, UsersQuery, FriendDto>({
+  const data = SharedHooks.useMyInfineQuery<Friend, GetFriendsQuery, FriendDto>({
     query,
     apiFunction: FriendsApi.getFriends,
     mapDto: mapFriendDto,
@@ -50,9 +49,9 @@ const useFriends = (query: UsersQuery) => {
   }
 }
 
-const useFindFriends = (query: UsersQuery) => {
+const useFindFriends = (query: GetFindFriendsQuery) => {
 
-  const data = SharedHooks.useMyInfineQuery<PotentialFriend, UsersQuery, PotentialFriendDto>({
+  const data = SharedHooks.useMyInfineQuery<PotentialFriend, GetFindFriendsQuery, FindFriendDto>({
     query,
     apiFunction: FriendsApi.getFindFriends,
     mapDto: mapFindFriendDto,
@@ -65,9 +64,9 @@ const useFindFriends = (query: UsersQuery) => {
   }
 }
 
-const useIncomeRequests = (query: UsersQuery) => {
+const useIncomeRequests = (query: GetIncomeRequestsQuery) => {
 
-  const data = SharedHooks.useMyInfineQuery<IncomeRequestUser, UsersQuery, IncomeRequestUserDto>({
+  const data = SharedHooks.useMyInfineQuery<IncomeRequestUser, GetIncomeRequestsQuery, IncomeRequestUserDto>({
     query,
     apiFunction: FriendsApi.getIncomeRequests,
     mapDto: mapIncomeRequest,
@@ -80,9 +79,9 @@ const useIncomeRequests = (query: UsersQuery) => {
   }
 }
 
-const useOutcomeRequests = (query: UsersQuery) => {
+const useOutcomeRequests = (query: GetOutcomeRequestsQuery) => {
 
-  const data = SharedHooks.useMyInfineQuery<OutcomeRequestUser, UsersQuery, OutcomeRequestUserDto>({
+  const data = SharedHooks.useMyInfineQuery<OutcomeRequestUser, GetOutcomeRequestsQuery, OutcomeRequestUserDto>({
     query,
     apiFunction: FriendsApi.getOutcomeRequests,
     mapDto: mapOutcomeRequest,

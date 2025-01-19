@@ -64,6 +64,8 @@ export const WordListWidget: FC = () => {
   const _userId = useUrlUserId();
   const userId = Number(_userId);
 
+  const isCurUserWords = user?.id === userId;
+
   const { 
     words, 
     updateState, 
@@ -87,6 +89,7 @@ export const WordListWidget: FC = () => {
       hasNextPage={hasNextPage}
       isFetchingNextPage={isFetchingNextPage}
       fetchNextPage={fetchNextPage}
+      isNoActions={!isCurUserWords}
       className='word-list'
     />
   )

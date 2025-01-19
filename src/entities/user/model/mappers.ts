@@ -1,5 +1,5 @@
 import { CurUser } from "./types/curUser";
-import { PotentialFriendDto, FriendDto, IncomeRequestUserDto, OutcomeRequestUserDto, ResAuthDto, UserDto } from "./dto";
+import { FindFriendDto, FriendDto, IncomeRequestUserDto, OutcomeRequestUserDto, ResAuthDto, UserDto } from "./dto";
 import { Friend, IncomeRequestUser, OutcomeRequestUser, PotentialFriend, User } from ".";
 
 export function mapUserDto(dto: UserDto): User {
@@ -7,23 +7,23 @@ export function mapUserDto(dto: UserDto): User {
   return user;
 }
 
-export function mapFindFriendDto(findFriendDto: PotentialFriendDto): PotentialFriend {
-  const user = new PotentialFriend(findFriendDto.id, findFriendDto.login);
+export function mapFindFriendDto(dto: FindFriendDto): PotentialFriend {
+  const user = new PotentialFriend(dto.id, dto.login, dto.wordsNumber, dto.avatar);
   return user;
 }
 
-export function mapFriendDto(friendDto: FriendDto): Friend {
-  const user = new Friend(friendDto.id, friendDto.login);
+export function mapFriendDto(dto: FriendDto): Friend {
+  const user = new Friend(dto.id, dto.login, dto.wordsNumber, dto.avatar);
   return user;
 }
 
 export function mapIncomeRequest(dto: IncomeRequestUserDto): IncomeRequestUser {
-  const user = new IncomeRequestUser(dto.id, dto.login, dto.status);
+  const user = new IncomeRequestUser(dto.id, dto.login, dto.status, dto.wordsNumber, dto.avatar);
   return user
 }
 
 export function mapOutcomeRequest(dto: OutcomeRequestUserDto): OutcomeRequestUser {
-  const user = new OutcomeRequestUser(dto.id, dto.login, dto.status);
+  const user = new OutcomeRequestUser(dto.id, dto.login, dto.status, dto.wordsNumber, dto.avatar);
   return user
 }
 

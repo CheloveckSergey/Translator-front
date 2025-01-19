@@ -1,4 +1,4 @@
-import { ShortTextPreview, ShortTextPreviewDto, TextList, TextPreview, TextPreviewDto, TextSpan, TextSpanDto, TransText, TransTextDto, Translation, TranslationDto } from ".";
+import { ShortTextPreview, ShortTextPreviewDto, TextList, TextPreview, TextPreviewDto, TextSpan, TextSpanDto, TextsInfo, TextsInfoDto, TransText, TransTextDto, Translation, TranslationDto } from ".";
 import { StringSpan } from "../../word";
 import { mapStringSpanDto, mapTransWordDto } from "../../word/model/mappers";
 
@@ -52,4 +52,9 @@ export function mapShortTextPreview(textDto: ShortTextPreviewDto): ShortTextPrev
     new Date(textDto.createDate),
   );
   return textPreview;
+}
+
+export function mapTextsInfo(info: TextsInfoDto): TextsInfo {
+  const textsInfo = new TextsInfo(info.generalTextsNumber, info.ownTextsNumber, info.copiedTextsNumber);
+  return textsInfo
 }

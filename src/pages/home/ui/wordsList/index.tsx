@@ -42,6 +42,7 @@ export const WordsListWidget: FC = () => {
           key={index}
           word={word}
         />}
+        isNoActions={true}
         className="last-words-list"
       />
     </div>

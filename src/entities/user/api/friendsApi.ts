@@ -1,15 +1,24 @@
 import api from "../../../shared/api";
 import { UsualQuery } from "../../../shared/types";
-import { FriendDto, IncomeRequestUserDto, OutcomeRequestUserDto, PotentialFriendDto } from "../model";
+import { FriendDto, IncomeRequestUserDto, OutcomeRequestUserDto, FindFriendDto } from "../model";
 
-export interface UsersQuery extends UsualQuery {
+export interface FriendRequestQuery extends UsualQuery {
   userId: number,
+  wordsNumber?: boolean,
 }
+
+export interface GetFriendsQuery extends FriendRequestQuery {}
+
+export interface GetFindFriendsQuery extends FriendRequestQuery {}
+
+export interface GetIncomeRequestsQuery extends FriendRequestQuery {}
+
+export interface GetOutcomeRequestsQuery extends FriendRequestQuery {}
 
 const INITIAL_URL = '/friends';
 
 export class FriendsApi {
-  static async getFriends(query: UsersQuery) {
+  static async getFriends(query: GetFriendsQuery) {
     const response = await api.get<FriendDto[]>(
       INITIAL_URL + '/getFriends',
       {
@@ -19,8 +28,8 @@ export class FriendsApi {
     return response.data;
   }
 
-  static async getFindFriends(query: UsersQuery) {
-    const response = await api.get<PotentialFriendDto[]>(
+  static async getFindFriends(query: GetFindFriendsQuery) {
+    const response = await api.get<FindFriendDto[]>(
       INITIAL_URL + '/getFindFriends',
       {
         params: query,
@@ -29,7 +38,7 @@ export class FriendsApi {
     return response.data;
   }
 
-  static async getIncomeRequests(query: UsersQuery) {
+  static async getIncomeRequests(query: GetIncomeRequestsQuery) {
     const response = await api.get<IncomeRequestUserDto[]>(
       INITIAL_URL + '/getIncomeRequests',
       {
@@ -39,7 +48,7 @@ export class FriendsApi {
     return response.data; 
   }
 
-  static async getOutcomeRequests(query: UsersQuery) {
+  static async getOutcomeRequests(query: GetOutcomeRequestsQuery) {
     const response = await api.get<OutcomeRequestUserDto[]>(
       INITIAL_URL + '/getOutcomeRequests',
       {

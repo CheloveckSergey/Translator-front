@@ -1,7 +1,63 @@
+@import '../../../../app/styles/mixins.scss';
+
 .user-list {
 
   .user-list-empty {
     background-color: var(--background-light-darker);
     border-radius: 10px;
   }
+}
+
+@mixin user-card-shape {
+  height: 70px;
+  width: 100%;
+  border-radius: 10px;
+
+  &:not(:first-child) {
+    margin-top: 10px;
+  }
+}
+
+.user-card {
+  @include user-card-shape();
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: var(--background-light-darker);
+
+  .main-user-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    
+    img {
+      height: 60px;
+      width: 60px;
+      border-radius: 50em;
+      object-fit: cover;
+    }
+
+    .login-words {
+
+      .words-number {
+        //??? не работает
+        margin-top: 100px;
+        color: var(--font-grey);
+      }
+    }
+
+  }
+
+
+  .actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+}
+
+.user-card-sceleton {
+  @include user-card-shape();
+  @include sceleton-wave();
 }

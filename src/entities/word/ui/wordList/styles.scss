@@ -6,9 +6,19 @@
   grid-template-columns: 3fr 3fr 2fr 3fr 3fr 2fr;
 }
 
+@mixin dividerWithNoActions {
+  display: grid;
+  grid-template-columns: 3fr 3fr 2fr 3fr 3fr;
+}
+
 @mixin smallDivider {
   display: grid;
   grid-template-columns: 3fr 2fr 2fr;
+}
+
+@mixin smallDividerWithNoActions {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
 }
 
 .word-list {
@@ -24,13 +34,54 @@
       color: var(--font-light);
       @include divider();
 
+      &.with-no-actions {
+        @include dividerWithNoActions();
+
+        .actions {
+          display: none;
+        }
+      }
+
       .field {
         display: flex;
         justify-content: center;
         align-items: center;
       }
 
+      // .word {
+      //   grid-column: span 3;
+      // }
+      
+      // .translation {
+      //   grid-column: span 3;
+      // }
+
+      // .status {
+      //   grid-column: span 2;
+      // }
+
+      // .create-date {
+      //   grid-column: span 3;
+      // }
+
+      // .quantity-date {
+      //   grid-column: span 3;
+      // }
+
+      // .actions {
+      //   grid-column: span 2;
+      // }
+
       @media (max-width: 1200px) {
+
+        &.with-no-actions {
+          @include smallDividerWithNoActions();
+
+          .actions {
+            display: none;
+          }
+        }
+
         @include smallDivider();
 
         .translation, .create-date, .quantity-date {
@@ -40,9 +91,17 @@
     }
   
     .word-line {
-      height: 40px;
       @include divider();
       @include changingColors();
+      height: 40px;
+
+      &.with-no-actions {
+        @include dividerWithNoActions();
+
+        .actions {
+          display: none;
+        }
+      }
       
       .field {
         display: flex;
@@ -65,6 +124,15 @@
       }
 
       @media (max-width: 1200px) {
+
+        &.with-no-actions {
+          @include smallDividerWithNoActions();
+
+          .actions {
+            display: none;
+          }
+        }
+
         @include smallDivider();
   
         .translation, .create-date, .quantity-date {
@@ -114,7 +182,6 @@
 }
 
 .info-window {
-  height: 300px;
   width: 300px;
   padding: 10px;
   background-color: var(--background-light);

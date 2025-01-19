@@ -1,6 +1,6 @@
 import api from "../../../shared/api";
 import { UsualQuery } from "../../../shared/types";
-import { ShortTextPreviewDto, TextPreviewDto, TextSpanDto, TranslationDto } from "../model";
+import { ShortTextPreviewDto, TextPreviewDto, TextSchema, TextSpanDto, TextsInfoDto, TranslationDto } from "../model";
 
 export interface TextPreviewsQuery extends UsualQuery {
   userId: number,
@@ -10,64 +10,51 @@ export interface LastFriendsTextsQuery extends UsualQuery {
   userId: number,
 }
 
-type By = 'user' | 'friends' | 'title';
-
-interface BaseTexts extends UsualQuery {
-  by: By,
-  fields: {
-    name?: boolean | undefined,
-    content?: boolean | undefined,
-    createDate?: boolean | undefined,
-    updateDate?: boolean | undefined,
-    author?: boolean | undefined,
-    isCopied?: boolean | undefined,
-  }
+export interface TextsInfoQuery {
+  userId: number,
 }
 
-interface TextsByUser extends BaseTexts {
+type By = 'user' | 'friends' | 'title';
+
+interface BaseByOptions {
+  by: By,
+}
+
+interface ByUser extends BaseByOptions {
   by: 'user',
   userId: number,
 }
 
-interface TextsByFriends extends BaseTexts {
+interface ByFriends extends BaseByOptions {
   by: 'friends',
   userId: number,
 }
 
-interface TextsByTitle extends BaseTexts {
+interface ByTitle extends BaseByOptions {
   by: 'title',
   title: string,
 }
 
-export type TextsQuery = TextsByUser | TextsByFriends | TextsByTitle;
+type ByOptions = ByUser | ByFriends | ByTitle;
 
-// function filterTrueProperties(obj) {
-//   const result: Partial<T> = {};
-//   for (const key in obj) {
-//       if (obj[key] === true) {
-//           result[key] = true;
-//       }
-//   }
-//   return result;
-// }
+interface FieldsOptions<K extends keyof TextSchema> {
+  fields: K[],
+}
+
+export type TextsQuery<K extends keyof TextSchema> = ByOptions & UsualQuery & FieldsOptions<K>
 
 const INITIAL_URL = '/texts';
 
 export class TextApi {
-  static async getTexts<T extends TextsQuery>(query: T) {
-
-    type Dto = typeof query.fields;
-
-    const response = await api.get<
-      Dto[]
-    >(
-      INITIAL_URL + '/getAllTextPreviewsByUser',
+  static async getTexts<K extends keyof TextSchema>(query: TextsQuery<K>): Promise<Pick<TextSchema, K>[]> {
+    const response = await api.get<Pick<TextSchema, keyof TextSchema>[]>(
+      INITIAL_URL + '/getTexts',
       {
         params: query,
       }
     );
-    return response.data;
-  }
+    return response.data
+  } 
 
   static async getAllTextPreviewsByUser(query: TextPreviewsQuery) {
     const response = await api.get<TextPreviewDto[]>(
@@ -91,6 +78,16 @@ export class TextApi {
 
   static async getTextSpan(textId: number) {
     const response = await api.get<TextSpanDto>(INITIAL_URL + '/getTextSpan/' + textId);
+    return response.data;
+  }
+
+  static async getTextsInfo(query: TextsInfoQuery) {
+    const response = await api.get<TextsInfoDto>(
+      INITIAL_URL + '/getTextsInfo',
+      {
+        params: query,
+      }
+    );
     return response.data;
   }
 

@@ -54,7 +54,7 @@ export const WordLine: FC<WListProps> = ({ word, actions }) => {
 
   return (
     <>
-      <div className="word-line">
+      <div className={["word-line", !actions.length ? 'with-no-actions' : ''].join(' ')}>
         <span className="word field">
           <SharedButtons.TextButton 
             body={<FaMehRollingEyes size={25} />}
@@ -98,6 +98,7 @@ interface WLProps {
   fetchNextPage?: () => void,
   hasNextPage?: boolean | undefined,
   isFetchingNextPage?: boolean,
+  isNoActions?: boolean,
   className?: string,
 }
 export const WordList: FC<WLProps> = ({ 
@@ -105,10 +106,11 @@ export const WordList: FC<WLProps> = ({
   isLoading, 
   isError, 
   mapWord, 
-  className, 
   fetchNextPage, 
   hasNextPage,
-  isFetchingNextPage
+  isFetchingNextPage,
+  isNoActions,
+  className, 
 }) => {
 
   return (
@@ -121,7 +123,7 @@ export const WordList: FC<WLProps> = ({
         loadingSceleton={<Sceleton />}
       >
         <div className="content">
-          <div className="word-list-header">
+          <div className={["word-list-header", isNoActions ? 'with-no-actions' : ''].join(' ')}>
             <span className="word field">Word</span>
             <span className="translation field">Translation</span>
             <span className="status field">Status</span>

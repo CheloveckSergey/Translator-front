@@ -37,3 +37,22 @@ export interface ShortTextPreviewDto {
   },
   createDate: string,
 }
+
+export interface TextsInfoDto {
+  generalTextsNumber: number,
+  ownTextsNumber: number,
+  copiedTextsNumber: number,
+}
+
+export interface TextSchema {
+  id: number,
+  name: string,
+  content: string,
+  createDate: Date,
+  updateDate: Date,
+  author: {
+    id: number,
+    login: string,
+  }
+  isCopied: boolean,
+}

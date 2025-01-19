@@ -5,23 +5,33 @@ import { useUrlUserId } from "../lib";
 import { UserLib } from "../../../entities/user";
 import { useAppSelector } from "../../../app/store";
 import { SharedUiHelpers } from "../../../shared/sharedUi/helpers";
+import { useNavigate } from "react-router-dom";
+import { TextsInfo } from "./textsInfo";
+import { SharedBlocks } from "../../../shared/sharedUi/blocks";
 
 interface AHProps {
   userId: number,
 }
 const AdditionalHeader: FC<AHProps> = ({ userId }) => {
 
-  const { user: meUser } = useAppSelector(state => state.user);
-
   const { user, isLoading, isError } = UserLib.useUser(userId);
+
+  const navigate = useNavigate();
   
   return (
-    <span className="additional-header">
+    <span 
+      className="additional-header"
+      onClick={() => {
+        navigate('/users/' + user?.id);
+      }}
+    >
       <SharedUiHelpers.ErrorLoader
         isLoading={isLoading}
         isError={isError}
       >
-        {user?.login}
+        {user && (
+          user.login
+        )}
       </SharedUiHelpers.ErrorLoader>
     </span>
   )
@@ -36,16 +46,45 @@ export const TextsPage: FC = () => {
   const isMyTexts = meUser?.id === userId;
 
   return (
+    <SharedBlocks.RegularLayout
+      left={<>
+        <TextsInfo />
+      </>}
+      center={<>
+        <div className="texts-header">
+          <h1>Texts</h1>
+          {!isMyTexts && (
+            <AdditionalHeader userId={userId} />
+          )}
+        </div>
+        {isMyTexts && (
+          <p>
+            Here you can check all of your texts.
+          </p>
+        )}
+        <TextListWidget />
+      </>}
+      className="texts-page"
+    />
+  )
+
+  return (
     <div className="texts-page">
       <div className="left-content">
-        
+        <TextsInfo />
       </div>
       <div className="main-content">
-        <h1>
-          Texts{!isMyTexts && <>
-            {' '}/ <AdditionalHeader userId={userId} />
-          </>}
-        </h1>
+        <div className="texts-header">
+          <h1>Texts</h1>
+          {!isMyTexts && (
+            <AdditionalHeader userId={userId} />
+          )}
+        </div>
+        {isMyTexts && (
+          <p>
+            Here you can check all of your texts.
+          </p>
+        )}
         <TextListWidget />
       </div>
       <div className="right-content">

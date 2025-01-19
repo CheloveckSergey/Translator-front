@@ -1,8 +1,8 @@
 import { useInfiniteQuery, useQuery } from "react-query"
-import { UserWordsQuery, WordApi } from "../api"
-import { TodayList, UserWordInfo, UserWordInfoDto } from "../model";
+import { UserWordsQuery, WordApi, WordsInfoQuery } from "../api"
+import { TodayList, UserWordInfo, UserWordInfoDto, WordsInfo } from "../model";
 import { useState } from "react";
-import { mapTodayWord, mapUserWordInfo } from "../model/mappers";
+import { mapTodayWord, mapUserWordInfo, mapWordsInfo } from "../model/mappers";
 import { SharedHooks } from "../../../shared/lib";
 
 const wordKeys = {
@@ -16,6 +16,10 @@ const wordKeys = {
   allWords: {
     root: 'allWords',
     slug: (userId: number) => [wordKeys.allWords.root, userId],
+  },
+  wordsInfo: {
+    root: 'words',
+    slug: (userId: number) => [wordKeys.wordsInfo.root, userId], 
   }
 }
 
@@ -100,8 +104,36 @@ const useUserWords = (query: UserWordsQuery) => {
   }
 }
 
+const useWordsInfo = (query: WordsInfoQuery) => {
+
+  const [info, setInfo] = useState<WordsInfo>(new WordsInfo(0, 0, 0));
+
+  const { isFetching, isError } = useQuery({
+    queryKey: wordKeys.wordsInfo.slug(query.userId),
+    queryFn: () => {
+      return WordApi.getWordsInfo(query);
+    },
+    onSuccess(data) {
+      setInfo(mapWordsInfo(data));
+    },
+  });
+
+  function updateState() {
+    const copy = info.getCopy();
+    setInfo(copy);
+  }
+
+  return {
+    info,
+    updateState,
+    isFetching,
+    isError,
+  }
+}
+
 export const WordLib = {
   useWordTranslation,
   useTodayList,
   useUserWords,
+  useWordsInfo,
 }
