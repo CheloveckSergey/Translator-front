@@ -1,10 +1,16 @@
 import { StringSpanDto, TransStatusWordDto } from "../../word";
 
+export interface BlockDto {
+  id: number,
+  original: StringSpanDto[],
+  translation: string,
+}
+
 export interface TextSpanDto {
   id: number,
   name: string,
-  stringSpans: StringSpanDto[], 
-  translation: string | undefined,
+  blocks: BlockDto[],
+  premiere: boolean,
 }
 
 export type TranslationDto = TransTextDto | TransStatusWordDto;
@@ -55,4 +61,43 @@ export interface TextSchema {
     login: string,
   }
   isCopied: boolean,
+}
+
+export interface CreateTextDto {
+  name: string,
+  userId: number,
+}
+
+export interface CreateTextResponse {
+  id: number,
+  name: string,
+}
+
+interface GeneralBlock {
+  type: 'new' | 'edit' | 'delete',
+}
+
+interface NewBlock extends GeneralBlock {
+  type: 'new',
+  original: string,
+  translation: string,
+}
+
+interface EditBlock extends GeneralBlock {
+  type: 'edit',
+  blockId: number,
+  original: string,
+  translation: string,
+}
+
+interface DeleteBlock extends GeneralBlock {
+  type: 'delete',
+  blockId: number,
+}
+
+export type SaveBlock = NewBlock | EditBlock | DeleteBlock;
+
+export interface SaveBlocksDto {
+  textId: number,
+  blocks: SaveBlock[],
 }

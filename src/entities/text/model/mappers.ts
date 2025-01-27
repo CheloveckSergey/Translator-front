@@ -1,11 +1,35 @@
-import { ShortTextPreview, ShortTextPreviewDto, TextList, TextPreview, TextPreviewDto, TextSpan, TextSpanDto, TextsInfo, TextsInfoDto, TransText, TransTextDto, Translation, TranslationDto } from ".";
+import { Block, EditingBlock, ShortTextPreview, ShortTextPreviewDto, TextList, TextPreview, TextPreviewDto, TextSpan, TextSpanDto, TextsInfo, TextsInfoDto, TransText, TransTextDto, Translation, TranslationDto } from ".";
 import { StringSpan } from "../../word";
 import { mapStringSpanDto, mapTransWordDto } from "../../word/model/mappers";
+import { EditingTextSpan } from "./types/editingTextSpan";
 
-export function mapTextSpanDto(textSpanDto: TextSpanDto): TextSpan {
-  const stringSpans: StringSpan[] = textSpanDto.stringSpans.map(mapStringSpanDto);
+export function mapTextSpanDto(dto: TextSpanDto): TextSpan {
+  const blocks = dto.blocks.map(blockDto => {
+    const stringSpans = blockDto.original.map(mapStringSpanDto);
+    const block: Block = {
+      id: blockDto.id,
+      original: stringSpans,
+      translation: blockDto.translation,
+    }
+    return block
+  })
 
-  const textSpan: TextSpan = new TextSpan(textSpanDto.id, textSpanDto.name, stringSpans, textSpanDto.translation);
+  const textSpan: TextSpan = new TextSpan(dto.id, dto.name, blocks, dto.premiere);
+  return textSpan;
+}
+
+export function mapEditingTextSpan(dto: TextSpanDto): EditingTextSpan {
+  const blocks = dto.blocks.map(blockDto => {
+    const stringSpans = blockDto.original.map(mapStringSpanDto);
+
+    const original: string = stringSpans.reduce((prev, cur) => {
+      return prev + cur.value
+    }, '');
+    const block = new EditingBlock(blockDto.id, original, blockDto.translation);
+    return block
+  })
+
+  const textSpan = new EditingTextSpan(dto.id, dto.name, blocks);
   return textSpan;
 }
 

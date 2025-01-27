@@ -64,6 +64,16 @@ const NameEditor: FC<NEProps> = ({ textPreview, changeName, close }) => {
   )
 }
 
+export const SceletonTextPreview: FC = () => {
+
+  return (
+    <div className="sceleton-text-preview">
+      <div className="header"></div>
+      <div className="content"></div>
+    </div>
+  )
+}
+
 interface TPUProps {
   textPreview: TextPreview,
   actionObjects: {
@@ -147,16 +157,6 @@ export const TextPreviewUi: FC<TPUProps> = ({
           {SharedLib.getComfortableDate(textPreview.createDate)}
         </span>
       </div>
-    </div>
-  )
-}
-
-export const SceletonTextPreview: FC = () => {
-
-  return (
-    <div className="sceleton-text-preview">
-      <div className="header"></div>
-      <div className="content"></div>
     </div>
   )
 }

@@ -1,24 +1,21 @@
 import { useMutation } from "react-query"
 import { TextApi } from "../../../entities/text/api"
-import { TextPreview } from "../../../entities/text";
+import { CreateTextDto, SaveBlocksDto, TextPreview } from "../../../entities/text";
 import { mapTextPreviewDto } from "../../../entities/text/model/mappers";
 
-interface CreateTextProps {
-  name: string,
-  content: string,
-}
-const useAddText = (addTextPreview?: (textPreview: TextPreview) => void) => {
+const useAddText = () => {
   return useMutation(
-    (dto: CreateTextProps) => {
-      return TextApi.create(dto.name, dto.content);
+    (dto: CreateTextDto) => {
+      return TextApi.create(dto);
     },
-    {
-      onSuccess: (data) => {
-        if (addTextPreview) {
-          addTextPreview(mapTextPreviewDto(data));
-        }
-      }
-    }
+  )
+}
+
+const useSaveBlocks = () => {
+  return useMutation(
+    (dto: SaveBlocksDto) => {
+      return TextApi.saveBlocks(dto);
+    },
   )
 }
 
@@ -88,6 +85,7 @@ const useDeleteText = (textId: number, deleteText?: () => void) => {
 
 export const TextFeaturesLib = {
   useAddText,
+  useSaveBlocks,
   useChangeName,
   useCopyText,
   useUncopyText,

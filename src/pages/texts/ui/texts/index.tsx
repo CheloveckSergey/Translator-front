@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { useAppSelector } from "../../../../app/store";
 import { useUrlUserId } from "../../lib";
-import { TextPreview, TextUi, TextsLib } from "../../../../entities/text";
+import { CreateTextDto, CreateTextResponse, TextPreview, TextUi, TextsLib } from "../../../../entities/text";
 import { TextFeaturesLib, TextFeaturesUi } from "../../../../features/texts";
 import './styles.scss';
 
@@ -117,11 +117,22 @@ export const TextListWidget: FC = () => {
     userId
   });
 
-  const addTextMutation = TextFeaturesLib.useAddText(addText);
+  const addTextMutation = TextFeaturesLib.useAddText();
 
-  function addText(textPreview: TextPreview) {
-    textList.addText(textPreview);
-    updateTexts();
+  const actionsObjects: {
+    addText?: {
+      mutate: (dto: CreateTextDto) => Promise<CreateTextResponse>;
+      isLoading: boolean;
+      isError: boolean;
+    } | undefined;
+  } = {}
+
+  if (user && userId === user?.id) {
+    actionsObjects.addText = {
+      mutate: addTextMutation.mutateAsync,
+      isLoading: addTextMutation.isLoading,
+      isError: addTextMutation.isError,
+    }
   }
 
   return (

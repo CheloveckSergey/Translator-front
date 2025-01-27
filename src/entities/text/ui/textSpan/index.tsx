@@ -4,14 +4,14 @@ import { StringSpan } from "../../../word";
 import { TextSpan } from "../../model";
 
 interface TSProps {
-  textSpan: TextSpan,
+  stringSpans: StringSpan[],
   mapWords: (stringSpan: StringSpan, index: number) => React.ReactNode,
 }
-export const TextSpanUi: FC<TSProps> = ({ textSpan, mapWords }) => {
+export const TextSpanUi: FC<TSProps> = ({ stringSpans, mapWords }) => {
 
   return (
     <div className="text-span">
-      {textSpan.stringSpans.map(mapWords)}
+      {stringSpans.map(mapWords)}
     </div>
   )
 }

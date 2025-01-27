@@ -1,24 +1,21 @@
 import { StringSpan } from "../../../word";
+import { Block } from "./types";
 
 export class TextSpan {
-  readonly id: number;
-  name: string;
-  stringSpans: StringSpan[];
-  translation: string | undefined;
 
-  constructor(id: number, name: string, stringSpans: StringSpan[], translation: string | undefined) {
-    this.id = id;
-    this.name = name;
-    this.stringSpans = stringSpans;
-    this.translation = translation;
-  }
+  constructor(
+    public id: number, 
+    public name: string, 
+    public blocks: Block[],
+    public premiere: boolean,
+  ) {}
 
   changeName(name: string) {
     this.name = name;
   }
 
   getCopy() {
-    const newTextSpan = new TextSpan(this.id, this.name, this.stringSpans, this.translation);
+    const newTextSpan = new TextSpan(this.id, this.name, this.blocks, this.premiere);
     return newTextSpan;
   }
 }

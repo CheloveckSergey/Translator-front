@@ -1,6 +1,6 @@
 import api from "../../../shared/api";
 import { UsualQuery } from "../../../shared/types";
-import { ShortTextPreviewDto, TextPreviewDto, TextSchema, TextSpanDto, TextsInfoDto, TranslationDto } from "../model";
+import { CreateTextDto, CreateTextResponse, SaveBlocksDto, ShortTextPreviewDto, TextPreviewDto, TextSchema, TextSpanDto, TextsInfoDto, TranslationDto } from "../model";
 
 export interface TextPreviewsQuery extends UsualQuery {
   userId: number,
@@ -91,10 +91,18 @@ export class TextApi {
     return response.data;
   }
 
-  static async create(name: string, content: string) {
-    const response = await api.post<TextPreviewDto>(
+  static async create(dto: CreateTextDto) {
+    const response = await api.post<CreateTextResponse>(
       INITIAL_URL + '/create',
-      { name, content },
+      dto,
+    );
+    return response.data;
+  }
+
+  static async saveBlocks(dto: SaveBlocksDto) {
+    const response = await api.post(
+      INITIAL_URL + '/saveBlocks',
+      dto,
     );
     return response.data;
   }

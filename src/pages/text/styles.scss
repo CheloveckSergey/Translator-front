@@ -4,34 +4,5 @@
 
   .main-content {
     width: 950px;
-
-    .texts-box {
-      display: flex;
-      margin-top: 10px;
-      border: 3px solid var(--background-dark);
-      border-radius: 10px;
-
-      .left, .right {
-        // flex-grow: 1;
-        width: 50%;
-        padding: 5px;
-      }
-
-      .left {
-        border-right: 1px solid var(--background-dark);
-      }
-
-      .right {
-        border-left: 1px solid var(--background-dark);
-      }
-    }
-
-    span.word {
-      cursor: pointer;
-
-      &:hover {
-        background-color: blue;
-      }
-    }
   }
 }

@@ -3,9 +3,10 @@ import { ShortTextPreviewDto, TextList, TextPreview, TextSchema, TextSpan, Texts
 import { useInfiniteQuery, useMutation, useQuery } from "react-query";
 import { LastFriendsTextsQuery, TextApi, TextPreviewsQuery, TextsInfoQuery, TextsQuery } from "../api";
 import { StringSpan } from "../../word";
-import { mapShortTextPreview, mapTextListDto, mapTextPreviewDto, mapTextSpanDto, mapTextsInfo, mapTranslationDto } from "../model/mappers";
+import { mapEditingTextSpan, mapShortTextPreview, mapTextListDto, mapTextPreviewDto, mapTextSpanDto, mapTextsInfo, mapTranslationDto } from "../model/mappers";
 import { ShortTextPreview } from "../model/types/shortTextPreview";
 import { SharedHooks } from "../../../shared/lib";
+import { EditingTextSpan } from "../model/types/editingTextSpan";
 
 const textsKeys = {
   texts: {
@@ -114,7 +115,7 @@ const useFriendsLastTexts = (query: LastFriendsTextsQuery) => {
 
 const useTextSpan = (textId: number) => {
 
-  const [textSpan, setTextSpan] = useState<TextSpan>(new TextSpan(0, '', [], ''));
+  const [textSpan, setTextSpan] = useState<TextSpan | EditingTextSpan>(new TextSpan(0, '', [], false));
 
   const { isLoading, isError } = useQuery({
     queryKey: textsKeys.text.slug(textId),
@@ -122,7 +123,11 @@ const useTextSpan = (textId: number) => {
       return TextApi.getTextSpan(textId);
     },
     onSuccess: (data) => {
-      setTextSpan(mapTextSpanDto(data));
+      if (data.premiere) {
+        setTextSpan(mapTextSpanDto(data));
+      } else (
+        setTextSpan(mapEditingTextSpan(data))
+      )
     }
   });
 

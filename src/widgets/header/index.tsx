@@ -8,6 +8,7 @@ import { SharedHooks } from "../../shared/lib";
 import { authThunks } from "../../features/auth";
 import { SharedBlocks } from "../../shared/sharedUi/blocks";
 import { SharedUiTypes } from "../../shared/sharedUi/types";
+import { GiSpinningSword } from "react-icons/gi";
 
 const UserMenu: FC = () => {
 
@@ -103,7 +104,10 @@ export const Header: FC<HProps> = ({ switchMenu }) => {
           onClick={switchMenu}
           className="show-menu-button"
         />
-        <span className="app-name">STranslator</span>
+        <span className="app-name">
+          <GiSpinningSword size={25} />
+          STranslator
+        </span>
       </div>
       <div className="main-links">
         <Link to='/'>

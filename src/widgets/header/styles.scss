@@ -21,6 +21,12 @@
     gap: 10px;
     align-items: center;
 
+    .app-name {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+
     .show-menu-button {
       
       @media (min-width: 768px) {

@@ -1,5 +1,5 @@
 import { ChangeEvent, FC, FormEvent, useState } from "react";
-import { TextList, TextPreview } from "../../model";
+import { CreateTextDto, CreateTextResponse, TextList, TextPreview } from "../../model";
 import './styles.scss';
 import { CiSquarePlus } from "react-icons/ci";
 import { SharedButtons } from "../../../../shared/sharedUi/buttons";
@@ -7,21 +7,27 @@ import { SharedUiHelpers } from "../../../../shared/sharedUi/helpers";
 import { SharedInputs } from "../../../../shared/sharedUi/inputs";
 import { SharedIcons } from "../../../../shared/sharedUi/icons";
 import { SceletonTextPreview } from "../textPreview";
+import { useAppSelector } from "../../../../app/store";
+import { useNavigate } from "react-router-dom";
 
 
 interface TAProps {
   mutate: (
-    { name, content } : { name: string, content: string }
-  ) => Promise<any>,
+    dto: CreateTextDto,
+  ) => Promise<CreateTextResponse>,
   isLoading: boolean,
   isError: boolean,
 }
 const TextAdder: FC<TAProps> = ({ mutate, isLoading, isError }) => {
 
+  const { user } = useAppSelector(state => state.user);
+
   const [editing, setEditing] = useState<boolean>(false);
 
   const [name, setName] = useState<string>('');
   const [content, setContent] = useState<string>('');
+
+  const navigate = useNavigate();
 
   function closeEditing() {
     setName('');
@@ -32,9 +38,10 @@ const TextAdder: FC<TAProps> = ({ mutate, isLoading, isError }) => {
   function submit() {
     mutate({
       name,
-      content,
-    }).then(() => {
+      userId: user!.id,
+    }).then((data) => {
       closeEditing();
+      navigate('/texts/' + data.id)
     });
   }
 
@@ -58,13 +65,13 @@ const TextAdder: FC<TAProps> = ({ mutate, isLoading, isError }) => {
               onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
               className="name light"
             />
-            <label htmlFor="content">Content</label>
+            {/* <label htmlFor="content">Content</label>
             <textarea 
               name="content"
               value={content}
               onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setContent(e.target.value)}
               className="content light"
-            />
+            /> */}
             <div className="buttons">
               <SharedInputs.CustomSubmit
                 body="Submit"
@@ -112,8 +119,8 @@ interface TLUProps {
   actionObjects: {
     addText?: {
       mutate: (
-        { name, content } : { name: string, content: string }
-      ) => Promise<any>,
+        dto: CreateTextDto,
+      ) => Promise<CreateTextResponse>,
       isLoading: boolean,
       isError: boolean,
     }

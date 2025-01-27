@@ -51,11 +51,16 @@ function useUrlUserId(): number {
   return userId
 }
 
+function getRandomNumber(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 export const SharedLib = {
   getComfortableDate,
   getImageUrlFromFile,
   capitalizeFirstLetter,
   useUrlUserId,
+  getRandomNumber,
 }
 
 export { SharedHooks } from './hooks'
