@@ -4,7 +4,7 @@ import './styles.scss'
 import { SharedButtons } from "../../../shared/sharedUi/buttons";
 import { EditingTextSpan } from "../../../entities/text/model/types/editingTextSpan";
 import { TextFeaturesLib } from "../../../features/texts";
-import { FaRegEdit, FaTrashAlt } from "react-icons/fa";
+import { FaCaretSquareDown, FaCaretSquareUp, FaRegEdit, FaTrashAlt } from "react-icons/fa";
 
 interface BEProps {
   text: EditingTextSpan,
@@ -110,6 +110,16 @@ const BlockWidget: FC<BWProps> = ({ block, text, updateState }) => {
     updateState();
   }
 
+  function newBlockBelow() {
+    text.newBlockBelow(block.id);
+    updateState();
+  }
+
+  function newBlockAbove() {
+    text.newBlockAbove(block.id);
+    updateState();
+  }
+
   if (block.deleted) {
     return (
       <div className="block-deleted">
@@ -131,6 +141,17 @@ const BlockWidget: FC<BWProps> = ({ block, text, updateState }) => {
       <div className="right">
         {block.translation}
         <div className="buttons">
+          {block.id}
+          <SharedButtons.TextButton
+            body={<FaCaretSquareUp size={15} />}
+            onClick={newBlockAbove}
+            color="dark"
+          />
+          <SharedButtons.TextButton
+            body={<FaCaretSquareDown size={15} />}
+            onClick={newBlockBelow}
+            color="dark"
+          />
           <SharedButtons.TextButton
             body={<FaRegEdit size={15} />}
             onClick={edit}
@@ -149,9 +170,15 @@ const BlockWidget: FC<BWProps> = ({ block, text, updateState }) => {
 
 interface ETBProps {
   text: EditingTextSpan,
+  page: number,
+  pagesTotal: number,
+  nextPage: () => void,
+  prevPage: () => void,
+  setPage: (page: number) => void, 
+  refetch: () => void,
   updateState: () => void,
 }
-export const EditingTextBox: FC<ETBProps> = ({ text, updateState }) => {
+export const EditingTextBox: FC<ETBProps> = ({ text, page, nextPage, prevPage, setPage, pagesTotal, refetch, updateState }) => {
 
   const {
     mutateAsync,
@@ -165,11 +192,15 @@ export const EditingTextBox: FC<ETBProps> = ({ text, updateState }) => {
   }
 
   function saveBlocks() {
-    mutateAsync(text.getSaveBlocksDto());
+    mutateAsync(text.getSaveBlocksDto())
+    .then(() => {
+      refetch();
+    });
   }
 
   return (
     <div className="editing-text-box">
+      {text.editingAboveBlockId ? 'true' : 'false'}
       {text.blocks.map((block, index) => (
         <>
           {text.editingBlockId === block.id ? (
@@ -179,12 +210,26 @@ export const EditingTextBox: FC<ETBProps> = ({ text, updateState }) => {
               updateState={updateState}
             />
           ) : (
-            <BlockWidget
-              key={block.id}
-              block={block}
-              text={text}
-              updateState={updateState}
-            />
+            <>
+              {text.editingAboveBlockId && text.editingAboveBlockId === block.id && (
+                <BlockEditor
+                  text={text}
+                  updateState={updateState}
+                />
+              )}
+              <BlockWidget
+                key={block.id}
+                block={block}
+                text={text}
+                updateState={updateState}
+              />
+              {text.editingBelowBlockId && text.editingBelowBlockId === block.id && (
+                <BlockEditor
+                  text={text}
+                  updateState={updateState}
+                />
+              )}
+            </>
           )}
         </>
       ))}
@@ -213,6 +258,33 @@ export const EditingTextBox: FC<ETBProps> = ({ text, updateState }) => {
           />
         </div>
       )}
+      <div className="pagination">
+        <SharedButtons.TextButton
+          body='<'
+          onClick={prevPage}
+          color="green"
+          disabled={page === 0}
+          className="prev"
+        />
+        <div className="pages">
+          {new Array(pagesTotal).fill(0).map((_, index) => (
+            <SharedButtons.TextButton
+              key={index}
+              body={index + 1}
+              onClick={() => setPage(index)}
+              color="green"
+              className={page === index ? 'current' : ''}
+            />
+          ))}
+        </div>
+        <SharedButtons.TextButton
+          body='>'
+          onClick={nextPage}
+          color="green"
+          disabled={(page + 1) >= pagesTotal}
+          className="next"
+        />
+      </div>
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { Block, EditingBlock, ShortTextPreview, ShortTextPreviewDto, TextList, TextPreview, TextPreviewDto, TextSpan, TextSpanDto, TextsInfo, TextsInfoDto, TransText, TransTextDto, Translation, TranslationDto } from ".";
+import { Block, EditingBlock, EditingTextSpanDto, ShortTextPreview, ShortTextPreviewDto, TextList, TextPreview, TextPreviewDto, TextSpan, TextSpanDto, TextsInfo, TextsInfoDto, TransText, TransTextDto, Translation, TranslationDto } from ".";
 import { StringSpan } from "../../word";
 import { mapStringSpanDto, mapTransWordDto } from "../../word/model/mappers";
 import { EditingTextSpan } from "./types/editingTextSpan";
@@ -18,14 +18,9 @@ export function mapTextSpanDto(dto: TextSpanDto): TextSpan {
   return textSpan;
 }
 
-export function mapEditingTextSpan(dto: TextSpanDto): EditingTextSpan {
+export function mapEditingTextSpan(dto: EditingTextSpanDto): EditingTextSpan {
   const blocks = dto.blocks.map(blockDto => {
-    const stringSpans = blockDto.original.map(mapStringSpanDto);
-
-    const original: string = stringSpans.reduce((prev, cur) => {
-      return prev + cur.value
-    }, '');
-    const block = new EditingBlock(blockDto.id, original, blockDto.translation);
+    const block = new EditingBlock(blockDto.id, blockDto.original, blockDto.translation);
     return block
   })
 

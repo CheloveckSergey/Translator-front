@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ShortTextPreviewDto, TextList, TextPreview, TextSchema, TextSpan, TextsInfo, Translation } from "../model";
 import { useInfiniteQuery, useMutation, useQuery } from "react-query";
-import { LastFriendsTextsQuery, TextApi, TextPreviewsQuery, TextsInfoQuery, TextsQuery } from "../api";
+import { LastFriendsTextsQuery, TextApi, TextPreviewsQuery, TextQuery, TextsInfoQuery, TextsQuery } from "../api";
 import { StringSpan } from "../../word";
 import { mapEditingTextSpan, mapShortTextPreview, mapTextListDto, mapTextPreviewDto, mapTextSpanDto, mapTextsInfo, mapTranslationDto } from "../model/mappers";
 import { ShortTextPreview } from "../model/types/shortTextPreview";
@@ -16,6 +16,10 @@ const textsKeys = {
   text: {
     root: 'text',
     slug: (textId: number) => [textsKeys.text.root, textId],
+  },
+  editingText: {
+    root: 'editingText',
+    slug: (textId: number, page: number) => [textsKeys.editingText.root, textId, page],
   },
   translation: {
     root: 'translation',
@@ -115,7 +119,7 @@ const useFriendsLastTexts = (query: LastFriendsTextsQuery) => {
 
 const useTextSpan = (textId: number) => {
 
-  const [textSpan, setTextSpan] = useState<TextSpan | EditingTextSpan>(new TextSpan(0, '', [], false));
+  const [textSpan, setTextSpan] = useState<TextSpan>(new TextSpan(0, '', [], false));
 
   const { isLoading, isError } = useQuery({
     queryKey: textsKeys.text.slug(textId),
@@ -123,11 +127,7 @@ const useTextSpan = (textId: number) => {
       return TextApi.getTextSpan(textId);
     },
     onSuccess: (data) => {
-      if (data.premiere) {
-        setTextSpan(mapTextSpanDto(data));
-      } else (
-        setTextSpan(mapEditingTextSpan(data))
-      )
+      setTextSpan(mapTextSpanDto(data));
     }
   });
 
@@ -138,6 +138,110 @@ const useTextSpan = (textId: number) => {
     isError,
   }
 }
+
+const useEditingTextSpan = (textId: number) => {
+
+  const [textSpan, setTextSpan] = useState<EditingTextSpan>(new EditingTextSpan(0, '', []));
+  const [page, setPage] = useState<number>(() => {
+    const page = localStorage.getItem(`TEXT_${textId}_PAGE`);
+    if (page) {
+      return Number(page)
+    } else {
+      return 0
+    }
+  });
+  const [pagesTotal, setPagesTotal] = useState<number>(0);
+
+  const { isFetching, isError, refetch } = useQuery({
+    queryKey: textsKeys.editingText.slug(textId, page),
+    queryFn: () => {
+      return TextApi.getEditingTextSpan({ 
+        textId: textId,
+        page,
+      });
+    },
+    onSuccess: (data) => {
+      setTextSpan(mapEditingTextSpan(data));
+      setPagesTotal(data.pagesTotal);
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem(`TEXT_${textId}_PAGE`, String(page));
+  }, [page]);
+
+  function updateState() {
+    const newTextSpan = textSpan.getCopy();
+    setTextSpan(newTextSpan);
+  }
+
+  function nextPage() {
+    if (pagesTotal <= (page + 1)) {
+      return
+    }
+    setPage(prev => prev + 1);
+  }
+
+  function prevPage() {
+    if (page === 0) {
+      return
+    }
+    setPage(prev => prev - 1);
+  }
+
+  return {
+    textSpan,
+    page,
+    pagesTotal,
+    isFetching,
+    isError,
+    updateState,
+    nextPage,
+    prevPage,
+    setPage,
+    refetch,
+  }
+}
+// const useEditingTextSpan = (query: TextQuery) => {
+
+//   const [textSpan, setTextSpan] = useState<EditingTextSpan>(new EditingTextSpan(0, '', []));
+
+//   const { isFetching, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+//     queryKey: textsKeys.editingText.slug(query.textId),
+//     queryFn: ({ pageParam = query.offset ?? 0 }) => {
+//       return TextApi.getEditingTextSpan({ 
+//         textId: query.textId,
+//         offset: pageParam, 
+//         limit: query.limit,
+//       });
+//     },
+//     getNextPageParam: (lastPage, pages) => {
+//       if (!query.limit) {
+//         return null
+//       }
+//       if (lastPage.blocks.length < query.limit) return null;
+//       const nextPageParam = lastPage.blocks.length ? pages.length * query.limit : null;
+//       return nextPageParam;
+//     },
+//     onSuccess: (data) => {
+//       const curDto = data.pages.at(-1);
+//       if (curDto) {
+//         const curTextSpan = mapEditingTextSpan(curDto);
+//         setTextSpan(curTextSpan);
+//       }
+//     }
+//   });
+
+//   return {
+//     textSpan,
+//     setTextSpan,
+//     isFetching,
+//     isError,
+//     fetchNextPage, 
+//     hasNextPage, 
+//     isFetchingNextPage,
+//   }
+// }
 
 const useTranslation = () => {
 
@@ -209,6 +313,7 @@ export const TextsLib = {
   useTextPreviewsList,
   useFriendsLastTexts,
   useTextSpan,
+  useEditingTextSpan,
   useTranslation,
   useTextsInfo,
 }

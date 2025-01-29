@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Block, TextSpan, TextUi, TextsLib } from "../../../entities/text";
 import { StringSpan, WordLib, WordSpan, WordUi } from "../../../entities/word";
@@ -142,19 +142,31 @@ export const TextsBox: FC = () => {
 
   const {
     textSpan,
-    setTextSpan,
-    isLoading,
+    page,
+    pagesTotal,
+    isFetching,
     isError,
-  } = TextsLib.useTextSpan(Number(textId));
-
-  function updateState() {
-    const newTextSpan = textSpan.getCopy();
-    setTextSpan(newTextSpan);
-  }
+    updateState,
+    nextPage,
+    prevPage,
+    setPage,
+    refetch,
+  } = TextsLib.useEditingTextSpan(Number(textId));
 
   if (textSpan instanceof TextSpan) {
     return <ReadyTextBox text={textSpan} updateState={updateState} />
   } else {
-    return <EditingTextBox text={textSpan} updateState={updateState} />
+    return (
+      <EditingTextBox 
+        text={textSpan}
+        page={page}
+        prevPage={prevPage}
+        nextPage={nextPage}
+        setPage={setPage}
+        pagesTotal={pagesTotal}
+        updateState={updateState}
+        refetch={refetch}
+      />
+    )
   }
 }

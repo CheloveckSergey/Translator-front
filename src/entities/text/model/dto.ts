@@ -6,11 +6,24 @@ export interface BlockDto {
   translation: string,
 }
 
+export interface EditingBlockDto {
+  id: number,
+  original: string,
+  translation: string,
+}
+
 export interface TextSpanDto {
   id: number,
   name: string,
   blocks: BlockDto[],
   premiere: boolean,
+}
+
+export interface EditingTextSpanDto {
+  id: number,
+  name: string,
+  blocks: EditingBlockDto[],
+  pagesTotal: number,
 }
 
 export type TranslationDto = TransTextDto | TransStatusWordDto;
@@ -74,7 +87,21 @@ export interface CreateTextResponse {
 }
 
 interface GeneralBlock {
-  type: 'new' | 'edit' | 'delete',
+  type: 'new' | 'edit' | 'delete' | 'newBlockAbove' | 'newBlockBelow',
+}
+
+interface NewBlockAbove extends GeneralBlock {
+  type: 'newBlockAbove',
+  original: string,
+  translation: string,
+  blockId: number,
+}
+
+interface NewBlockBelow extends GeneralBlock {
+  type: 'newBlockBelow',
+  original: string,
+  translation: string,
+  blockId: number,
 }
 
 interface NewBlock extends GeneralBlock {
@@ -95,7 +122,7 @@ interface DeleteBlock extends GeneralBlock {
   blockId: number,
 }
 
-export type SaveBlock = NewBlock | EditBlock | DeleteBlock;
+export type SaveBlock = NewBlock | EditBlock | DeleteBlock | NewBlockAbove | NewBlockBelow;
 
 export interface SaveBlocksDto {
   textId: number,

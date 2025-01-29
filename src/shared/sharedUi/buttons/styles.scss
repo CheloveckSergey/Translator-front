@@ -88,6 +88,10 @@
     &:hover {
       color: var(--font-light-darker);
     }
+
+    &:disabled {
+      color: var(--font-grey);
+    }
   }
 
   &.dark {
@@ -96,6 +100,10 @@
     &:hover {
       color: var(--font-dark-lighter);
     }
+
+    &:disabled {
+      color: var(--font-grey);
+    }
   }
 
   &.green {
@@ -103,6 +111,10 @@
       
     &:hover {
       color: var(--button-green-lighter);
+    }
+
+    &:disabled {
+      color: var(--font-grey);
     }
   }
 }

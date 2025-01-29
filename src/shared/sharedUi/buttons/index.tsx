@@ -61,16 +61,18 @@ const SquareActionButton: FC<SABProps> = ({ body, isLoading, isError, onClick, c
 
 interface TBProps {
   body: React.ReactNode | React.ReactNode[] | string,
-  color: ButtonColor,
   onClick: () => void,
+  color: ButtonColor,
+  disabled?: boolean,
   className?: string,
 }
-const TextButton: FC<TBProps> = ({ body, color, className, onClick }) => {
+const TextButton: FC<TBProps> = ({ body, onClick, color, disabled, className }) => {
 
   return (
     <button 
       className={["shared-text-button", color, className].join(' ')}
       onClick={onClick}
+      disabled={disabled}
     >
       {body}
     </button>
@@ -79,13 +81,14 @@ const TextButton: FC<TBProps> = ({ body, color, className, onClick }) => {
 
 interface TABProps {
   body: React.ReactNode | React.ReactNode[] | string,
-  color: ButtonColor,
-  className: string,
+  onClick: () => void,
   isLoading: boolean,
   isError: boolean,
-  onClick: () => void,
+  color: ButtonColor,
+  disabled?: boolean,
+  className?: string,
 }
-const TextActionButton: FC<TABProps> = ({ body, color, className, isLoading, isError, onClick }) => {
+const TextActionButton: FC<TABProps> = ({ body, onClick, isLoading, isError, color, disabled, className }) => {
 
   return (
     <TextButton 
@@ -97,9 +100,10 @@ const TextActionButton: FC<TABProps> = ({ body, color, className, isLoading, isE
           {body}
         </SharedUiHelpers.ErrorLoader>
       </>}
-      color={color}
-      className={className}
       onClick={onClick}
+      color={color}
+      disabled={disabled}
+      className={className}
     />
   )
 }

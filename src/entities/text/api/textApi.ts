@@ -1,6 +1,6 @@
 import api from "../../../shared/api";
 import { UsualQuery } from "../../../shared/types";
-import { CreateTextDto, CreateTextResponse, SaveBlocksDto, ShortTextPreviewDto, TextPreviewDto, TextSchema, TextSpanDto, TextsInfoDto, TranslationDto } from "../model";
+import { CreateTextDto, CreateTextResponse, EditingTextSpanDto, SaveBlocksDto, ShortTextPreviewDto, TextPreviewDto, TextSchema, TextSpanDto, TextsInfoDto, TranslationDto } from "../model";
 
 export interface TextPreviewsQuery extends UsualQuery {
   userId: number,
@@ -43,6 +43,11 @@ interface FieldsOptions<K extends keyof TextSchema> {
 
 export type TextsQuery<K extends keyof TextSchema> = ByOptions & UsualQuery & FieldsOptions<K>
 
+export interface TextQuery {
+  textId: number,
+  page: number,
+}
+
 const INITIAL_URL = '/texts';
 
 export class TextApi {
@@ -78,6 +83,16 @@ export class TextApi {
 
   static async getTextSpan(textId: number) {
     const response = await api.get<TextSpanDto>(INITIAL_URL + '/getTextSpan/' + textId);
+    return response.data;
+  }
+
+  static async getEditingTextSpan(query: TextQuery) {
+    const response = await api.get<EditingTextSpanDto>(
+      INITIAL_URL + '/getEditingTextSpan',
+      {
+        params: query,
+      }
+    );
     return response.data;
   }
 

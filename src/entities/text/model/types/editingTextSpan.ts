@@ -1,3 +1,4 @@
+import { SharedLib } from "../../../../shared/lib";
 import { SaveBlock, SaveBlocksDto } from "../dto";
 
 export class EditingBlock {
@@ -5,6 +6,7 @@ export class EditingBlock {
   public readonly initialTranslation: string;
   public changed: boolean = false;
   public isNew: boolean = false;
+  public aboveBlockId: number | undefined;
   public deleted: boolean = false;
 
   constructor(
@@ -40,6 +42,10 @@ export class EditingBlock {
     this.isNew = isNew;
   }
 
+  setAboveBlockId(blockId: number) {
+    this.aboveBlockId = blockId;
+  }
+
   setDeleted(deleted: boolean) {
     this.deleted = deleted;
   }
@@ -48,6 +54,8 @@ export class EditingBlock {
 export class EditingTextSpan {
   public editing: boolean = false;
   public editingBlockId: number | undefined;
+  public editingAboveBlockId: number | undefined;
+  public editingBelowBlockId: number | undefined;
 
   constructor(
     public id: number, 
@@ -64,14 +72,61 @@ export class EditingTextSpan {
   }
 
   addBlock(original: string, translation: string) {
-    // const id = SharedLib.getRandomNumber(1, 10000);
-    const id = Number(this.blocks.at(-1)?.id) + 1;
+    const id = SharedLib.getRandomNumber(1, 10000);
+    // const id = Number(this.blocks.at(-1)?.id) + 1;
     const newBlock = new EditingBlock(id, original, translation);
     newBlock.changed = true;
     newBlock.setIsNew(true);
-    this.blocks.push(newBlock);
+    if (this.editingAboveBlockId) {
+      const index = this.blocks.findIndex(block => block.id === this.editingAboveBlockId);
+      if (!index) {
+        return
+      }
+      newBlock.aboveBlockId = this.editingAboveBlockId;
+      this.blocks.splice(index, 0, newBlock);
+    } else if (this.editingBelowBlockId) {
+      const index = this.blocks.findIndex(block => block.id === this.editingBelowBlockId);
+      if (!index) {
+        return
+      }
+      this.blocks.splice(index + 1, 0, newBlock);
+    } else {
+      this.blocks.push(newBlock);
+    }
     this.closeEdit();
   }
+
+  // addBlockAbove(original: string, translation: string) {
+  //   if (!this.editingAboveBlockId) {
+  //     return
+  //   }
+  //   const id = SharedLib.getRandomNumber(1, 10000);
+  //   const newBlock = new EditingBlock(id, original, translation);
+  //   newBlock.changed = true;
+  //   newBlock.setIsNew(true);
+  //   const index = this.blocks.find(block => block.id === this.editingAboveBlockId)?.id;
+  //   if (!index) {
+  //     return
+  //   }
+  //   this.blocks.splice(index, 0, newBlock);
+  //   this.closeEdit();
+  // }
+
+  // addBlockBelow(original: string, translation: string) {
+  //   if (!this.editingBelowBlockId) {
+  //     return
+  //   }
+  //   const id = SharedLib.getRandomNumber(1, 10000);
+  //   const newBlock = new EditingBlock(id, original, translation);
+  //   newBlock.changed = true;
+  //   newBlock.setIsNew(true);
+  //   const index = this.blocks.find(block => block.id === this.editingAboveBlockId)?.id;
+  //   if (!index) {
+  //     return
+  //   }
+  //   this.blocks.splice(index + 1, 0, newBlock);
+  //   this.closeEdit();
+  // }
 
   changeBlock(original: string, translation: string) {
     const block = this.getEditedBlock();
@@ -88,9 +143,21 @@ export class EditingTextSpan {
     this.editing = true;
   }
 
+  newBlockAbove(blockId: number) {
+    this.editingBelowBlockId = undefined;
+    this.editingAboveBlockId = blockId;
+  }
+
+  newBlockBelow(blockId: number) {
+    this.editingAboveBlockId = undefined;
+    this.editingBelowBlockId = blockId;
+  }
+
   closeEdit() {
     this.editingBlockId = undefined;
     this.editing = false;
+    this.editingAboveBlockId = undefined;
+    this.editingBelowBlockId = undefined;
   }
 
   getEditedBlock(): EditingBlock | undefined {
@@ -101,7 +168,14 @@ export class EditingTextSpan {
   getSaveBlocksDto(): SaveBlocksDto {
     const blocks: SaveBlock[] = [];
     for (let block of this.blocks) {
-      if (block.isNew) {
+      if (block.aboveBlockId) {
+        blocks.push({
+          type: 'newBlockAbove',
+          original: block.original,
+          translation: block.translation,
+          blockId: block.aboveBlockId,
+        })
+      } else if (block.isNew) {
         blocks.push({
           type: 'new',
           original: block.original,
@@ -138,6 +212,8 @@ export class EditingTextSpan {
     const newTextSpan = new EditingTextSpan(this.id, this.name, this.blocks);
     newTextSpan.editing = this.editing;
     newTextSpan.editingBlockId = this.editingBlockId;
+    newTextSpan.editingAboveBlockId = this.editingAboveBlockId;
+    newTextSpan.editingBelowBlockId = this.editingBelowBlockId;
     return newTextSpan;
   }
 }

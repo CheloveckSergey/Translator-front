@@ -106,6 +106,32 @@
     gap: 10px;
     margin-top: 10px;
   }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+
+    button.prev, button.next {
+      font-size: 2rem;
+    }
+
+    .pages {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      
+      button {
+        font-size: 1.3rem;
+
+        &.current {
+          color: blue;
+        }
+      }
+    }
+
+  }
 }
 
 span.word {

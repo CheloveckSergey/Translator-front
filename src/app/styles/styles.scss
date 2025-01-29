@@ -26,6 +26,13 @@ textarea, button, input {
   color: inherit;
 }
 
+button {
+  
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
 textarea, input {
   display: block;
   padding: 5px;
