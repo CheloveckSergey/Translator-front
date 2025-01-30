@@ -1,0 +1,149 @@
+@import '../../../../shared/styles/mixins.scss';
+
+.editing-text-box {
+  margin-top: 10px;
+  border-radius: 10px;
+
+  >.box {
+    border-radius: 10px;
+    overflow: hidden;
+
+    .text-block {
+      display: flex;
+      color: var(--font-light);
+      font-size: 0.9rem;
+
+      &:nth-child(n) {
+        background-color: rgb(86, 77, 57);
+      }
+
+      &:nth-child(2n) {
+        background-color: rgb(51, 43, 26);
+      }
+  
+      &.changed {
+        border-color: blue;
+      }
+  
+      .left, .right {
+        width: 50%;
+        padding: 5px;
+        padding-top: 20px;
+      }
+    
+      .left {
+
+      }
+    
+      .right {
+        position: relative;
+
+  
+        .buttons {
+          position: absolute;
+          top: 5px;
+          right: 5px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+      }
+    }
+  
+    .block-deleted {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      height: 100px;
+      color: var(--font-light);
+      background-color: var(--background-dark);
+    }
+  
+    .editor {
+      background-color: rgb(163, 193, 162);
+      
+      .box {
+        display: flex;
+        min-height: 100px;
+  
+        .left, .right {
+          width: 50%;
+    
+          textarea {
+            height: 100%;
+            width: 100%;
+            background-color: inherit;
+          }
+        }
+      
+        .left {
+          background-color: var(--background-grey);
+        }
+      
+        .right {
+          background-color: var(--background-light-darker);
+        }
+      }
+
+      >.buttons-panel {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        padding: 10px;
+        // background-color: var(--background-dark);
+      }
+    }
+  }
+  
+  >.buttons-panel {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+
+    button.prev, button.next {
+      font-size: 2rem;
+    }
+
+    .pages {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      
+      button {
+        font-size: 1.3rem;
+
+        &.current {
+          color: blue;
+        }
+      }
+    }
+  }
+
+  .text-sceleton {
+    padding: 10px;
+    border-radius: 10px;
+    background-color: var(--background-light-darker);
+    
+    .block-sceleton {
+      @include sceleton-wave();
+      height: 70px;
+      border-radius: 5px;
+
+      &:not(:first-child) {
+        margin-top: 10px;
+      }
+    }
+  }
+}

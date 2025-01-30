@@ -125,7 +125,7 @@ export const TextPreviewUi: FC<TPUProps> = ({
             <div className="name-author">
               <h4 
                 className="name"
-                onClick={() => navigate('/texts/' + textPreview.id)}
+                onClick={() => navigate('/editingText/' + textPreview.id)}
               >
                 {textPreview.name}
               </h4>

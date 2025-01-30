@@ -4,7 +4,7 @@ import { Layout } from "../layout";
 import { Translator } from "../../pages/translator";
 import { TextsPage } from "../../pages/texts/ui";
 import { AuthPage } from "../../pages/auth";
-import { TextPage } from "../../pages/text";
+import { EditingTextPage } from "../../pages/editingText";
 import { TodayListPage } from "../../pages/todayList";
 import { WordsPage } from "../../pages/words";
 import { HomePage } from "../../pages/home";
@@ -49,9 +49,10 @@ export const AppRouter: FC = () => {
           />
           <Route path="/translator" element={<Translator />} />
           <Route path="/texts">
-            <Route path=":textId" element={<TextPage />} />
+            {/* <Route path=":textId" element={<TextPage />} /> */}
             <Route path="user/:userId" element={<TextsPage />} />
           </Route>
+          <Route path="/editingText/:textId" element={<EditingTextPage />} />
           <Route path="/today-list" element={<TodayListPage />} />
           <Route path="/words/user/:userId" element={<WordsPage />} />
           <Route path="/users" >

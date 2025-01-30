@@ -6,8 +6,8 @@ export class EditingBlock {
   public readonly initialTranslation: string;
   public changed: boolean = false;
   public isNew: boolean = false;
-  public aboveBlockId: number | undefined;
   public deleted: boolean = false;
+  public aboveBlockId: number | undefined;
 
   constructor(
     public id: number,
@@ -18,33 +18,26 @@ export class EditingBlock {
     this.initialTranslation = translation;
   }
 
-  setOriginal(original: string) {
-    if (original !== this.original) {
-      this.changed = true;
-      this.original = original;
+  setContent(original: string, translation: string) {
+    if (!original.length || !translation.length) {
+      return
     }
-    // if (original === this.initialOriginal) {
-    //   this.changed = false;
-    // } 
-  }
-
-  setTranslation(translation: string) {
-    if (translation !== this.translation) {
-      this.translation = translation;
+    this.original = original;
+    this.translation = translation;
+    if (this.initialOriginal === original && this.initialTranslation === translation && !this.isNew) {
+      this.changed = false;
+    } else {
       this.changed = true;
     }
-    // if (translation === this.initialTranslation) {
-    //   this.changed = false;
-    // } 
   }
 
-  setIsNew(isNew: boolean) {
-    this.isNew = isNew;
-  }
+  // setIsNew(isNew: boolean) {
+  //   this.isNew = isNew;
+  // }
 
-  setAboveBlockId(blockId: number) {
-    this.aboveBlockId = blockId;
-  }
+  // setAboveBlockId(blockId: number) {
+  //   this.aboveBlockId = blockId;
+  // }
 
   setDeleted(deleted: boolean) {
     this.deleted = deleted;
@@ -53,9 +46,10 @@ export class EditingBlock {
 
 export class EditingTextSpan {
   public editing: boolean = false;
-  public editingBlockId: number | undefined;
+  public editingAtEnd: boolean = false;
   public editingAboveBlockId: number | undefined;
   public editingBelowBlockId: number | undefined;
+  public editingBlockId: number | undefined;
 
   constructor(
     public id: number, 
@@ -67,16 +61,43 @@ export class EditingTextSpan {
     this.name = name;
   }
 
-  newBlock() {
+  newBlockAtEnd() {
+    if (this.editing) {
+      this.closeEdit();
+    }
+    this.editing = true;
+    this.editingAtEnd = true;
+  }
+
+  newBlockAbove(blockId: number) {
+    if (this.editing) {
+      this.closeEdit();
+    }
+    this.editing = true;
+    this.editingAboveBlockId = blockId;
+  }
+
+  newBlockBelow(blockId: number) {
+    if (this.editing) {
+      this.closeEdit();
+    }
+    this.editing = true;
+    this.editingBelowBlockId = blockId;
+  }
+
+  editBlock(blockId: number) {
+    if (this.editing) {
+      this.closeEdit();
+    }
+    this.editingBlockId = blockId;
     this.editing = true;
   }
 
   addBlock(original: string, translation: string) {
     const id = SharedLib.getRandomNumber(1, 10000);
-    // const id = Number(this.blocks.at(-1)?.id) + 1;
     const newBlock = new EditingBlock(id, original, translation);
+    newBlock.isNew = true;
     newBlock.changed = true;
-    newBlock.setIsNew(true);
     if (this.editingAboveBlockId) {
       const index = this.blocks.findIndex(block => block.id === this.editingAboveBlockId);
       if (!index) {
@@ -90,76 +111,30 @@ export class EditingTextSpan {
         return
       }
       this.blocks.splice(index + 1, 0, newBlock);
-    } else {
+    } else if (this.editingAtEnd) {
       this.blocks.push(newBlock);
     }
     this.closeEdit();
   }
-
-  // addBlockAbove(original: string, translation: string) {
-  //   if (!this.editingAboveBlockId) {
-  //     return
-  //   }
-  //   const id = SharedLib.getRandomNumber(1, 10000);
-  //   const newBlock = new EditingBlock(id, original, translation);
-  //   newBlock.changed = true;
-  //   newBlock.setIsNew(true);
-  //   const index = this.blocks.find(block => block.id === this.editingAboveBlockId)?.id;
-  //   if (!index) {
-  //     return
-  //   }
-  //   this.blocks.splice(index, 0, newBlock);
-  //   this.closeEdit();
-  // }
-
-  // addBlockBelow(original: string, translation: string) {
-  //   if (!this.editingBelowBlockId) {
-  //     return
-  //   }
-  //   const id = SharedLib.getRandomNumber(1, 10000);
-  //   const newBlock = new EditingBlock(id, original, translation);
-  //   newBlock.changed = true;
-  //   newBlock.setIsNew(true);
-  //   const index = this.blocks.find(block => block.id === this.editingAboveBlockId)?.id;
-  //   if (!index) {
-  //     return
-  //   }
-  //   this.blocks.splice(index + 1, 0, newBlock);
-  //   this.closeEdit();
-  // }
 
   changeBlock(original: string, translation: string) {
     const block = this.getEditedBlock();
     if (!block) {
       return
     }
-    block.setOriginal(original);
-    block.setTranslation(translation);
+    block.setContent(original, translation);
     this.closeEdit();
   }
 
-  editBlock(blockId: number) {
-    this.editingBlockId = blockId;
-    this.editing = true;
-  }
-
-  newBlockAbove(blockId: number) {
-    this.editingBelowBlockId = undefined;
-    this.editingAboveBlockId = blockId;
-  }
-
-  newBlockBelow(blockId: number) {
-    this.editingAboveBlockId = undefined;
-    this.editingBelowBlockId = blockId;
-  }
-
   closeEdit() {
-    this.editingBlockId = undefined;
     this.editing = false;
+    this.editingAtEnd = false;
     this.editingAboveBlockId = undefined;
     this.editingBelowBlockId = undefined;
+    this.editingBlockId = undefined;
   }
 
+  //???
   getEditedBlock(): EditingBlock | undefined {
     const block = this.blocks.find(block => block.id === this.editingBlockId);
     return block
@@ -203,14 +178,10 @@ export class EditingTextSpan {
     return dto
   }
 
-  // deleteBlock(blockId: number) {
-  //   const blocks = this.blocks.filter(block => block.id !== blockId);
-  //   this.blo
-  // }
-
   getCopy() {
     const newTextSpan = new EditingTextSpan(this.id, this.name, this.blocks);
     newTextSpan.editing = this.editing;
+    newTextSpan.editingAtEnd = this.editingAtEnd;
     newTextSpan.editingBlockId = this.editingBlockId;
     newTextSpan.editingAboveBlockId = this.editingAboveBlockId;
     newTextSpan.editingBelowBlockId = this.editingBelowBlockId;

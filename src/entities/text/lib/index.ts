@@ -141,7 +141,7 @@ const useTextSpan = (textId: number) => {
 
 const useEditingTextSpan = (textId: number) => {
 
-  const [textSpan, setTextSpan] = useState<EditingTextSpan>(new EditingTextSpan(0, '', []));
+  const [text, setText] = useState<EditingTextSpan>(new EditingTextSpan(0, '', []));
   const [page, setPage] = useState<number>(() => {
     const page = localStorage.getItem(`TEXT_${textId}_PAGE`);
     if (page) {
@@ -161,7 +161,7 @@ const useEditingTextSpan = (textId: number) => {
       });
     },
     onSuccess: (data) => {
-      setTextSpan(mapEditingTextSpan(data));
+      setText(mapEditingTextSpan(data));
       setPagesTotal(data.pagesTotal);
     }
   });
@@ -171,8 +171,8 @@ const useEditingTextSpan = (textId: number) => {
   }, [page]);
 
   function updateState() {
-    const newTextSpan = textSpan.getCopy();
-    setTextSpan(newTextSpan);
+    const newTextSpan = text.getCopy();
+    setText(newTextSpan);
   }
 
   function nextPage() {
@@ -190,7 +190,7 @@ const useEditingTextSpan = (textId: number) => {
   }
 
   return {
-    textSpan,
+    text,
     page,
     pagesTotal,
     isFetching,
