@@ -142,6 +142,12 @@ export const TextListUi: FC<TLUProps> = ({
   className,
 }) => {
 
+  const [fetching, setFetching] = useState<boolean>(false);
+
+  function fetch() {
+    setFetching(true);
+  }
+
   return (
     <div className={["text-list", className].join(' ')}>
       <SharedUiHelpers.ErrorLoader
@@ -160,6 +166,8 @@ export const TextListUi: FC<TLUProps> = ({
           {textList.texts.map(mapTexts)}
         </div>
         <SharedButtons.LoadMoreButton
+          // fetchNextPage={() => fetch()}
+          // isFetchingNextPage={!!fetching}
           fetchNextPage={fetchNextPage as () => void}
           isFetchingNextPage={!!isFetchingNextPage}
           hasNextPage={!!hasNextPage}

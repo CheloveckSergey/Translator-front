@@ -105,14 +105,14 @@ export const TextListWidget: FC = () => {
 
   const {
     textList,
-    isFetching,
+    isLoading,
     isError,
     updateTexts,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
   } = TextsLib.useTextPreviewsList({ 
-    limit: 3, 
+    limit: 4, 
     order: 'DESC', 
     userId
   });
@@ -138,7 +138,7 @@ export const TextListWidget: FC = () => {
   return (
     <TextUi.TextListUi 
       textList={textList}
-      isLoading={isFetching}
+      isLoading={isLoading}
       isError={isError}
       fetchNextPage={fetchNextPage}
       hasNextPage={hasNextPage}

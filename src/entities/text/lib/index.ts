@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { ShortTextPreviewDto, TextList, TextPreview, TextSchema, TextSpan, TextsInfo, Translation } from "../model";
+import { ShortTextPreviewDto, TextList, TextPreview, TextPreviewDto, TextSchema, TextSpan, TextsInfo, Translation } from "../model";
 import { useInfiniteQuery, useMutation, useQuery } from "react-query";
-import { LastFriendsTextsQuery, TextApi, TextPreviewsQuery, TextQuery, TextsInfoQuery, TextsQuery } from "../api";
-import { StringSpan } from "../../word";
+import { LastFriendsTextsQuery, TextApi, TextPreviewsQuery, TextQuery, TextsInfoQuery } from "../api";
 import { mapEditingTextSpan, mapShortTextPreview, mapTextListDto, mapTextPreviewDto, mapTextSpanDto, mapTextsInfo, mapTranslationDto } from "../model/mappers";
 import { ShortTextPreview } from "../model/types/shortTextPreview";
 import { SharedHooks } from "../../../shared/lib";
@@ -11,7 +10,7 @@ import { EditingTextSpan } from "../model/types/editingTextSpan";
 const textsKeys = {
   texts: {
     root: 'texts',
-    slug: (userId: number) => [textsKeys.texts.root, userId],
+    slug: (query: TextPreviewsQuery) => [textsKeys.texts.root, query.userId, query.limit, query.offset, query.order],
   },
   text: {
     root: 'text',
@@ -35,20 +34,26 @@ const textsKeys = {
   }
 }
 
-// function getTexts<K extends keyof TextSchema>(query: TextsQuery<K>) {
-//   {
-
-//   } = SharedHooks.useMyInfineQuery<
-
-//   >
-// }
-
 const useTextPreviewsList = (query: TextPreviewsQuery) => {
 
   const [textList, setTextList] = useState<TextList>(new TextList([]));
+  const [initial, setInitial] = useState<boolean>(true);
 
-  const { isFetching, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: textsKeys.texts.slug(query.userId),
+  // useEffect(() => {
+  //   console.log(4);
+  // }, []);
+
+  // useEffect(() => {
+  //   console.log(initial);
+  // }, [initial]);
+
+  console.log(1);
+
+  const { data, isLoading, isFetching, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery
+    // TextPreviewDto[], Error, unknown, string | unknown[]
+  ({
+    queryKey: textsKeys.texts.slug(query),
+    // queryKey: ['sdf'],
     queryFn: ({ pageParam = query.offset ?? 0 }) => {
       return TextApi.getAllTextPreviewsByUser({ 
         offset: pageParam, 
@@ -65,15 +70,89 @@ const useTextPreviewsList = (query: TextPreviewsQuery) => {
       const nextPageParam = lastPage.length ? pages.length * query.limit : null;
       return nextPageParam;
     },
-    onSuccess: (data) => {
-      let textPreviews: TextPreview[] = [];
+    // onSuccess: (data) => {
+    //   // console.log(1);
+    //   // console.log(data);
+    //   if (initial) {
+    //     // console.log(3);
+    //     for (let page of data.pages) {
+    //       for (let textDto of page) {
+    //         textList.pushText(mapTextPreviewDto(textDto));
+    //       }
+    //     }
+    //     setInitial(false);
+    //     return
+    //   }
+
+    //   if (data.pages.length === 1) {
+    //     setTextList(mapTextListDto(data.pages[0]));
+    //   } else {
+    //     const lastPage = data.pages.at(-1);
+    //     if (lastPage) {
+    //       for (let dto of lastPage) {
+    //         textList.pushText(mapTextPreviewDto(dto));
+    //       }
+    //     }
+    //     updateTexts();
+    //   }
+    // },
+    select(data) {
+      console.log('select');
+      console.log(data);
+      const newTextList = new TextList([]);
       for (let page of data.pages) {
-        const curTextPreviews = page.map(mapTextPreviewDto);
-        textPreviews = [...textPreviews, ...curTextPreviews];
+        for (let textDto of page) {
+          newTextList.pushText(mapTextPreviewDto(textDto));
+        }
       }
-      setTextList(new TextList(textPreviews));
-    }
+      if (!newTextList.equal(textList)) {
+        setTextList(newTextList);
+      }
+
+      // if (initial) {
+      //   // console.log(3);
+      //   for (let page of data.pages) {
+      //     for (let textDto of page) {
+      //       textList.pushText(mapTextPreviewDto(textDto));
+      //     }
+      //   }
+      //   setInitial(false);
+      //   return data
+      // }
+
+      // if (data.pages.length === 1) {
+      //   setTextList(mapTextListDto(data.pages[0]));
+      // } else {
+      //   const lastPage = data.pages.at(-1);
+      //   if (lastPage) {
+      //     for (let dto of lastPage) {
+      //       textList.pushText(mapTextPreviewDto(dto));
+      //     }
+      //   }
+      //   updateTexts();
+      // }
+      // const textList = new TextList([]);
+      // for (let page of data.pages) {
+      //   for (let textDto of page) {
+      //     textList.pushText(mapTextPreviewDto(textDto));
+      //   }
+      // }
+      // return textList
+      // return {
+      //   pageParams: data.pageParams,
+      //   pages: data.pages,
+      //   textList,
+      // }
+      return data
+    },
+    // cacheTime: 10 * 1000,
+    // cacheTime: 0,
+    refetchOnMount: false,
   });
+
+  // useEffect(() => {
+  //   console.log(data);
+  // }, [data]);
 
   function updateTexts() {
     const textListCopy = textList.getCopy();
@@ -82,6 +161,7 @@ const useTextPreviewsList = (query: TextPreviewsQuery) => {
 
   return {
     textList,
+    isLoading,
     isFetching,
     isError,
     updateTexts,

@@ -14,35 +14,6 @@ export interface TextsInfoQuery {
   userId: number,
 }
 
-type By = 'user' | 'friends' | 'title';
-
-interface BaseByOptions {
-  by: By,
-}
-
-interface ByUser extends BaseByOptions {
-  by: 'user',
-  userId: number,
-}
-
-interface ByFriends extends BaseByOptions {
-  by: 'friends',
-  userId: number,
-}
-
-interface ByTitle extends BaseByOptions {
-  by: 'title',
-  title: string,
-}
-
-type ByOptions = ByUser | ByFriends | ByTitle;
-
-interface FieldsOptions<K extends keyof TextSchema> {
-  fields: K[],
-}
-
-export type TextsQuery<K extends keyof TextSchema> = ByOptions & UsualQuery & FieldsOptions<K>
-
 export interface TextQuery {
   textId: number,
   page: number,
@@ -51,16 +22,6 @@ export interface TextQuery {
 const INITIAL_URL = '/texts';
 
 export class TextApi {
-  static async getTexts<K extends keyof TextSchema>(query: TextsQuery<K>): Promise<Pick<TextSchema, K>[]> {
-    const response = await api.get<Pick<TextSchema, keyof TextSchema>[]>(
-      INITIAL_URL + '/getTexts',
-      {
-        params: query,
-      }
-    );
-    return response.data
-  } 
-
   static async getAllTextPreviewsByUser(query: TextPreviewsQuery) {
     const response = await api.get<TextPreviewDto[]>(
       INITIAL_URL + '/getAllTextPreviewsByUser',
@@ -68,6 +29,8 @@ export class TextApi {
         params: query,
       }
     );
+    console.log('getTextsApi');
+    // console.log(response.data);
     return response.data;
   }
 

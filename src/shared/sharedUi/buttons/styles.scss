@@ -1,11 +1,11 @@
 .square-button {
-  position: relative;
   padding: 10px;
   font-size: 1rem;
   border-radius: 10px;
   overflow: hidden;
-
+  
   &.square-action-button {
+    position: relative;
 
     .button-loader {
       position: absolute;

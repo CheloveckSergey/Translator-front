@@ -9,7 +9,7 @@ const InfoSceleton: FC = () => {
 
   return (
     <div className="info-sceleton">
-      {[1,2,3].map((item, index) => <div className="info-sceleton-line"></div>)}
+      {[1,2,3].map((_, index) => <div key={index} className="info-sceleton-line"></div>)}
     </div>
   )
 }

@@ -55,6 +55,15 @@ export class TextList {
     this.texts = [text, ...this.texts];
   }
 
+  pushText(text: TextPreview) {
+    this.texts.push(text);
+  }
+
+  equal(textList: TextList): boolean {
+    if (this.texts.length !== textList.texts.length) return false;
+    return this.texts.every((text, index) => text.id === textList.texts[index].id);
+  }
+
   getCopy() {
     const newTextList = new TextList(this.texts);
     return newTextList;

@@ -40,14 +40,14 @@ const SquareActionButton: FC<SABProps> = ({ body, isLoading, isError, onClick, c
     <SquareButton
       body={(
         <>
-          {isLoading ? (
+          {body}
+          {isLoading && (
             <div className="button-loader">
               <SharedIcons.Spinner size={25} />
             </div>
-          ) : isError ? (
+          )} 
+          {isError && (
             <SharedIcons.Error />
-          ) : (
-            body
           )}
         </>
       )}
