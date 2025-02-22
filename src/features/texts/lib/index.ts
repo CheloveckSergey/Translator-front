@@ -1,14 +1,52 @@
-import { useMutation } from "react-query"
-import { TextApi } from "../../../entities/text/api"
-import { CreateTextDto, SaveBlocksDto, TextPreview } from "../../../entities/text";
+import { InfiniteData, useMutation, useQueryClient } from "react-query"
+import { TextApi, TextPreviewsQuery } from "../../../entities/text/api"
+import { CreateTextDto, SaveBlocksDto, TextList, TextPreview, TextPreviewDto, textsKeys } from "../../../entities/text";
 import { mapTextPreviewDto } from "../../../entities/text/model/mappers";
+import { queryClient } from "../../../shared/lib";
 
-const useAddText = () => {
-  return useMutation(
-    (dto: CreateTextDto) => {
-      return TextApi.create(dto);
-    },
-  )
+const useAddText = (query: TextPreviewsQuery, addText?: (text: TextPreview) => void) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+      mutationFn: (dto: CreateTextDto) => {
+        return TextApi.create(dto);
+      },
+      onMutate: async () => {
+        await queryClient.cancelQueries({ queryKey: textsKeys.texts.slug(query) });
+      },
+      onSuccess(data) {
+        const queries = queryClient.getQueryCache().findAll();
+        console.log(queries);
+        const key = textsKeys.texts.root;
+        console.log(key);
+        // queryClient.invalidateQueries(key);
+        queryClient.setQueryData(textsKeys.texts.slug(query), (old: InfiniteData<TextPreviewDto[]> | undefined) => {
+          console.log('setQueryData');
+          // console.log(old);
+          if (!old) {
+            return {
+              pages: [],
+              pageParams: 0,
+            } as unknown as InfiniteData<TextPreviewDto[]>
+          }
+          
+          return {
+            ...old,
+            pages: old.pages.map((page, index) => {
+              if (index === 0) {
+                return [data, ...page]
+              } else {
+                return page
+              }
+            })
+          } as InfiniteData<TextPreviewDto[]>
+        }) 
+
+        if (addText) {
+          addText(mapTextPreviewDto(data));
+        }
+      },
+    });
 }
 
 const useSaveBlocks = () => {

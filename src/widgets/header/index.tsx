@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/store";
 import { SharedButtons } from "../../shared/sharedUi/buttons";
 import { BsList } from "react-icons/bs";
-import { SharedHooks } from "../../shared/lib";
+import { SharedHooks, queryClient } from "../../shared/lib";
 import { authThunks } from "../../features/auth";
 import { SharedBlocks } from "../../shared/sharedUi/blocks";
 import { SharedUiTypes } from "../../shared/sharedUi/types";
@@ -104,7 +104,20 @@ export const Header: FC<HProps> = ({ switchMenu }) => {
           onClick={switchMenu}
           className="show-menu-button"
         />
-        <span className="app-name">
+        <span 
+          className="app-name"
+          onClick={() => {
+            console.log('***');
+            const queries = queryClient.getQueryCache().findAll();
+            console.log(queries);
+            queryClient.invalidateQueries('texts')
+            .then(() => {
+              console.log('invalidateQueries complete');
+              const queries = queryClient.getQueryCache().findAll();
+              console.log(queries);
+            });
+          }}
+        >
           <GiSpinningSword size={25} />
           STranslator
         </span>

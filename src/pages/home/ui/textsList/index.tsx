@@ -25,7 +25,7 @@ export const LastTextsListWidget: FC = () => {
     textList,
     isFetching,
     isError
-  } = TextsLib.useTextPreviewsList({ 
+  } = TextsLib.useTextPreviewsList2({ 
     userId: user!.id,
     order: 'DESC', 
     limit: 3,

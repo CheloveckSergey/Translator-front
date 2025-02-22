@@ -1,41 +1,40 @@
 import { FC } from "react";
 import { useAppSelector } from "../../../../app/store";
 import { useUrlUserId } from "../../lib";
-import { CreateTextDto, CreateTextResponse, TextPreview, TextUi, TextsLib } from "../../../../entities/text";
+import { CreateTextDto, CreateTextResponse, TextPreview, TextPreviewsQuery, TextUi, TextsLib } from "../../../../entities/text";
 import { TextFeaturesLib, TextFeaturesUi } from "../../../../features/texts";
 import './styles.scss';
 
 interface TPWProps {
   text: TextPreview,
-  updateTexts: () => void,
 }
-const TextPreviewWidget: FC<TPWProps> = ({ text, updateTexts }) => {
+const TextPreviewWidget: FC<TPWProps> = ({ text }) => {
 
   const { user } = useAppSelector(state => state.user);
 
   const urlUserId = useUrlUserId();
 
-  const changeNameMutation = TextFeaturesLib.useChangeName(changeName);
+  const changeNameMutation = TextFeaturesLib.useChangeName();
 
-  function changeName(name: string) {
-    text.changeName(name);
-    updateTexts();
-  }
+  // function changeName(name: string) {
+  //   text.changeName(name);
+  //   updateTexts();
+  // }
 
-  function deleteText() {
-    text.setIsDeleted(true);
-    updateTexts();
-  }
+  // function deleteText() {
+  //   text.setIsDeleted(true);
+  //   updateTexts();
+  // }
 
-  function copyText() {
-    text.setIsCopied(true);
-    updateTexts();
-  }
+  // function copyText() {
+  //   text.setIsCopied(true);
+  //   updateTexts();
+  // }
 
-  function uncopyText() {
-    text.setIsCopied(false);
-    updateTexts();
-  }
+  // function uncopyText() {
+  //   text.setIsCopied(false);
+  //   updateTexts();
+  // }
 
   const isCurUserTextsPage = user && urlUserId === user.id;
   const isCurUserText = user && user.id === text.author.id;
@@ -48,14 +47,12 @@ const TextPreviewWidget: FC<TPWProps> = ({ text, updateTexts }) => {
         actions.push(
           <TextFeaturesUi.DeleteButton
             textId={text.id}
-            deleteText={deleteText}
           />, 
         )
       } else {
         actions.push(
           <TextFeaturesUi.UncopyButton
             textId={text.id}
-            uncopyText={uncopyText}
           />
         )
       }
@@ -65,14 +62,12 @@ const TextPreviewWidget: FC<TPWProps> = ({ text, updateTexts }) => {
           actions.push(
             <TextFeaturesUi.UncopyButton
               textId={text.id}
-              uncopyText={uncopyText}
             />
           )
         } else {
           actions.push(
             <TextFeaturesUi.CopyButton 
               textId={text.id}
-              copyText={copyText}
               size={20}
             />
           ) 
@@ -103,21 +98,22 @@ export const TextListWidget: FC = () => {
 
   const userId = useUrlUserId();
 
+  const textsQuery: TextPreviewsQuery = {
+    limit: 4, 
+    order: 'DESC', 
+    userId,
+  }
+
   const {
     textList,
     isLoading,
     isError,
-    updateTexts,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = TextsLib.useTextPreviewsList({ 
-    limit: 4, 
-    order: 'DESC', 
-    userId
-  });
+  } = TextsLib.useTextPreviewsList2(textsQuery);
 
-  const addTextMutation = TextFeaturesLib.useAddText();
+  const addTextMutation = TextFeaturesLib.useAddText(textsQuery);
 
   const actionsObjects: {
     addText?: {
@@ -126,6 +122,11 @@ export const TextListWidget: FC = () => {
       isError: boolean;
     } | undefined;
   } = {}
+
+  // function addText(text: TextPreview) {
+  //   textList.addText(text);
+  //   updateTexts();
+  // }
 
   if (user && userId === user?.id) {
     actionsObjects.addText = {
@@ -153,7 +154,6 @@ export const TextListWidget: FC = () => {
       mapTexts={(text: TextPreview, index: number) => <TextPreviewWidget 
         key={index}
         text={text}
-        updateTexts={updateTexts}
       />}
       className="text-list"
     />

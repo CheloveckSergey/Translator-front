@@ -5,16 +5,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import { store } from './app/store';
 import { BrowserRouter } from 'react-router-dom';
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-      // refetchOnMount: false,
-      retry: false,
-    },
-  }
-});
+import { queryClient } from './shared/lib';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

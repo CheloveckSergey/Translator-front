@@ -41,7 +41,7 @@ const TextAdder: FC<TAProps> = ({ mutate, isLoading, isError }) => {
       userId: user!.id,
     }).then((data) => {
       closeEditing();
-      navigate('/texts/' + data.id)
+      // navigate('/texts/' + data.id)
     });
   }
 

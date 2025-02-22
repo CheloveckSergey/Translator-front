@@ -7,13 +7,12 @@ import { FaDeleteLeft } from "react-icons/fa6";
 
 interface CBProps {
   textId: number,
-  copyText: () => void,
   color?: 'light' | 'dark',
   size?: number,
 }
-const CopyButton: FC<CBProps> = ({ textId, copyText, color = 'light', size = 25 }) => {
+const CopyButton: FC<CBProps> = ({ textId, color = 'light', size = 25 }) => {
 
-  const { mutateAsync, isLoading, isError } = TextFeaturesLib.useCopyText(textId, copyText);
+  const { mutateAsync, isLoading, isError } = TextFeaturesLib.useCopyText(textId);
 
   return (
     <SharedButtons.TextActionButton
@@ -29,13 +28,12 @@ const CopyButton: FC<CBProps> = ({ textId, copyText, color = 'light', size = 25 
 
 interface UBProps {
   textId: number,
-  uncopyText: () => void,
   color?: 'light' | 'dark',
   size?: number,
 }
-const UncopyButton: FC<UBProps> = ({ textId, uncopyText, color = 'light', size = 25 }) => {
+const UncopyButton: FC<UBProps> = ({ textId, color = 'light', size = 25 }) => {
 
-  const { mutateAsync, isLoading, isError } = TextFeaturesLib.useUncopyText(textId, uncopyText);
+  const { mutateAsync, isLoading, isError } = TextFeaturesLib.useUncopyText(textId);
 
   return (
     <SharedButtons.TextActionButton
@@ -51,13 +49,12 @@ const UncopyButton: FC<UBProps> = ({ textId, uncopyText, color = 'light', size =
 
 interface DBProps {
   textId: number,
-  deleteText: () => void,
   color?: 'light' | 'dark',
   size?: number,
 }
-const DeleteButton: FC<DBProps> = ({ textId, deleteText, color = 'light', size = 25 }) => {
+const DeleteButton: FC<DBProps> = ({ textId, color = 'light', size = 25 }) => {
 
-  const { mutateAsync, isLoading, isError } = TextFeaturesLib.useDeleteText(textId, deleteText);
+  const { mutateAsync, isLoading, isError } = TextFeaturesLib.useDeleteText(textId);
 
   return (
     <SharedButtons.TextActionButton

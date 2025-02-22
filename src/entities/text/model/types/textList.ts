@@ -52,6 +52,7 @@ export class TextList {
   }
 
   addText(text: TextPreview) {
+    console.log('addText');
     this.texts = [text, ...this.texts];
   }
 

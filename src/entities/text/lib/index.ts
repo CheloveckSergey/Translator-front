@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { ShortTextPreviewDto, TextList, TextPreview, TextPreviewDto, TextSchema, TextSpan, TextsInfo, Translation } from "../model";
-import { useInfiniteQuery, useMutation, useQuery } from "react-query";
+import { InfiniteData, useInfiniteQuery, useMutation, useQuery } from "react-query";
 import { LastFriendsTextsQuery, TextApi, TextPreviewsQuery, TextQuery, TextsInfoQuery } from "../api";
 import { mapEditingTextSpan, mapShortTextPreview, mapTextListDto, mapTextPreviewDto, mapTextSpanDto, mapTextsInfo, mapTranslationDto } from "../model/mappers";
 import { ShortTextPreview } from "../model/types/shortTextPreview";
 import { SharedHooks } from "../../../shared/lib";
 import { EditingTextSpan } from "../model/types/editingTextSpan";
 
-const textsKeys = {
+export const textsKeys = {
   texts: {
     root: 'texts',
     slug: (query: TextPreviewsQuery) => [textsKeys.texts.root, query.userId, query.limit, query.offset, query.order],
@@ -37,23 +37,9 @@ const textsKeys = {
 const useTextPreviewsList = (query: TextPreviewsQuery) => {
 
   const [textList, setTextList] = useState<TextList>(new TextList([]));
-  const [initial, setInitial] = useState<boolean>(true);
 
-  // useEffect(() => {
-  //   console.log(4);
-  // }, []);
-
-  // useEffect(() => {
-  //   console.log(initial);
-  // }, [initial]);
-
-  console.log(1);
-
-  const { data, isLoading, isFetching, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery
-    // TextPreviewDto[], Error, unknown, string | unknown[]
-  ({
+  const { isLoading, isFetching, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
     queryKey: textsKeys.texts.slug(query),
-    // queryKey: ['sdf'],
     queryFn: ({ pageParam = query.offset ?? 0 }) => {
       return TextApi.getAllTextPreviewsByUser({ 
         offset: pageParam, 
@@ -70,35 +56,7 @@ const useTextPreviewsList = (query: TextPreviewsQuery) => {
       const nextPageParam = lastPage.length ? pages.length * query.limit : null;
       return nextPageParam;
     },
-    // onSuccess: (data) => {
-    //   // console.log(1);
-    //   // console.log(data);
-    //   if (initial) {
-    //     // console.log(3);
-    //     for (let page of data.pages) {
-    //       for (let textDto of page) {
-    //         textList.pushText(mapTextPreviewDto(textDto));
-    //       }
-    //     }
-    //     setInitial(false);
-    //     return
-    //   }
-
-    //   if (data.pages.length === 1) {
-    //     setTextList(mapTextListDto(data.pages[0]));
-    //   } else {
-    //     const lastPage = data.pages.at(-1);
-    //     if (lastPage) {
-    //       for (let dto of lastPage) {
-    //         textList.pushText(mapTextPreviewDto(dto));
-    //       }
-    //     }
-    //     updateTexts();
-    //   }
-    // },
     select(data) {
-      console.log('select');
-      console.log(data);
       const newTextList = new TextList([]);
       for (let page of data.pages) {
         for (let textDto of page) {
@@ -108,51 +66,10 @@ const useTextPreviewsList = (query: TextPreviewsQuery) => {
       if (!newTextList.equal(textList)) {
         setTextList(newTextList);
       }
-
-      // if (initial) {
-      //   // console.log(3);
-      //   for (let page of data.pages) {
-      //     for (let textDto of page) {
-      //       textList.pushText(mapTextPreviewDto(textDto));
-      //     }
-      //   }
-      //   setInitial(false);
-      //   return data
-      // }
-
-      // if (data.pages.length === 1) {
-      //   setTextList(mapTextListDto(data.pages[0]));
-      // } else {
-      //   const lastPage = data.pages.at(-1);
-      //   if (lastPage) {
-      //     for (let dto of lastPage) {
-      //       textList.pushText(mapTextPreviewDto(dto));
-      //     }
-      //   }
-      //   updateTexts();
-      // }
-      // const textList = new TextList([]);
-      // for (let page of data.pages) {
-      //   for (let textDto of page) {
-      //     textList.pushText(mapTextPreviewDto(textDto));
-      //   }
-      // }
-      // return textList
-      // return {
-      //   pageParams: data.pageParams,
-      //   pages: data.pages,
-      //   textList,
-      // }
       return data
     },
-    // cacheTime: 10 * 1000,
-    // cacheTime: 0,
-    refetchOnMount: false,
+    // refetchOnMount: false,
   });
-
-  // useEffect(() => {
-  //   console.log(data);
-  // }, [data]);
 
   function updateTexts() {
     const textListCopy = textList.getCopy();
@@ -165,6 +82,77 @@ const useTextPreviewsList = (query: TextPreviewsQuery) => {
     isFetching,
     isError,
     updateTexts,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+  }
+}
+
+const useTextPreviewsList2 = (query: TextPreviewsQuery) => {
+
+  const key = textsKeys.texts.slug(query);
+  console.log(key);
+
+  const { data, isLoading, isFetching, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery
+    // <TextPreviewDto[], Error, any, string | unknown[]>
+  ({
+    queryKey: key,
+    queryFn: ({ pageParam = query.offset ?? 0 }) => {
+      return TextApi.getAllTextPreviewsByUser({ 
+        offset: pageParam, 
+        limit: query.limit, 
+        order: query.order, 
+        userId: query.userId,
+      });
+    },
+    getNextPageParam: (lastPage, pages) => {
+      if (!query.limit) {
+        return null
+      }
+      if (lastPage.length < query.limit) return null;
+      const nextPageParam = lastPage.length ? pages.length * query.limit : null;
+      return nextPageParam;
+    },
+    onSuccess: (data) => {
+      // console.log('onSuccess');
+      // const lastPage = data.pages.at(-1);
+      // if (lastPage) {
+      //   for (let dto of lastPage) {
+      //     textList.pushText(mapTextPreviewDto(dto));
+      //   }
+      // }
+      // updateTexts();
+    },
+    cacheTime: 60 * 1000,
+    refetchOnMount: false,
+  });
+
+  function mapTextDtos(data: InfiniteData<TextPreviewDto[]> | undefined) {
+    const newTextList = new TextList([]);
+
+    if (!data) {
+      return newTextList
+    }
+
+    for (let page of data.pages) {
+      for (let textDto of page) {
+        newTextList.pushText(mapTextPreviewDto(textDto));
+      }
+    }
+
+    return newTextList
+  }
+
+  // function updateTexts() {
+  //   const textListCopy = textList.getCopy();
+  //   setTextList(textListCopy);
+  // }
+
+  return {
+    textList: mapTextDtos(data),
+    isLoading,
+    isFetching,
+    isError,
     fetchNextPage,
     isFetchingNextPage,
     hasNextPage,
@@ -282,46 +270,6 @@ const useEditingTextSpan = (textId: number) => {
     refetch,
   }
 }
-// const useEditingTextSpan = (query: TextQuery) => {
-
-//   const [textSpan, setTextSpan] = useState<EditingTextSpan>(new EditingTextSpan(0, '', []));
-
-//   const { isFetching, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-//     queryKey: textsKeys.editingText.slug(query.textId),
-//     queryFn: ({ pageParam = query.offset ?? 0 }) => {
-//       return TextApi.getEditingTextSpan({ 
-//         textId: query.textId,
-//         offset: pageParam, 
-//         limit: query.limit,
-//       });
-//     },
-//     getNextPageParam: (lastPage, pages) => {
-//       if (!query.limit) {
-//         return null
-//       }
-//       if (lastPage.blocks.length < query.limit) return null;
-//       const nextPageParam = lastPage.blocks.length ? pages.length * query.limit : null;
-//       return nextPageParam;
-//     },
-//     onSuccess: (data) => {
-//       const curDto = data.pages.at(-1);
-//       if (curDto) {
-//         const curTextSpan = mapEditingTextSpan(curDto);
-//         setTextSpan(curTextSpan);
-//       }
-//     }
-//   });
-
-//   return {
-//     textSpan,
-//     setTextSpan,
-//     isFetching,
-//     isError,
-//     fetchNextPage, 
-//     hasNextPage, 
-//     isFetchingNextPage,
-//   }
-// }
 
 const useTranslation = () => {
 
@@ -391,6 +339,7 @@ const useTextsInfo = (query: TextsInfoQuery) => {
 
 export const TextsLib = {
   useTextPreviewsList,
+  useTextPreviewsList2,
   useFriendsLastTexts,
   useTextSpan,
   useEditingTextSpan,

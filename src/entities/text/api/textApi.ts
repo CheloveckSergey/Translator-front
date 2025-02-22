@@ -70,7 +70,7 @@ export class TextApi {
   }
 
   static async create(dto: CreateTextDto) {
-    const response = await api.post<CreateTextResponse>(
+    const response = await api.post<TextPreviewDto>(
       INITIAL_URL + '/create',
       dto,
     );
