@@ -90,20 +90,16 @@ const useTextPreviewsList = (query: TextPreviewsQuery) => {
 
 const useTextPreviewsList2 = (query: TextPreviewsQuery) => {
 
-  const key = textsKeys.texts.slug(query);
-  console.log(key);
-
-  const { data, isLoading, isFetching, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery
-    // <TextPreviewDto[], Error, any, string | unknown[]>
-  ({
-    queryKey: key,
-    queryFn: ({ pageParam = query.offset ?? 0 }) => {
-      return TextApi.getAllTextPreviewsByUser({ 
+  const queryData = useInfiniteQuery({
+    queryKey: textsKeys.texts.slug(query),
+    queryFn: async ({ pageParam = query.offset ?? 0 }) => {
+      const data = await TextApi.getAllTextPreviewsByUser({ 
         offset: pageParam, 
         limit: query.limit, 
         order: query.order, 
         userId: query.userId,
       });
+      return data.map(mapTextPreviewDto)
     },
     getNextPageParam: (lastPage, pages) => {
       if (!query.limit) {
@@ -113,49 +109,21 @@ const useTextPreviewsList2 = (query: TextPreviewsQuery) => {
       const nextPageParam = lastPage.length ? pages.length * query.limit : null;
       return nextPageParam;
     },
-    onSuccess: (data) => {
-      // console.log('onSuccess');
-      // const lastPage = data.pages.at(-1);
-      // if (lastPage) {
-      //   for (let dto of lastPage) {
-      //     textList.pushText(mapTextPreviewDto(dto));
-      //   }
-      // }
-      // updateTexts();
-    },
     cacheTime: 60 * 1000,
-    refetchOnMount: false,
   });
 
-  function mapTextDtos(data: InfiniteData<TextPreviewDto[]> | undefined) {
-    const newTextList = new TextList([]);
-
+  function mapData(data: InfiniteData<TextPreview[]> | undefined): TextPreview[] {
     if (!data) {
-      return newTextList
+      return []
     }
 
-    for (let page of data.pages) {
-      for (let textDto of page) {
-        newTextList.pushText(mapTextPreviewDto(textDto));
-      }
-    }
-
-    return newTextList
+    const texts: TextPreview[] = data.pages.flat();
+    return texts
   }
 
-  // function updateTexts() {
-  //   const textListCopy = textList.getCopy();
-  //   setTextList(textListCopy);
-  // }
-
   return {
-    textList: mapTextDtos(data),
-    isLoading,
-    isFetching,
-    isError,
-    fetchNextPage,
-    isFetchingNextPage,
-    hasNextPage,
+    ...queryData,
+    data: mapData(queryData.data)
   }
 }
 

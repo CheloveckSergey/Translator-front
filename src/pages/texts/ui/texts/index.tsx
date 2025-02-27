@@ -1,40 +1,24 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { useAppSelector } from "../../../../app/store";
-import { useUrlUserId } from "../../lib";
-import { CreateTextDto, CreateTextResponse, TextPreview, TextPreviewsQuery, TextUi, TextsLib } from "../../../../entities/text";
+import { TextsLimits, getLimitsFilter, getOrdersFilter, useUrlUserId } from "../../lib";
+import { CreateTextDto, CreateTextResponse, TextPreview, TextPreviewsQuery, TextUi, TextUiTypes, TextsLib } from "../../../../entities/text";
 import { TextFeaturesLib, TextFeaturesUi } from "../../../../features/texts";
 import './styles.scss';
+import { SharedInputs } from "../../../../shared/sharedUi/inputs";
+import { SharedTypes } from "../../../../shared/types";
+import { SharedUiTypes } from "../../../../shared/sharedUi/types";
 
 interface TPWProps {
   text: TextPreview,
+  textsQuery: TextPreviewsQuery,
 }
-const TextPreviewWidget: FC<TPWProps> = ({ text }) => {
+const TextPreviewWidget: FC<TPWProps> = ({ text, textsQuery }) => {
 
   const { user } = useAppSelector(state => state.user);
 
   const urlUserId = useUrlUserId();
 
-  const changeNameMutation = TextFeaturesLib.useChangeName();
-
-  // function changeName(name: string) {
-  //   text.changeName(name);
-  //   updateTexts();
-  // }
-
-  // function deleteText() {
-  //   text.setIsDeleted(true);
-  //   updateTexts();
-  // }
-
-  // function copyText() {
-  //   text.setIsCopied(true);
-  //   updateTexts();
-  // }
-
-  // function uncopyText() {
-  //   text.setIsCopied(false);
-  //   updateTexts();
-  // }
+  const changeNameMutation = TextFeaturesLib.useChangeName(text.id, textsQuery);
 
   const isCurUserTextsPage = user && urlUserId === user.id;
   const isCurUserText = user && user.id === text.author.id;
@@ -46,13 +30,17 @@ const TextPreviewWidget: FC<TPWProps> = ({ text }) => {
       if (isCurUserText) {
         actions.push(
           <TextFeaturesUi.DeleteButton
+            key={0}
             textId={text.id}
+            query={textsQuery}
           />, 
         )
       } else {
         actions.push(
           <TextFeaturesUi.UncopyButton
+            key={0}
             textId={text.id}
+            query={textsQuery}
           />
         )
       }
@@ -61,13 +49,17 @@ const TextPreviewWidget: FC<TPWProps> = ({ text }) => {
         if (text.isCopied) {
           actions.push(
             <TextFeaturesUi.UncopyButton
+              key={1}
               textId={text.id}
+              query={textsQuery}
             />
           )
         } else {
           actions.push(
             <TextFeaturesUi.CopyButton 
+              key={1}
               textId={text.id}
+              query={textsQuery}
               size={20}
             />
           ) 
@@ -92,20 +84,25 @@ const TextPreviewWidget: FC<TPWProps> = ({ text }) => {
   )
 }
 
+type Order = SharedTypes.QueryTypes.Order
+
 export const TextListWidget: FC = () => {
 
   const { user } = useAppSelector(state => state.user);
 
+  const [order, setOrder] = useState<Order>('DESC');
+  const [limit, setLimit] = useState<TextsLimits>(5);
+
   const userId = useUrlUserId();
 
   const textsQuery: TextPreviewsQuery = {
-    limit: 4, 
-    order: 'DESC', 
+    limit, 
+    order, 
     userId,
   }
 
   const {
-    textList,
+    data,
     isLoading,
     isError,
     fetchNextPage,
@@ -115,20 +112,9 @@ export const TextListWidget: FC = () => {
 
   const addTextMutation = TextFeaturesLib.useAddText(textsQuery);
 
-  const actionsObjects: {
-    addText?: {
-      mutate: (dto: CreateTextDto) => Promise<CreateTextResponse>;
-      isLoading: boolean;
-      isError: boolean;
-    } | undefined;
-  } = {}
+  const actionsObjects: TextUiTypes.TLActionObjects = {}
 
-  // function addText(text: TextPreview) {
-  //   textList.addText(text);
-  //   updateTexts();
-  // }
-
-  if (user && userId === user?.id) {
+  if (user && userId === user.id) {
     actionsObjects.addText = {
       mutate: addTextMutation.mutateAsync,
       isLoading: addTextMutation.isLoading,
@@ -137,25 +123,36 @@ export const TextListWidget: FC = () => {
   }
 
   return (
-    <TextUi.TextListUi 
-      textList={textList}
-      isLoading={isLoading}
-      isError={isError}
-      fetchNextPage={fetchNextPage}
-      hasNextPage={hasNextPage}
-      isFetchingNextPage={isFetchingNextPage}
-      actionObjects={{
-        ...(user && userId === user?.id && {addText: {
-          mutate: addTextMutation.mutateAsync,
-          isLoading: addTextMutation.isLoading,
-          isError: addTextMutation.isError,
-        }})
-      }}
-      mapTexts={(text: TextPreview, index: number) => <TextPreviewWidget 
-        key={index}
-        text={text}
-      />}
-      className="text-list"
-    />
+    <div className="texts-widget">
+      <div className="filters">
+        <SharedInputs.SelectLine<Order>
+          name='Order'
+          options={getOrdersFilter()}
+          value={order}
+          setValue={setOrder}
+        />
+        <SharedInputs.SelectLine<TextsLimits>
+          name='Limit'
+          options={getLimitsFilter()}
+          value={limit}
+          setValue={setLimit}
+        />
+      </div>
+      <TextUi.TextList2
+        texts={data}
+        isLoading={isLoading}
+        isError={isError}
+        fetchNextPage={fetchNextPage}
+        hasNextPage={hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
+        actionObjects={actionsObjects}
+        mapTexts={(text: TextPreview, index: number) => <TextPreviewWidget 
+          key={index}
+          text={text}
+          textsQuery={textsQuery}
+        />}
+        className="text-list"
+      />
+    </div>
   )
 }

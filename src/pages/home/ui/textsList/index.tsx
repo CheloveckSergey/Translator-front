@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { TextPreview, TextUi, TextsLib } from "../../../../entities/text";
+import { TextPreview, TextPreviewsQuery, TextUi, TextsLib } from "../../../../entities/text";
 import { useAppSelector } from "../../../../app/store";
 import './styles.scss'
 
@@ -21,22 +21,27 @@ export const LastTextsListWidget: FC = () => {
 
   const { user } = useAppSelector(state => state.user);
 
-  const {
-    textList,
-    isFetching,
-    isError
-  } = TextsLib.useTextPreviewsList2({ 
+  const query: TextPreviewsQuery = {
     userId: user!.id,
-    order: 'DESC', 
     limit: 3,
-  });
+    order: 'DESC',
+  }
+
+  const {
+    data,
+    isLoading,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = TextsLib.useTextPreviewsList2(query);
 
   return (
     <div className="last-texts-list-widget">
       <h2>Last texts</h2>
-      <TextUi.TextListUi 
-        textList={textList}
-        isLoading={isFetching}
+      <TextUi.TextList2
+        texts={data}
+        isLoading={isLoading}
         isError={isError}
         mapTexts={(text: TextPreview, index: number) => (
           <TextPreviewWidget

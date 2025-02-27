@@ -2,51 +2,112 @@ import { InfiniteData, useMutation, useQueryClient } from "react-query"
 import { TextApi, TextPreviewsQuery } from "../../../entities/text/api"
 import { CreateTextDto, SaveBlocksDto, TextList, TextPreview, TextPreviewDto, textsKeys } from "../../../entities/text";
 import { mapTextPreviewDto } from "../../../entities/text/model/mappers";
-import { queryClient } from "../../../shared/lib";
 
-const useAddText = (query: TextPreviewsQuery, addText?: (text: TextPreview) => void) => {
+const useAddText = (query: TextPreviewsQuery) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-      mutationFn: (dto: CreateTextDto) => {
-        return TextApi.create(dto);
-      },
-      onMutate: async () => {
-        await queryClient.cancelQueries({ queryKey: textsKeys.texts.slug(query) });
-      },
-      onSuccess(data) {
-        const queries = queryClient.getQueryCache().findAll();
-        console.log(queries);
-        const key = textsKeys.texts.root;
-        console.log(key);
-        // queryClient.invalidateQueries(key);
-        queryClient.setQueryData(textsKeys.texts.slug(query), (old: InfiniteData<TextPreviewDto[]> | undefined) => {
-          console.log('setQueryData');
-          // console.log(old);
-          if (!old) {
-            return {
-              pages: [],
-              pageParams: 0,
-            } as unknown as InfiniteData<TextPreviewDto[]>
-          }
-          
+    mutationFn: (dto: CreateTextDto) => {
+      return TextApi.create(dto);
+    },
+    onSuccess(data) {
+      queryClient.setQueryData(textsKeys.texts.slug(query), (old: InfiniteData<TextPreviewDto[]> | undefined) => {
+        if (!old) {
           return {
-            ...old,
-            pages: old.pages.map((page, index) => {
-              if (index === 0) {
-                return [data, ...page]
-              } else {
-                return page
-              }
-            })
-          } as InfiniteData<TextPreviewDto[]>
-        }) 
-
-        if (addText) {
-          addText(mapTextPreviewDto(data));
+            pages: [],
+            pageParams: 0,
+          } as unknown as InfiniteData<TextPreviewDto[]>
         }
-      },
-    });
+        
+        return {
+          ...old,
+          pages: old.pages.map((page, index) => {
+            if (index === 0) {
+              return [data, ...page]
+            } else {
+              return page
+            }
+          })
+        } as InfiniteData<TextPreviewDto[]>
+      }) 
+    },
+  });
+}
+
+interface ChangeNameProps {
+  name: string,
+}
+const useChangeName = (textId: number, query: TextPreviewsQuery) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (dto: ChangeNameProps) => {
+      return TextApi.changeName(dto.name, textId);
+    },
+    onSuccess(_, variables) {
+      queryClient.setQueryData(textsKeys.texts.slug(query), (old: InfiniteData<TextPreview[]> | undefined) => {
+        if (!old) {
+          return {
+            pages: [],
+            pageParams: 0,
+          } as unknown as InfiniteData<TextPreview[]>
+        }
+        
+        return {
+          ...old,
+          pages: old.pages.map((page) => {
+            return page.filter(text => {
+              if (text.id === textId) {
+                text.changeName(variables.name);
+                return text
+              } else {
+                return text
+              }
+            });
+          })
+        } as InfiniteData<TextPreview[]>
+      }) 
+    },
+  });
+}
+
+const useCopyText = (textId: number, query: TextPreviewsQuery) => {
+  return useMutation(
+    () => {
+      return TextApi.copyText(textId);
+    },
+    {
+      onSuccess: (data) => {
+        
+      }
+    }
+  )
+}
+
+const useUncopyText = (textId: number, query: TextPreviewsQuery) => {
+  return useMutation(
+    () => {
+      return TextApi.uncopyText(textId);
+    },
+    {
+      onSuccess: (data) => {
+        
+      }
+    }
+  )
+}
+
+const useDeleteText = (textId: number, query: TextPreviewsQuery) => {
+  return useMutation(
+    () => {
+      return TextApi.delete(textId);
+    },
+    {
+      onSuccess: (data) => {
+        
+      }
+    }
+  )
 }
 
 const useSaveBlocks = () => {
@@ -54,70 +115,6 @@ const useSaveBlocks = () => {
     (dto: SaveBlocksDto) => {
       return TextApi.saveBlocks(dto);
     },
-  )
-}
-
-interface ChangeNameProps {
-  name: string,
-  textId: number,
-}
-const useChangeName = (changeName?: (name: string) => void) => {
-  return useMutation(
-    (dto: ChangeNameProps) => {
-      return TextApi.changeName(dto.name, dto.textId);
-    },
-    {
-      onSuccess: (data) => {
-        if (changeName) {
-          changeName(data.name);
-        }
-      }
-    }
-  )
-}
-
-const useCopyText = (textId: number, copyText?: () => void) => {
-  return useMutation(
-    () => {
-      return TextApi.copyText(textId);
-    },
-    {
-      onSuccess: (data) => {
-        if (copyText) {
-          copyText();
-        }
-      }
-    }
-  )
-}
-
-const useUncopyText = (textId: number, uncopyText?: () => void) => {
-  return useMutation(
-    () => {
-      return TextApi.uncopyText(textId);
-    },
-    {
-      onSuccess: (data) => {
-        if (uncopyText) {
-          uncopyText();
-        }
-      }
-    }
-  )
-}
-
-const useDeleteText = (textId: number, deleteText?: () => void) => {
-  return useMutation(
-    () => {
-      return TextApi.delete(textId);
-    },
-    {
-      onSuccess: (data) => {
-        if (deleteText) {
-          deleteText();
-        }
-      }
-    }
   )
 }
 

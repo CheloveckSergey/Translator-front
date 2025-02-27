@@ -1,3 +1,13 @@
-.text-list {
-  margin-top: 10px;
+.texts-widget {
+
+  .filters { 
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .text-list {
+    margin-top: 10px;
+  }
 }

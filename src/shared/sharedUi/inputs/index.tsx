@@ -82,8 +82,65 @@ const TextSubmit = forwardRef<TSRef, TSProps>(({ body, color, className, disable
   )
 })
 
+interface CSelectProps<T extends string | number | undefined> {
+  options: {
+    value: T,
+    name: string | React.ReactNode,
+  }[],
+  value: T,
+  setValue: (value: T) => void,
+}
+function CustomSelect<T extends string | number | undefined>({ options, value, setValue } : CSelectProps<T>) {
+
+  return (
+    <select
+      value={value}
+      onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+        setValue(e.target.value as T);
+      }}
+      className="custom-select"
+    >
+      {options.map((option, index) => (
+        <option 
+          key={index} 
+          value={option.value}
+        >
+          {option.name}
+        </option>
+      ))}
+    </select>
+  )
+}
+
+interface SLProps<T extends string | number> {
+  options: {
+    value: T,
+    name: string | React.ReactNode,
+  }[],
+  value: T,
+  setValue: (value: T) => void,
+  name: string | React.ReactNode,
+}
+function SelectLine<T extends string | number>({ options, value, setValue, name } : SLProps<T>) {
+
+  return (
+      <label className="select-line">
+        <span>{name}</span>
+        <CustomSelect
+          options={options}
+          value={value}
+          setValue={setValue}
+        />
+      </label>
+  )
+}
+
+
+
 export const SharedInputs = {
   CustomInput,
   CustomSubmit,
   TextSubmit,
+  CustomSelect,
+  SelectLine,
 }
