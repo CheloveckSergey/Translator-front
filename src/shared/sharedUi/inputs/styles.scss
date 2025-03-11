@@ -95,6 +95,10 @@ select.custom-select {
   border-radius: 5px;
   background-color: var(--background-light-darker);
   cursor: pointer;
+  
+  &:hover {
+    background-color: var(--background-grey);
+  }
 }
 
 // .select-wrapper {

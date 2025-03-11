@@ -2,9 +2,15 @@ import api from "../../../shared/api";
 import { UsualQuery } from "../../../shared/types";
 import { CreateTextDto, CreateTextResponse, EditingTextSpanDto, SaveBlocksDto, ShortTextPreviewDto, TextPreviewDto, TextSchema, TextSpanDto, TextsInfoDto, TranslationDto } from "../model";
 
-export interface TextPreviewsQuery extends UsualQuery {
+export interface GTextPreviewsQuery extends UsualQuery {
+
+}
+
+export interface TextPreviewsQuery extends GTextPreviewsQuery {
   userId: number,
 }
+
+export interface AllTextPreviewsQuery extends GTextPreviewsQuery {}
 
 export interface LastFriendsTextsQuery extends UsualQuery {
   userId: number,
@@ -29,8 +35,18 @@ export class TextApi {
         params: query,
       }
     );
-    console.log('getTextsApi');
+    // console.log('getTextsApi');
     // console.log(response.data);
+    return response.data;
+  }
+
+  static async getAllTextPreviews(query: AllTextPreviewsQuery) {
+    const response = await api.get<TextPreviewDto[]>(
+      INITIAL_URL + '/getAllTextPreviews',
+      {
+        params: query,
+      }
+    );
     return response.data;
   }
 

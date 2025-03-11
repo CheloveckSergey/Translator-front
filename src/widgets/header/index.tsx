@@ -135,6 +135,9 @@ export const Header: FC<HProps> = ({ switchMenu }) => {
         <Link to={'/texts/user/' + user?.id}>
           Texts
         </Link>
+        <Link to={'/all-texts'}>
+          All Texts
+        </Link>
         <Link to='/translator'>
           Translator
         </Link>

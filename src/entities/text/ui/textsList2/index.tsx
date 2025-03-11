@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, FormEvent, useState } from "react";
+import { ChangeEvent, FC, FormEvent, useEffect, useRef, useState } from "react";
 import { CreateTextDto, CreateTextResponse, TextList, TextPreview } from "../../model";
 import './styles.scss';
 import { CiSquarePlus } from "react-icons/ci";
@@ -11,33 +11,33 @@ import { useAppSelector } from "../../../../app/store";
 import { useNavigate } from "react-router-dom";
 import { TextUiTypes } from "../uiTypes";
 
-
-interface TAProps {
+interface CreateTextObject {
   mutate: (
     dto: CreateTextDto,
   ) => Promise<CreateTextResponse>,
   isLoading: boolean,
   isError: boolean,
 }
-const TextAdder: FC<TAProps> = ({ mutate, isLoading, isError }) => {
+
+interface TEProps {
+  createTextObject: CreateTextObject,
+  setEditing: (editing: boolean) => void,
+}
+const TextEditor: FC<TEProps> = ({ createTextObject, setEditing }) => {
 
   const { user } = useAppSelector(state => state.user);
 
-  const [editing, setEditing] = useState<boolean>(false);
-
   const [name, setName] = useState<string>('');
   const [content, setContent] = useState<string>('');
-
-  const navigate = useNavigate();
 
   function closeEditing() {
     setName('');
     setContent('');
     setEditing(false);
   }
-
+  
   function submit() {
-    mutate({
+    createTextObject.mutate({
       name,
       userId: user!.id,
     }).then((data) => {
@@ -46,51 +46,75 @@ const TextAdder: FC<TAProps> = ({ mutate, isLoading, isError }) => {
     });
   }
 
+  const ref = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    console.log(1);
+    if (ref.current) {
+      ref.current.focus();
+    }
+  }, []);
+
+  return (
+    <div className="editor">
+      <form
+        onSubmit={(e: FormEvent) => {
+          e.preventDefault();
+          submit();
+        }}
+      >
+        <label htmlFor="name">Name</label>
+        <input
+          ref={ref}
+          type="text"
+          name="name"
+          value={name}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+          autoComplete="cc-number"
+          className="name light"
+        />
+        <div className="buttons">
+          <SharedInputs.CustomSubmit
+            body="Submit"
+            color="green"
+          />
+          <SharedButtons.TextButton
+            body="Cancel"
+            onClick={() => closeEditing()}
+            color="green"
+          />
+        </div>
+      </form>
+      {createTextObject.isLoading && (
+        <div className="loader">
+          <SharedIcons.Spinner size={50} />
+        </div>
+      )}
+    </div>
+  )
+}
+
+
+interface TAProps {
+  createTextObject: CreateTextObject,
+}
+const TextAdder: FC<TAProps> = ({ createTextObject }) => {
+
+  const { user } = useAppSelector(state => state.user);
+
+  const [editing, setEditing] = useState<boolean>(false);
+
+  const navigate = useNavigate();
+
   return (
     <div 
       className="text-adder"
     >
       {editing ? (
-        <div className="editor">
-          <form
-            onSubmit={(e: FormEvent) => {
-              e.preventDefault();
-              submit();
-            }}
-          >
-            <label htmlFor="name">Name</label>
-            <input
-              type="text"
-              name="name"
-              value={name}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
-              className="name light"
-            />
-            {/* <label htmlFor="content">Content</label>
-            <textarea 
-              name="content"
-              value={content}
-              onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setContent(e.target.value)}
-              className="content light"
-            /> */}
-            <div className="buttons">
-              <SharedInputs.CustomSubmit
-                body="Submit"
-                color="green"
-              />
-              <SharedButtons.TextButton
-                body="Cancel"
-                onClick={() => closeEditing()}
-                color="green"
-              />
-            </div>
-          </form>
-          {isLoading && (
-            <div className="loader">
-              <SharedIcons.Spinner size={50} />
-            </div>
-          )}
-        </div>
+        <TextEditor 
+          createTextObject={createTextObject}
+          setEditing={setEditing}
+        />
       ) : (
         <button 
           className="editButton"
@@ -145,9 +169,7 @@ export const TextListUi2: FC<TLUProps> = ({
         <div className="text-list-content">
           {actionObjects.addText && (
             <TextAdder 
-              mutate={actionObjects.addText.mutate}
-              isLoading={actionObjects.addText.isLoading}
-              isError={actionObjects.addText.isError}
+              createTextObject={actionObjects.addText}
             />
           )}
           {texts.map(mapTexts)}

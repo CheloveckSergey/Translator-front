@@ -44,7 +44,7 @@ export interface TextPreviewDto {
   },
   createDate: string,
   updateDate: string,
-  isCopied?: boolean,
+  isCopied: boolean,
 }
 
 export interface ShortTextPreviewDto {

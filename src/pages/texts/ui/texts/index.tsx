@@ -45,7 +45,7 @@ const TextPreviewWidget: FC<TPWProps> = ({ text, textsQuery }) => {
         )
       }
     } else {
-      if (isCurUserText) {
+      if (!isCurUserText) {
         if (text.isCopied) {
           actions.push(
             <TextFeaturesUi.UncopyButton

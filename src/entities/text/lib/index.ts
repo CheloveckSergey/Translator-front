@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ShortTextPreviewDto, TextList, TextPreview, TextPreviewDto, TextSchema, TextSpan, TextsInfo, Translation } from "../model";
 import { InfiniteData, useInfiniteQuery, useMutation, useQuery } from "react-query";
-import { LastFriendsTextsQuery, TextApi, TextPreviewsQuery, TextQuery, TextsInfoQuery } from "../api";
+import { AllTextPreviewsQuery, GTextPreviewsQuery, LastFriendsTextsQuery, TextApi, TextPreviewsQuery, TextQuery, TextsInfoQuery } from "../api";
 import { mapEditingTextSpan, mapShortTextPreview, mapTextListDto, mapTextPreviewDto, mapTextSpanDto, mapTextsInfo, mapTranslationDto } from "../model/mappers";
 import { ShortTextPreview } from "../model/types/shortTextPreview";
 import { SharedHooks } from "../../../shared/lib";
@@ -10,8 +10,18 @@ import { EditingTextSpan } from "../model/types/editingTextSpan";
 export const textsKeys = {
   texts: {
     root: 'texts',
-    slug: (query: TextPreviewsQuery) => [textsKeys.texts.root, query.userId, query.limit, query.offset, query.order],
+    slug: (query: GTextPreviewsQuery) => {
+      const keys: (string | number)[] = [textsKeys.texts.root];
+      Object.values(query).forEach(value => {
+        keys.push(String(value));
+      });
+      return keys
+    },
   },
+  // allTexts: {
+  //   root: 'allTexts',
+  //   slug: (query: AllTextPreviewsQuery) => [textsKeys.allTexts.root, query.limit, query.offset, query.order],
+  // },
   text: {
     root: 'text',
     slug: (textId: number) => [textsKeys.text.root, textId],
@@ -105,9 +115,9 @@ const useTextPreviewsList2 = (query: TextPreviewsQuery) => {
       if (!query.limit) {
         return null
       }
-      if (lastPage.length < query.limit) return null;
-      const nextPageParam = lastPage.length ? pages.length * query.limit : null;
-      return nextPageParam;
+      if (!lastPage.length || lastPage.length < query.limit) return null;
+      const nextPageParam = pages.flat().filter(text => !text.isDeleted).length;
+      return nextPageParam
     },
     cacheTime: 60 * 1000,
   });
@@ -124,6 +134,35 @@ const useTextPreviewsList2 = (query: TextPreviewsQuery) => {
   return {
     ...queryData,
     data: mapData(queryData.data)
+  }
+}
+
+const useAllTextPreviewsList = (query: AllTextPreviewsQuery) => {
+
+  const queryData = useInfiniteQuery({
+    queryKey: textsKeys.texts.slug(query),
+    queryFn: async ({ pageParam = query.offset ?? 0 }) => {
+      const data = await TextApi.getAllTextPreviews({ 
+        offset: pageParam, 
+        limit: query.limit, 
+        order: query.order, 
+      });
+      return data.map(mapTextPreviewDto)
+    },
+    getNextPageParam: (lastPage, pages) => {
+      if (!query.limit) {
+        return null
+      }
+      if (lastPage.length < query.limit) return null;
+      const nextPageParam = lastPage.length ? pages.length * query.limit : null;
+      return nextPageParam;
+    },
+    cacheTime: 60 * 1000,
+  });
+
+  return {
+    ...queryData,
+    data: queryData.data?.pages.flat() || [],
   }
 }
 
@@ -308,6 +347,7 @@ const useTextsInfo = (query: TextsInfoQuery) => {
 export const TextsLib = {
   useTextPreviewsList,
   useTextPreviewsList2,
+  useAllTextPreviewsList,
   useFriendsLastTexts,
   useTextSpan,
   useEditingTextSpan,
