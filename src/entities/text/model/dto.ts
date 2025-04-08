@@ -1,4 +1,5 @@
 import { StringSpanDto, TransStatusWordDto } from "../../word";
+import { TextQuery } from "../api";
 
 export interface BlockDto {
   id: number,
@@ -12,19 +13,24 @@ export interface EditingBlockDto {
   translation: string,
 }
 
-export interface TextSpanDto {
-  id: number,
-  name: string,
-  blocks: BlockDto[],
-  premiere: boolean,
-}
-
-export interface EditingTextSpanDto {
-  id: number,
-  name: string,
-  blocks: EditingBlockDto[],
+export interface GeneralTextSpanDto {
+  premiere: boolean, //Надо ли?
   pagesTotal: number,
 }
+
+export interface PremiereTextSpanDto extends GeneralTextSpanDto {
+  id: number,
+  blocks: BlockDto[],
+  premiere: true,
+}
+
+export interface EditingTextSpanDto extends GeneralTextSpanDto {
+  id: number,
+  blocks: EditingBlockDto[],
+  premiere: false,
+}
+
+export type TextSpanDto = PremiereTextSpanDto | EditingTextSpanDto;
 
 export type TranslationDto = TransTextDto | TransStatusWordDto;
 
@@ -127,4 +133,22 @@ export type SaveBlock = NewBlock | EditBlock | DeleteBlock | NewBlockAbove | New
 export interface SaveBlocksDto {
   textId: number,
   blocks: SaveBlock[],
+  query: Omit<TextQuery, 'textId'>,
+}
+
+export interface FastDeleteBlockDto {
+  blockId: number,
+  query: TextQuery,
+}
+
+export interface TextMetaDto {
+  id: number,
+  name: string,
+  premiere: boolean,
+  author: {
+    id: number,
+    login: string,
+  },
+  createDate: string,
+  updateDate: string,
 }

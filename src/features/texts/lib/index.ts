@@ -1,6 +1,6 @@
 import { InfiniteData, useMutation, useQueryClient } from "react-query"
-import { GTextPreviewsQuery, TextApi, TextPreviewsQuery } from "../../../entities/text/api"
-import { CreateTextDto, SaveBlocksDto, TextList, TextPreview, TextPreviewDto, textsKeys } from "../../../entities/text";
+import { GTextPreviewsQuery, TextApi, TextPreviewsQuery, TextQuery } from "../../../entities/text/api"
+import { CreateTextDto, EditingTextSpanDto, SaveBlocksDto, TextList, TextMetaDto, TextPreview, TextPreviewDto, TextSpanDto, textsKeys } from "../../../entities/text";
 import { mapTextPreviewDto } from "../../../entities/text/model/mappers";
 
 const useAddText = (query: GTextPreviewsQuery) => {
@@ -139,12 +139,93 @@ const useDeleteText = (textId: number, query: GTextPreviewsQuery) => {
   )
 }
 
-const useSaveBlocks = () => {
-  return useMutation(
-    (dto: SaveBlocksDto) => {
+const useSaveBlocks = (updateText: (dto: EditingTextSpanDto) => void) => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: (dto: SaveBlocksDto) => {
       return TextApi.saveBlocks(dto);
     },
-  )
+    onSuccess: (data, variables) => {
+      queryClient.setQueryData(
+        textsKeys.text.slug({ ...variables.query, textId: variables.textId }), 
+        (old: TextSpanDto | undefined) => {
+          if (!data.premiere) {
+            updateText(data);
+          }
+          return data
+        }
+      );
+    }
+  })
+}
+
+const useFastDeleteBlock = (deleteBlock: () => void) => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: ({ blockId } : { blockId: number }) => {
+      return TextApi.fastDeleteBlock(blockId);
+    },
+    onSuccess: (data, variables) => {
+      // queryClient.setQueryData(
+      //   textsKeys.text.slug(query), 
+      //   (old: EditingTextSpanDto | undefined) => {
+      //     if (!old) {
+      //       return {
+      //         id: 0,
+      //         premiere: false,
+      //         blocks: [],
+      //         pagesTotal: 0
+      //       }
+      //     }
+
+      //     const newDto: TextSpanDto = {
+      //       ...old,
+      //       blocks: old.blocks.filter(block => block.id !== variables.blockId)
+      //     }
+      //     return newDto
+      //   }
+      // );
+      deleteBlock()
+    }
+  })
+}
+
+const useSetPremiere = (textId: number) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ premiere } : { premiere: boolean }) => {
+      return TextApi.setPremiere(premiere, textId)
+    },
+    onSuccess: (_, variables) => {
+      queryClient.setQueryData(
+        textsKeys.textMeta.slug(textId), 
+        (old: TextMetaDto | undefined) => {
+          if (!old) {
+            return {
+              id: 0,
+              name: '',
+              premiere: false,
+              author: {
+                id: 0,
+                login: '',
+              },
+              createDate: '',
+              updateDate: '',
+            }
+          }
+
+          const newDto: TextMetaDto = {
+            ...old,
+            premiere: variables.premiere,
+          }
+          return newDto
+        }
+      );
+    }
+  })
 }
 
 export const TextFeaturesLib = {
@@ -153,5 +234,7 @@ export const TextFeaturesLib = {
   useChangeName,
   useCopyText,
   useUncopyText,
+  useFastDeleteBlock,
   useDeleteText,
+  useSetPremiere,
 }

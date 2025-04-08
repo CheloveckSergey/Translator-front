@@ -1,0 +1,43 @@
+.editor {
+  background-color: rgb(163, 193, 162);
+  
+  .box {
+    display: flex;
+
+    @media (max-width: 1000px) {
+      flex-direction: column;
+    }
+
+    .left, .right {
+      min-height: 100px;
+      width: 50%;
+
+      @media (max-width: 1000px) {
+        width: 100%;
+      }
+
+      textarea {
+        height: 100%;
+        width: 100%;
+        background-color: inherit;
+      }
+    }
+  
+    .left {
+      background-color: var(--background-grey);
+    }
+  
+    .right {
+      background-color: var(--background-light-darker);
+    }
+  }
+
+  >.buttons-panel {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 10px;
+    // background-color: var(--background-dark);
+  }
+}

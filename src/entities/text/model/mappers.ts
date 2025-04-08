@@ -1,22 +1,34 @@
-import { Block, EditingBlock, EditingTextSpanDto, ShortTextPreview, ShortTextPreviewDto, TextList, TextPreview, TextPreviewDto, TextSpan, TextSpanDto, TextsInfo, TextsInfoDto, TransText, TransTextDto, Translation, TranslationDto } from ".";
+import { Block, BlockDto, EditingBlock, EditingTextSpanDto, PremiereTextSpanDto, ShortTextPreview, ShortTextPreviewDto, TextList, TextMeta, TextMetaDto, TextPreview, TextPreviewDto, TextSpan, TextSpanDto, TextsInfo, TextsInfoDto, TransText, TransTextDto, Translation, TranslationDto } from ".";
 import { StringSpan } from "../../word";
 import { mapStringSpanDto, mapTransWordDto } from "../../word/model/mappers";
 import { EditingTextSpan } from "./types/editingTextSpan";
 
-export function mapTextSpanDto(dto: TextSpanDto): TextSpan {
-  const blocks = dto.blocks.map(blockDto => {
-    const stringSpans = blockDto.original.map(mapStringSpanDto);
-    const block: Block = {
-      id: blockDto.id,
-      original: stringSpans,
-      translation: blockDto.translation,
-    }
-    return block
-  })
-
-  const textSpan: TextSpan = new TextSpan(dto.id, dto.name, blocks, dto.premiere);
-  return textSpan;
+export function mapTextSpanDto(dto: TextSpanDto): TextSpan | EditingTextSpan {
+  if (dto.premiere) {
+    return mapPremiereTextSpan(dto)
+  } else {
+    return mapEditingTextSpan(dto)
+  }
 }
+
+export function mapPremiereTextSpan(dto: PremiereTextSpanDto): TextSpan {
+  const blocks: Block[] = dto.blocks.map(mapBlock)
+  const text = new TextSpan(dto.id, blocks);
+  return text
+}
+
+function mapBlock(dto: BlockDto): Block {
+  const block: Block = {
+    id: dto.id,
+    original: dto.original.map(mapStringSpanDto),
+    translation: dto.translation,
+  }
+  return block
+}
+
+// function mapEditingTextSpan(dto: EditingTextSpanDto): EditingTextSpan {
+//   const blocks: EditingBlock = new EditingBlock
+// }
 
 export function mapEditingTextSpan(dto: EditingTextSpanDto): EditingTextSpan {
   const blocks = dto.blocks.map(blockDto => {
@@ -24,7 +36,7 @@ export function mapEditingTextSpan(dto: EditingTextSpanDto): EditingTextSpan {
     return block
   })
 
-  const textSpan = new EditingTextSpan(dto.id, dto.name, blocks);
+  const textSpan = new EditingTextSpan(dto.id, blocks);
   return textSpan;
 }
 
@@ -76,4 +88,16 @@ export function mapShortTextPreview(textDto: ShortTextPreviewDto): ShortTextPrev
 export function mapTextsInfo(info: TextsInfoDto): TextsInfo {
   const textsInfo = new TextsInfo(info.generalTextsNumber, info.ownTextsNumber, info.copiedTextsNumber);
   return textsInfo
+}
+
+export function mapTextMeta(dto: TextMetaDto): TextMeta {
+  const meta = new TextMeta(
+    dto.id,
+    dto.name,
+    dto.author,
+    dto.premiere,
+    new Date(dto.createDate),
+    new Date(dto.updateDate),
+  );
+  return meta
 }

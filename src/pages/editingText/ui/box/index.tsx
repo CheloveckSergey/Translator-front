@@ -21,38 +21,38 @@ const TextSceleton: FC = () => {
 
 export const TextsBox: FC = () => {
 
-  const textId = useUrlTextId();
+  // const textId = useUrlTextId();
 
-  const {
-    text,
-    page,
-    pagesTotal,
-    isFetching,
-    isError,
-    updateState,
-    nextPage,
-    prevPage,
-    setPage,
-    refetch,
-  } = TextsLib.useEditingTextSpan(Number(textId));
+  // const {
+  //   text,
+  //   page,
+  //   pagesTotal,
+  //   isFetching,
+  //   isError,
+  //   updateState,
+  //   nextPage,
+  //   prevPage,
+  //   setPage,
+  //   refetch,
+  // } = TextsLib.useEditingTextSpan(Number(textId));
 
-  const saveMutation = TextFeaturesLib.useSaveBlocks();
+  // const saveMutation = TextFeaturesLib.useSaveBlocks();
 
-  function newBlockAtEnd() {
-    text.newBlockAtEnd();
-    updateState();
-  }
+  // function newBlockAtEnd() {
+  //   text.newBlockAtEnd();
+  //   updateState();
+  // }
 
-  function saveBlocks() {
-    saveMutation.mutateAsync(text.getSaveBlocksDto())
-    .then(() => {
-      refetch();
-    });
-  }
+  // function saveBlocks() {
+  //   saveMutation.mutateAsync(text.getSaveBlocksDto())
+  //   .then(() => {
+  //     refetch();
+  //   });
+  // }
 
   return (
     <div className="editing-text-box">
-      <SharedUiHelpers.ErrorLoader
+      {/* <SharedUiHelpers.ErrorLoader
         isLoading={isFetching}
         isError={isError}
         loadingSceleton={<TextSceleton />}
@@ -127,7 +127,7 @@ export const TextsBox: FC = () => {
             />
           </div>
         </>
-      </SharedUiHelpers.ErrorLoader>
+      </SharedUiHelpers.ErrorLoader> */}
     </div>
   )
 }

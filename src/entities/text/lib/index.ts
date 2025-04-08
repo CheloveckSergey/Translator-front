@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { ShortTextPreviewDto, TextList, TextPreview, TextPreviewDto, TextSchema, TextSpan, TextsInfo, Translation } from "../model";
+import { EditingTextSpanDto, PremiereTextSpanDto, ShortTextPreviewDto, TextList, TextMetaDto, TextPreview, TextPreviewDto, TextSchema, TextSpan, TextSpanDto, TextsInfo, Translation } from "../model";
 import { InfiniteData, useInfiniteQuery, useMutation, useQuery } from "react-query";
 import { AllTextPreviewsQuery, GTextPreviewsQuery, LastFriendsTextsQuery, TextApi, TextPreviewsQuery, TextQuery, TextsInfoQuery } from "../api";
-import { mapEditingTextSpan, mapShortTextPreview, mapTextListDto, mapTextPreviewDto, mapTextSpanDto, mapTextsInfo, mapTranslationDto } from "../model/mappers";
+import { mapEditingTextSpan, mapShortTextPreview, mapTextListDto, mapTextMeta, mapTextPreviewDto, mapTextSpanDto, mapTextsInfo, mapTranslationDto, mapPremiereTextSpan } from "../model/mappers";
 import { ShortTextPreview } from "../model/types/shortTextPreview";
 import { SharedHooks } from "../../../shared/lib";
 import { EditingTextSpan } from "../model/types/editingTextSpan";
@@ -24,7 +24,11 @@ export const textsKeys = {
   // },
   text: {
     root: 'text',
-    slug: (textId: number) => [textsKeys.text.root, textId],
+    slug: (query: TextQuery) => [textsKeys.text.root, query.textId, query.page, query.limit],
+  },
+  textMeta: {
+    root: 'textMeta',
+    slug: (textId: number) => [textsKeys.textMeta.root, textId],
   },
   editingText: {
     root: 'editingText',
@@ -192,63 +196,81 @@ const useFriendsLastTexts = (query: LastFriendsTextsQuery) => {
   }
 }
 
-const useTextSpan = (textId: number) => {
+const useTextMeta = (textId: number) => {
 
-  const [textSpan, setTextSpan] = useState<TextSpan>(new TextSpan(0, '', [], false));
-
-  const { isLoading, isError } = useQuery({
-    queryKey: textsKeys.text.slug(textId),
+  const query = useQuery({
+    queryKey: textsKeys.textMeta.slug(textId),
     queryFn: () => {
-      return TextApi.getTextSpan(textId);
+      return TextApi.getTextMeta(textId)
     },
-    onSuccess: (data) => {
-      setTextSpan(mapTextSpanDto(data));
+    select: (dto: TextMetaDto) => {
+      return mapTextMeta(dto)
     }
   });
 
-  return {
-    textSpan,
-    setTextSpan,
-    isLoading,
-    isError,
-  }
+  return query
 }
 
-const useEditingTextSpan = (textId: number) => {
+const useTextSpan = (query: Omit<TextQuery, 'page'>) => {
 
-  const [text, setText] = useState<EditingTextSpan>(new EditingTextSpan(0, '', []));
+  const [pagesTotal, setPagesTotal] = useState<number>(0);
   const [page, setPage] = useState<number>(() => {
-    const page = localStorage.getItem(`TEXT_${textId}_PAGE`);
-    if (page) {
-      return Number(page)
+    const _page = localStorage.getItem(`TEXT_${query.textId}_PAGE`);
+    const page = Number(_page);
+    if (page && page > 0) {
+      return page
     } else {
       return 0
     }
   });
-  const [pagesTotal, setPagesTotal] = useState<number>(0);
 
-  const { isFetching, isError, refetch } = useQuery({
-    queryKey: textsKeys.editingText.slug(textId, page),
-    queryFn: () => {
-      return TextApi.getEditingTextSpan({ 
-        textId: textId,
-        page,
-      });
-    },
-    onSuccess: (data) => {
-      setText(mapEditingTextSpan(data));
-      setPagesTotal(data.pagesTotal);
-    }
-  });
+  const [firstRender, setFirstRender] = useState<boolean>(true);
+  const [isNewPage, setIsNewPage] = useState<boolean>(false);
+
+  // useEffect(() => {
+  //   setFirstRender(false);
+  // }, []);
 
   useEffect(() => {
-    localStorage.setItem(`TEXT_${textId}_PAGE`, String(page));
+    localStorage.setItem(`TEXT_${query.textId}_PAGE`, String(page));
   }, [page]);
 
-  function updateState() {
-    const newTextSpan = text.getCopy();
-    setText(newTextSpan);
-  }
+  const result = useQuery({
+    queryKey: textsKeys.text.slug({ ...query, page }),
+    queryFn: () => {
+      return TextApi.getTextSpan({ ...query, page });
+    },
+    onSuccess: (data: TextSpanDto) => {
+      setPagesTotal(data.pagesTotal || 1);
+      if (isNewPage) {
+        setPagesTotal(pagesTotal + 1);
+      }
+
+      if ((page > 0) && (page + 1 > data.pagesTotal) && !isNewPage) {
+        setPage(data.pagesTotal - 1);
+      }
+
+      setIsNewPage(false);
+    },
+    // onSuccess: (data: TextSpanDto) => {
+    //   console.log(firstRender);
+    //   console.log(data.blocks.length);
+    //   console.log(page + 1 === data.pagesTotal + 1);
+    //   if (!firstRender && !data.blocks.length && (page + 1 === data.pagesTotal + 1)) {
+    //     console.log(1);
+    //     setPagesTotal(data.pagesTotal + 1);
+    //   } else {
+    //     console.log(2);
+    //     setPagesTotal(data.pagesTotal);
+    //   }
+
+    //   if ((page + 1 > data.pagesTotal) && firstRender) {
+    //     setPage(data.pagesTotal - 1);
+    //   }
+
+    //   setFirstRender(false);
+    // },
+  });
 
   function nextPage() {
     if (pagesTotal <= (page + 1)) {
@@ -264,19 +286,91 @@ const useEditingTextSpan = (textId: number) => {
     setPage(prev => prev - 1);
   }
 
+  function newPage() {
+    if (result.data && result.data.blocks.length < query.limit) {
+      return
+    }
+    if (page + 1 < pagesTotal) {
+      return
+    }
+    setIsNewPage(true);
+    setPage(prev => prev + 1);
+  }
+
   return {
-    text,
+    result,
     page,
     pagesTotal,
-    isFetching,
-    isError,
-    updateState,
     nextPage,
     prevPage,
     setPage,
-    refetch,
+    newPage,
   }
 }
+
+// const useEditingTextSpan = (textId: number) => {
+
+//   const [text, setText] = useState<EditingTextSpan>(new EditingTextSpan(0, []));
+//   const [page, setPage] = useState<number>(() => {
+//     const page = localStorage.getItem(`TEXT_${textId}_PAGE`);
+//     if (page) {
+//       return Number(page)
+//     } else {
+//       return 0
+//     }
+//   });
+//   const [pagesTotal, setPagesTotal] = useState<number>(0);
+
+//   const { isFetching, isError, refetch } = useQuery({
+//     queryKey: textsKeys.text.slug(textId, page),
+//     queryFn: () => {
+//       return TextApi.getEditingTextSpan({ 
+//         textId: textId,
+//         page,
+//       });
+//     },
+//     onSuccess: (data) => {
+//       setText(mapEditingTextSpan(data));
+//       setPagesTotal(data.pagesTotal);
+//     }
+//   });
+
+//   useEffect(() => {
+//     localStorage.setItem(`TEXT_${textId}_PAGE`, String(page));
+//   }, [page]);
+
+//   function updateState() {
+//     const newTextSpan = text.getCopy();
+//     setText(newTextSpan);
+//   }
+
+//   function nextPage() {
+//     if (pagesTotal <= (page + 1)) {
+//       return
+//     }
+//     setPage(prev => prev + 1);
+//   }
+
+//   function prevPage() {
+//     if (page === 0) {
+//       return
+//     }
+//     setPage(prev => prev - 1);
+//   }
+
+//   return {
+//     text,
+//     page,
+//     pagesTotal,
+//     isFetching,
+//     isError,
+//     updateState,
+//     nextPage,
+//     prevPage,
+//     setPage,
+//     refetch,
+//   }
+// }
 
 const useTranslation = () => {
 
@@ -350,7 +444,8 @@ export const TextsLib = {
   useAllTextPreviewsList,
   useFriendsLastTexts,
   useTextSpan,
-  useEditingTextSpan,
+  // useEditingTextSpan,
   useTranslation,
   useTextsInfo,
+  useTextMeta,
 }

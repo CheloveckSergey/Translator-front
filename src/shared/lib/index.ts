@@ -51,6 +51,17 @@ function useUrlUserId(): number {
   return userId
 }
 
+function useUrlTextId(): number {
+  const { textId: _textId } = useParams();
+
+  if (!_textId) {
+    throw Error('В URL нет ID текста')
+  }
+
+  const textId = Number(_textId);
+  return textId
+}
+
 function getRandomNumber(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -60,6 +71,7 @@ export const SharedLib = {
   getImageUrlFromFile,
   capitalizeFirstLetter,
   useUrlUserId,
+  useUrlTextId,
   getRandomNumber,
 }
 

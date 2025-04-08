@@ -1,4 +1,5 @@
 import { SharedLib } from "../../../../shared/lib";
+import { TextQuery } from "../../api";
 import { SaveBlock, SaveBlocksDto } from "../dto";
 
 export class EditingBlock {
@@ -8,6 +9,7 @@ export class EditingBlock {
   public isNew: boolean = false;
   public deleted: boolean = false;
   public aboveBlockId: number | undefined;
+  public belowBlockId: number | undefined;
 
   constructor(
     public id: number,
@@ -31,14 +33,6 @@ export class EditingBlock {
     }
   }
 
-  // setIsNew(isNew: boolean) {
-  //   this.isNew = isNew;
-  // }
-
-  // setAboveBlockId(blockId: number) {
-  //   this.aboveBlockId = blockId;
-  // }
-
   setDeleted(deleted: boolean) {
     this.deleted = deleted;
   }
@@ -52,14 +46,9 @@ export class EditingTextSpan {
   public editingBlockId: number | undefined;
 
   constructor(
-    public id: number, 
-    public name: string, 
+    public id: number,
     public blocks: EditingBlock[],
   ) {}
-
-  changeName(name: string) {
-    this.name = name;
-  }
 
   newBlockAtEnd() {
     if (this.editing) {
@@ -100,7 +89,7 @@ export class EditingTextSpan {
     newBlock.changed = true;
     if (this.editingAboveBlockId) {
       const index = this.blocks.findIndex(block => block.id === this.editingAboveBlockId);
-      if (!index) {
+      if (index === undefined) {
         return
       }
       newBlock.aboveBlockId = this.editingAboveBlockId;
@@ -110,6 +99,7 @@ export class EditingTextSpan {
       if (!index) {
         return
       }
+      newBlock.belowBlockId = this.editingBelowBlockId;
       this.blocks.splice(index + 1, 0, newBlock);
     } else if (this.editingAtEnd) {
       this.blocks.push(newBlock);
@@ -140,7 +130,11 @@ export class EditingTextSpan {
     return block
   }
 
-  getSaveBlocksDto(): SaveBlocksDto {
+  fastDelete(blockId: number) {
+    this.blocks = this.blocks.filter(block => block.id !== blockId);
+  }
+
+  getSavedBlocks(): SaveBlock[] {
     const blocks: SaveBlock[] = [];
     for (let block of this.blocks) {
       if (block.aboveBlockId) {
@@ -149,6 +143,13 @@ export class EditingTextSpan {
           original: block.original,
           translation: block.translation,
           blockId: block.aboveBlockId,
+        })
+      } else if (block.belowBlockId) {
+        blocks.push({
+          type: 'newBlockBelow',
+          original: block.original,
+          translation: block.translation,
+          blockId: block.belowBlockId,
         })
       } else if (block.isNew) {
         blocks.push({
@@ -171,15 +172,11 @@ export class EditingTextSpan {
       }
     }
 
-    const dto: SaveBlocksDto = {
-      textId: this.id,
-      blocks,
-    }
-    return dto
+    return blocks
   }
 
   getCopy() {
-    const newTextSpan = new EditingTextSpan(this.id, this.name, this.blocks);
+    const newTextSpan = new EditingTextSpan(this.id, this.blocks);
     newTextSpan.editing = this.editing;
     newTextSpan.editingAtEnd = this.editingAtEnd;
     newTextSpan.editingBlockId = this.editingBlockId;

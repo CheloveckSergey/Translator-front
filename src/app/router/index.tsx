@@ -13,6 +13,7 @@ import { UserPage } from "../../pages/user";
 import { useAppSelector } from "../store";
 import { SettingsPage } from "../../pages/settings";
 import { AllTextsPage } from "../../pages/allTexts";
+import { TextPage } from "../../pages/text";
 
 interface PRProps {
   element: React.ReactNode,
@@ -50,7 +51,7 @@ export const AppRouter: FC = () => {
           />
           <Route path="/translator" element={<Translator />} />
           <Route path="/texts">
-            {/* <Route path=":textId" element={<TextPage />} /> */}
+            <Route path=":textId" element={<TextPage />} />
             <Route path="user/:userId" element={<TextsPage />} />
           </Route>
           <Route path="/all-texts" element={<AllTextsPage />} />

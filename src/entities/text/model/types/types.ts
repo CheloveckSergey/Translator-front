@@ -9,8 +9,8 @@ export interface TransText {
   isCopied?: boolean,
 }
 
-export interface Block {
-  id: number,
-  original: StringSpan[],
-  translation: string,
-}
+// export interface Block {
+//   id: number,
+//   original: StringSpan[],
+//   translation: string,
+// }

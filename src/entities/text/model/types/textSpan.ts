@@ -1,21 +1,21 @@
 import { StringSpan } from "../../../word";
-import { Block } from "./types";
+// import { Block } from "./types";
+
+export interface Block {
+  id: number,
+  original: StringSpan[],
+  translation: string,
+}
 
 export class TextSpan {
 
   constructor(
-    public id: number, 
-    public name: string, 
+    public id: number,
     public blocks: Block[],
-    public premiere: boolean,
   ) {}
 
-  changeName(name: string) {
-    this.name = name;
-  }
-
   getCopy() {
-    const newTextSpan = new TextSpan(this.id, this.name, this.blocks, this.premiere);
+    const newTextSpan = new TextSpan(this.id, this.blocks);
     return newTextSpan;
   }
 }

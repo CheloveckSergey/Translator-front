@@ -64,15 +64,17 @@ interface TBProps {
   onClick: () => void,
   color: ButtonColor,
   disabled?: boolean,
+  title?: string,
   className?: string,
 }
-const TextButton: FC<TBProps> = ({ body, onClick, color, disabled, className }) => {
+const TextButton: FC<TBProps> = ({ body, onClick, color, disabled, title, className }) => {
 
   return (
     <button 
       className={["shared-text-button", color, className].join(' ')}
       onClick={onClick}
       disabled={disabled}
+      title={title}
     >
       {body}
     </button>
@@ -86,9 +88,10 @@ interface TABProps {
   isError: boolean,
   color: ButtonColor,
   disabled?: boolean,
+  title?: string,
   className?: string,
 }
-const TextActionButton: FC<TABProps> = ({ body, onClick, isLoading, isError, color, disabled, className }) => {
+const TextActionButton: FC<TABProps> = ({ body, onClick, isLoading, isError, color, disabled, title, className }) => {
 
   return (
     <TextButton 
@@ -103,6 +106,7 @@ const TextActionButton: FC<TABProps> = ({ body, onClick, isLoading, isError, col
       onClick={onClick}
       color={color}
       disabled={disabled}
+      title={title}
       className={className}
     />
   )

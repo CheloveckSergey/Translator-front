@@ -28,18 +28,20 @@ const TextEditor: FC<TEProps> = ({ createTextObject, setEditing }) => {
   const { user } = useAppSelector(state => state.user);
 
   const [name, setName] = useState<string>('');
-  const [content, setContent] = useState<string>('');
 
   function closeEditing() {
     setName('');
-    setContent('');
     setEditing(false);
   }
   
   function submit() {
+    if (!user) {
+      return
+    }
+
     createTextObject.mutate({
       name,
-      userId: user!.id,
+      userId: user.id,
     }).then((data) => {
       closeEditing();
       // navigate('/texts/' + data.id)
@@ -100,8 +102,6 @@ interface TAProps {
 }
 const TextAdder: FC<TAProps> = ({ createTextObject }) => {
 
-  const { user } = useAppSelector(state => state.user);
-
   const [editing, setEditing] = useState<boolean>(false);
 
   const navigate = useNavigate();
@@ -159,6 +159,8 @@ export const TextListUi2: FC<TLUProps> = ({
   className,
 }) => {
 
+  const { user } = useAppSelector(state => state.user);
+
   return (
     <div className={["text-list", className].join(' ')}>
       <SharedUiHelpers.ErrorLoader
@@ -167,7 +169,7 @@ export const TextListUi2: FC<TLUProps> = ({
         loadingSceleton={<LoadingSceleton />}
       >
         <div className="text-list-content">
-          {actionObjects.addText && (
+          {user && actionObjects.addText && (
             <TextAdder 
               createTextObject={actionObjects.addText}
             />

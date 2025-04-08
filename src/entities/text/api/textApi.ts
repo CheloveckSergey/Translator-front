@@ -1,6 +1,6 @@
 import api from "../../../shared/api";
 import { UsualQuery } from "../../../shared/types";
-import { CreateTextDto, CreateTextResponse, EditingTextSpanDto, SaveBlocksDto, ShortTextPreviewDto, TextPreviewDto, TextSchema, TextSpanDto, TextsInfoDto, TranslationDto } from "../model";
+import { CreateTextDto, CreateTextResponse, EditingTextSpanDto, FastDeleteBlockDto, SaveBlocksDto, ShortTextPreviewDto, TextMetaDto, TextPreviewDto, TextSchema, TextSpanDto, TextsInfoDto, TranslationDto } from "../model";
 
 export interface GTextPreviewsQuery extends UsualQuery {
 
@@ -23,6 +23,7 @@ export interface TextsInfoQuery {
 export interface TextQuery {
   textId: number,
   page: number,
+  limit: number,
 }
 
 const INITIAL_URL = '/texts';
@@ -60,20 +61,25 @@ export class TextApi {
     return response.data;
   }
 
-  static async getTextSpan(textId: number) {
-    const response = await api.get<TextSpanDto>(INITIAL_URL + '/getTextSpan/' + textId);
-    return response.data;
-  }
-
-  static async getEditingTextSpan(query: TextQuery) {
-    const response = await api.get<EditingTextSpanDto>(
-      INITIAL_URL + '/getEditingTextSpan',
+  static async getTextSpan(query: TextQuery) {
+    const response = await api.get<TextSpanDto>(
+      INITIAL_URL + '/getTextSpan',
       {
         params: query,
       }
     );
     return response.data;
   }
+
+  // static async getEditingTextSpan(query: TextQuery) {
+  //   const response = await api.get<EditingTextSpanDto>(
+  //     INITIAL_URL + '/getEditingTextSpan',
+  //     {
+  //       params: query,
+  //     }
+  //   );
+  //   return response.data;
+  // }
 
   static async getTextsInfo(query: TextsInfoQuery) {
     const response = await api.get<TextsInfoDto>(
@@ -85,6 +91,13 @@ export class TextApi {
     return response.data;
   }
 
+  static async getTextMeta(textId: number) {
+    const response = await api.get<TextMetaDto>(
+      INITIAL_URL + '/getTextMeta/' + textId, 
+    );
+    return response.data
+  }
+
   static async create(dto: CreateTextDto) {
     const response = await api.post<TextPreviewDto>(
       INITIAL_URL + '/create',
@@ -94,7 +107,7 @@ export class TextApi {
   }
 
   static async saveBlocks(dto: SaveBlocksDto) {
-    const response = await api.post(
+    const response = await api.post<TextSpanDto>(
       INITIAL_URL + '/saveBlocks',
       dto,
     );
@@ -125,10 +138,25 @@ export class TextApi {
     return response.data;
   }
 
+  static async setPremiere(premiere: boolean, textId: number) {
+    const response = await api.post(
+      INITIAL_URL + '/setPremiere',
+      { premiere, textId },
+    );
+    return response.data;
+  }
+
   static async getTranslation(value: string) {
     const response = await api.post<TranslationDto>(
       INITIAL_URL + '/getTranslation',
       { value },
+    );
+    return response.data;
+  }
+
+  static async fastDeleteBlock(blockId: number) {
+    const response = await api.delete(
+      INITIAL_URL + '/fastDeleteBlock/' + blockId,
     );
     return response.data;
   }

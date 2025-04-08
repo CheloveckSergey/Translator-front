@@ -60,6 +60,7 @@ export const BlockWidget: FC<BWProps> = ({ block, text, updateState }) => {
       )}
       <div className={["text-block", block.changed ? 'changed' : ''].join(' ')}>
         <div className="left">
+          {block.isNew && <span>IsNew</span>}
           {block.original}
         </div>
         <div className="right">
