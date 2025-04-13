@@ -1,8 +1,8 @@
 import { FC, useState } from "react";
-import { PremiereTextSpanDto, TextSpan, mapPremiereTextSpan } from "../../../../entities/text";
+import { PremiereTextSpanDto, PremiereTextSpan, mapPremiereTextSpan } from "../../../../entities/text";
 
 function usePremiereText(dto: PremiereTextSpanDto) {
-  const [text, setText] = useState<TextSpan>(mapPremiereTextSpan(dto));
+  const [text, setText] = useState<PremiereTextSpan>(mapPremiereTextSpan(dto));
   const [oldDto, setOldDto] = useState<PremiereTextSpanDto>(dto);
 
   if (dto !== oldDto) {

@@ -1,16 +1,14 @@
 import { FC, useState } from "react";
-import { SharedButtons } from "../../../../../../shared/sharedUi/buttons";
-import './styles.scss';
-import { Warnings } from "../../../../lib";
+import { SharedButtons } from "../../shared/sharedUi/buttons";
 
 interface WWProps {
   operation: () => void,
   close: () => void,
-  warnings: Warnings[],
+  warnings: string[],
 }
 export const WarningWindow: FC<WWProps> = ({ operation, close, warnings: _warnings }) => {
 
-  const [warnings, setWarnings] = useState<Warnings[]>(_warnings);
+  const [warnings, setWarnings] = useState<string[]>(_warnings);
 
   function onContinue() {
     if (warnings.length === 1) {

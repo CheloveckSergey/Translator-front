@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { EditingTextSpanDto, PremiereTextSpanDto, ShortTextPreviewDto, TextList, TextMetaDto, TextPreview, TextPreviewDto, TextSchema, TextSpan, TextSpanDto, TextsInfo, Translation } from "../model";
+import { EditingTextSpanDto, PremiereTextSpanDto, ShortTextPreviewDto, TextList, TextMetaDto, TextPagination, TextPreview, TextPreviewDto, TextSchema, PremiereTextSpan, TextSpanDto, TextsInfo, Translation } from "../model";
 import { InfiniteData, useInfiniteQuery, useMutation, useQuery } from "react-query";
 import { AllTextPreviewsQuery, GTextPreviewsQuery, LastFriendsTextsQuery, TextApi, TextPreviewsQuery, TextQuery, TextsInfoQuery } from "../api";
 import { mapEditingTextSpan, mapShortTextPreview, mapTextListDto, mapTextMeta, mapTextPreviewDto, mapTextSpanDto, mapTextsInfo, mapTranslationDto, mapPremiereTextSpan } from "../model/mappers";
@@ -297,13 +297,17 @@ const useTextSpan = (query: Omit<TextQuery, 'page'>) => {
     setPage(prev => prev + 1);
   }
 
-  return {
-    result,
+  const pagination: TextPagination = {
     page,
-    pagesTotal,
+    pageTotal: pagesTotal,
     nextPage,
     prevPage,
     setPage,
+  }
+
+  return {
+    result,
+    pagination,
     newPage,
   }
 }

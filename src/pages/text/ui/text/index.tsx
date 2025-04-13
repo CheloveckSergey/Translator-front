@@ -1,6 +1,5 @@
 import { FC, useState } from "react";
-import { EditingTextSpan, EditingTextSpanDto, TextQuery, TextSpan, TextsLib, mapEditingTextSpan } from "../../../../entities/text";
-import { useUrlTextId } from "../../../editingText";
+import { TextQuery, TextsLib } from "../../../../entities/text";
 import { SharedUiHelpers } from "../../../../shared/sharedUi/helpers";
 import { PremiereTextWidget } from "./premiereText";
 import { EditingTextWidget } from "./editingText";
@@ -19,12 +18,8 @@ export const TextWidget: FC<TWProps> = ({ textData, query }) => {
       isError,
       refetch,
     },
-    pagesTotal,
-    nextPage,
-    prevPage,
-    setPage,
+    pagination,    
     newPage,
-    page,
   } = textData;
 
   return (
@@ -37,22 +32,17 @@ export const TextWidget: FC<TWProps> = ({ textData, query }) => {
           text.premiere ? (
             <PremiereTextWidget
               dto={text}
-              page={page}
-              pageTotal={pagesTotal}
+              page={pagination.page}
+              pageTotal={pagination.pageTotal}
             />
           ) : (
             <EditingTextWidget
               dto={text}
-              page={page}
-              pageTotal={pagesTotal}
-              nextPage={nextPage}
-              prevPage={prevPage}
-              setPage={setPage}
+              pagination={pagination}
               newPage={newPage}
-              refetch={refetch}
               query={{
                 ...query,
-                page,
+                page: pagination.page,
               }}
             />
           )

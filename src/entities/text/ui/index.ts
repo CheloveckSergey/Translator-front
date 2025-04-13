@@ -1,4 +1,5 @@
 import { ShortTextPreviewCard, ShortTextPreviewsList } from "./shortTextPreview";
+import { TextBoxUi } from "./textBox";
 import { TextPreviewUi } from "./textPreview";
 import { TextSpanUi } from "./textSpan";
 import { TextListUi } from "./textsList";
@@ -11,6 +12,7 @@ export const TextUi = {
   TextSpanUi,
   ShortTextPreviewsList,
   ShortTextPreviewCard,
+  TextBoxUi,
 }
 
 export * from './uiTypes'

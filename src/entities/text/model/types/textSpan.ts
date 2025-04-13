@@ -1,4 +1,5 @@
 import { StringSpan } from "../../../word";
+import { GeneralTextSpan } from "./types";
 // import { Block } from "./types";
 
 export interface Block {
@@ -7,7 +8,7 @@ export interface Block {
   translation: string,
 }
 
-export class TextSpan {
+export class PremiereTextSpan implements GeneralTextSpan {
 
   constructor(
     public id: number,
@@ -15,7 +16,7 @@ export class TextSpan {
   ) {}
 
   getCopy() {
-    const newTextSpan = new TextSpan(this.id, this.blocks);
+    const newTextSpan = new PremiereTextSpan(this.id, this.blocks);
     return newTextSpan;
   }
 }

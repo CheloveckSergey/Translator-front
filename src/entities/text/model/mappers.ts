@@ -1,9 +1,9 @@
-import { Block, BlockDto, EditingBlock, EditingTextSpanDto, PremiereTextSpanDto, ShortTextPreview, ShortTextPreviewDto, TextList, TextMeta, TextMetaDto, TextPreview, TextPreviewDto, TextSpan, TextSpanDto, TextsInfo, TextsInfoDto, TransText, TransTextDto, Translation, TranslationDto } from ".";
+import { Block, BlockDto, EditingBlock, EditingTextSpanDto, PremiereTextSpan, PremiereTextSpanDto, ShortTextPreview, ShortTextPreviewDto, TextList, TextMeta, TextMetaDto, TextPreview, TextPreviewDto, TextSpanDto, TextsInfo, TextsInfoDto, TransText, TransTextDto, Translation, TranslationDto } from ".";
 import { StringSpan } from "../../word";
 import { mapStringSpanDto, mapTransWordDto } from "../../word/model/mappers";
 import { EditingTextSpan } from "./types/editingTextSpan";
 
-export function mapTextSpanDto(dto: TextSpanDto): TextSpan | EditingTextSpan {
+export function mapTextSpanDto(dto: TextSpanDto): PremiereTextSpan | EditingTextSpan {
   if (dto.premiere) {
     return mapPremiereTextSpan(dto)
   } else {
@@ -11,9 +11,9 @@ export function mapTextSpanDto(dto: TextSpanDto): TextSpan | EditingTextSpan {
   }
 }
 
-export function mapPremiereTextSpan(dto: PremiereTextSpanDto): TextSpan {
+export function mapPremiereTextSpan(dto: PremiereTextSpanDto): PremiereTextSpan {
   const blocks: Block[] = dto.blocks.map(mapBlock)
-  const text = new TextSpan(dto.id, blocks);
+  const text = new PremiereTextSpan(dto.id, blocks);
   return text
 }
 

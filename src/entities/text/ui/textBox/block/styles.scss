@@ -1,4 +1,4 @@
-.text-block {
+.text-box .text-block {
   display: flex;
   color: var(--font-light);
   font-size: 0.9rem;
@@ -80,7 +80,7 @@
   }
 }
 
-.block-deleted {
+.text-box .block-deleted {
   display: flex;
   flex-direction: column;
   align-items: center;

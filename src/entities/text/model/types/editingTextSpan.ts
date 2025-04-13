@@ -1,6 +1,7 @@
 import { SharedLib } from "../../../../shared/lib";
 import { TextQuery } from "../../api";
 import { SaveBlock, SaveBlocksDto } from "../dto";
+import { GeneralTextSpan } from "./types";
 
 export class EditingBlock {
   public readonly initialOriginal: string;
@@ -38,7 +39,7 @@ export class EditingBlock {
   }
 }
 
-export class EditingTextSpan {
+export class EditingTextSpan implements GeneralTextSpan {
   public editing: boolean = false;
   public editingAtEnd: boolean = false;
   public editingAboveBlockId: number | undefined;

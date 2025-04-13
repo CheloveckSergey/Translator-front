@@ -9,6 +9,19 @@ export interface TransText {
   isCopied?: boolean,
 }
 
+export interface GeneralTextSpan {
+  id: number,
+  blocks: any[],
+}
+
+export interface TextPagination {
+  page: number,
+  pageTotal: number,
+  nextPage: () => void,
+  prevPage: () => void,
+  setPage: (page: number) => void,
+}
+
 // export interface Block {
 //   id: number,
 //   original: StringSpan[],

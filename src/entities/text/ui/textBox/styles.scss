@@ -1,0 +1,25 @@
+@import '../../../../shared/styles/mixins.scss';
+
+.text-box {
+  
+  .box {
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .text-sceleton {
+    padding: 10px;
+    border-radius: 10px;
+    background-color: var(--background-light-darker);
+    
+    .block-sceleton {
+      @include sceleton-wave();
+      height: 70px;
+      border-radius: 5px;
+
+      &:not(:first-child) {
+        margin-top: 10px;
+      }
+    }
+  }
+}

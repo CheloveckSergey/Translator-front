@@ -1,7 +1,6 @@
 import { FC } from "react";
 import './styles.scss';
 import { StringSpan } from "../../../word";
-import { TextSpan } from "../../model";
 
 interface TSProps {
   stringSpans: StringSpan[],

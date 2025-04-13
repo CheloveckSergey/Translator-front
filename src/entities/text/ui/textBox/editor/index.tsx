@@ -1,43 +1,28 @@
 import { ChangeEvent, FC, useState } from "react";
 import './styles.scss';
-import { EditingTextSpan } from "../../../../../../entities/text";
-import { SharedButtons } from "../../../../../../shared/sharedUi/buttons";
+import { SharedButtons } from "../../../../../shared/sharedUi/buttons";
 
 interface BEProps {
-  text: EditingTextSpan,
-  updateState: () => void,
+  saveBlock: (original: string, translation: string) => void,
+  close: () => void,
+  original?: string,
+  translation?: string,
 }
-export const BlockEditor: FC<BEProps> = ({ text, updateState }) => {
+export const BlockEditor: FC<BEProps> = ({ saveBlock, close, original: _original, translation: _translation }) => {
 
   const [original, setOriginal] = useState<string>(() => {
-    const editedBlock = text.getEditedBlock();
-    if (editedBlock) {
-      return editedBlock.original
-    } else {
-      return ''
-    }
+    return _original || ''
   });
   const [translation, setTranslation] = useState<string>(() => {
-    const editedBlock = text.getEditedBlock();
-    if (editedBlock) {
-      return editedBlock.translation
-    } else {
-      return ''
-    }
+     return _translation || ''
   });
 
   function onSaveBlock() {
-    if (text.editingBlockId) {
-      text.changeBlock(original, translation);
-    } else {
-      text.addBlock(original, translation);
-    }
-    updateState();
+    saveBlock(original, translation);
   }
 
-  function onCloseEditor() {
-    text.closeEdit();
-    updateState();
+  function onClose() {
+    close();
   }
 
   return (
@@ -67,7 +52,7 @@ export const BlockEditor: FC<BEProps> = ({ text, updateState }) => {
         />
         <SharedButtons.SquareButton
           body='Close'
-          onClick={onCloseEditor}
+          onClick={onClose}
           color="grey"
         />
       </div>
