@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { EditingTextSpan, EditingTextSpanDto, mapEditingTextSpan } from "../../../entities/text";
+import { EditingTextSpan, EditingTextSpanDto, PremiereTextSpan, PremiereTextSpanDto, mapEditingTextSpan, mapPremiereTextSpan } from "../../../entities/text";
 import { SharedLib } from "../../../shared/lib";
 
 export const getUrlTextId = SharedLib.useUrlTextId;
@@ -7,7 +7,7 @@ export const getUrlTextId = SharedLib.useUrlTextId;
 export function useEditingText(dto: EditingTextSpanDto, page: number) {
   const [text, setText] = useState<EditingTextSpan>(mapEditingTextSpan(dto));
   const [oldDto, setOldDto] = useState<EditingTextSpanDto>(dto);
-  const [oldPage, setOldPage] = useState<number>()
+  const [oldPage, setOldPage] = useState<number>();
 
   // if (dto !== oldDto) {
   //   setOldDto(dto);
@@ -30,6 +30,29 @@ export function useEditingText(dto: EditingTextSpanDto, page: number) {
     text,
     updateState,
     setText,
+  }
+}
+
+export function usePremiereText(dto: PremiereTextSpanDto, page: number) {
+  const [text, setText] = useState<PremiereTextSpan>(mapPremiereTextSpan(dto));
+  const [oldDto, setOldDto] = useState<PremiereTextSpanDto>(dto);
+  const [oldPage, setOldPage] = useState<number>()
+
+  useEffect(() => {
+    if (!text || (page !== oldPage)) {
+      setText(mapPremiereTextSpan(dto));
+      setOldPage(page);
+    }
+  }, [dto]);
+
+  function updateState() {
+    const newText = text.getCopy();
+    setText(newText);
+  }
+
+  return {
+    text,
+    updateState,
   }
 }
 

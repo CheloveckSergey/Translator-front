@@ -13,10 +13,8 @@ export const TextWidget: FC<TWProps> = ({ textData, query }) => {
   const {
     result: {
       data: text,
-      isLoading,
       isFetching,
       isError,
-      refetch,
     },
     pagination,    
     newPage,
@@ -32,8 +30,7 @@ export const TextWidget: FC<TWProps> = ({ textData, query }) => {
           text.premiere ? (
             <PremiereTextWidget
               dto={text}
-              page={pagination.page}
-              pageTotal={pagination.pageTotal}
+              pagination={pagination}
             />
           ) : (
             <EditingTextWidget
