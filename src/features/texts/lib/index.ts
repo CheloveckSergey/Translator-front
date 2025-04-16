@@ -1,7 +1,7 @@
-import { InfiniteData, useMutation, useQueryClient } from "react-query"
 import { GTextPreviewsQuery, TextApi, TextPreviewsQuery, TextQuery } from "../../../entities/text/api"
 import { CreateTextDto, EditingTextSpanDto, SaveBlocksDto, TextList, TextMetaDto, TextPreview, TextPreviewDto, TextSpanDto, textsKeys } from "../../../entities/text";
 import { mapTextPreviewDto } from "../../../entities/text/model/mappers";
+import { InfiniteData, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const useAddText = (query: GTextPreviewsQuery) => {
   const queryClient = useQueryClient();
@@ -11,16 +11,8 @@ const useAddText = (query: GTextPreviewsQuery) => {
       return TextApi.create(dto);
     },
     onSuccess(data) {
-      queryClient.setQueryData(textsKeys.texts.slug(query), (old: InfiniteData<TextPreview[]> | undefined) => {
-        if (!old) {
-          return {
-            pages: [],
-            pageParams: 0,
-          } as unknown as InfiniteData<TextPreview[]>
-        }
-
+      queryClient.setQueryData(textsKeys.texts.slug(query), (old: InfiniteData<TextPreview[]>) => {
         const newText = mapTextPreviewDto(data);
-        
         return {
           ...old,
           pages: old.pages.map((page, index) => {
@@ -49,14 +41,7 @@ const useChangeName = (textId: number, query: GTextPreviewsQuery) => {
       return TextApi.changeName(dto.name, textId);
     },
     onSuccess(_, variables) {
-      queryClient.setQueryData(textsKeys.texts.slug(query), (old: InfiniteData<TextPreview[]> | undefined) => {
-        if (!old) {
-          return {
-            pages: [],
-            pageParams: 0,
-          } as unknown as InfiniteData<TextPreview[]>
-        }
-        
+      queryClient.setQueryData(textsKeys.texts.slug(query), (old: InfiniteData<TextPreview[]>) => {
         return {
           ...old,
           pages: old.pages.map((page) => {
@@ -76,67 +61,46 @@ const useChangeName = (textId: number, query: GTextPreviewsQuery) => {
 }
 
 const useCopyText = (textId: number, query: GTextPreviewsQuery) => {
-  const queryClient = useQueryClient();
-
-  return useMutation(
-    () => {
+  return useMutation({
+    mutationFn: () => {
       return TextApi.copyText(textId);
     },
-    {
-      onSuccess: (data) => {
-        
-      }
-    }
-  )
+  })
 }
 
 const useUncopyText = (textId: number, query: GTextPreviewsQuery) => {
-  return useMutation(
-    () => {
+  return useMutation({
+    mutationFn: () => {
       return TextApi.uncopyText(textId);
     },
-    {
-      onSuccess: (data) => {
-        
-      }
-    }
-  )
+  })
 }
 
 const useDeleteText = (textId: number, query: GTextPreviewsQuery) => {
   const queryClient = useQueryClient();
 
-  return useMutation(
-    () => {
+  return useMutation({
+    mutationFn: () => {
       return TextApi.delete(textId);
-    },
-    {
-      onSuccess: () => {
-        queryClient.setQueryData(textsKeys.texts.slug(query), (old: InfiniteData<TextPreview[]> | undefined) => {
-          if (!old) {
-            return {
-              pages: [],
-              pageParams: 0,
-            } as unknown as InfiniteData<TextPreview[]>
-          }
-          
-          return {
-            ...old,
-            pages: old.pages.map((page) => {
-              return page.filter(text => {
-                if (text.id === textId) {
-                  text.setIsDeleted(true);
-                  return text
-                } else {
-                  return text
-                }
-              });
-            })
-          } as InfiniteData<TextPreview[]>
-        });
-      }
+    }, 
+    onSuccess: () => {
+      queryClient.setQueryData(textsKeys.texts.slug(query), (old: InfiniteData<TextPreview[]>) => {
+        return {
+          ...old,
+          pages: old.pages.map((page) => {
+            return page.filter(text => {
+              if (text.id === textId) {
+                text.setIsDeleted(true);
+                return text
+              } else {
+                return text
+              }
+            });
+          })
+        } as InfiniteData<TextPreview[]>
+      });
     }
-  )
+  })
 }
 
 const useSaveBlocks = (updateText: (dto: EditingTextSpanDto) => void) => {
@@ -160,35 +124,11 @@ const useSaveBlocks = (updateText: (dto: EditingTextSpanDto) => void) => {
   })
 }
 
-const useFastDeleteBlock = (deleteBlock: () => void) => {
-  const queryClient = useQueryClient();
-  
+const useFastDeleteBlock = (deleteBlock: () => void) => {  
   return useMutation({
     mutationFn: ({ blockId } : { blockId: number }) => {
       return TextApi.fastDeleteBlock(blockId);
     },
-    onSuccess: (data, variables) => {
-      // queryClient.setQueryData(
-      //   textsKeys.text.slug(query), 
-      //   (old: EditingTextSpanDto | undefined) => {
-      //     if (!old) {
-      //       return {
-      //         id: 0,
-      //         premiere: false,
-      //         blocks: [],
-      //         pagesTotal: 0
-      //       }
-      //     }
-
-      //     const newDto: TextSpanDto = {
-      //       ...old,
-      //       blocks: old.blocks.filter(block => block.id !== variables.blockId)
-      //     }
-      //     return newDto
-      //   }
-      // );
-      deleteBlock()
-    }
   })
 }
 

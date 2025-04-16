@@ -47,7 +47,7 @@ export const Header: FC<HProps> = ({ refetchTextData }) => {
               <SharedButtons.SquareActionButton
                 body={meta.premiere ? 'Edit' : 'Publicate'}
                 onClick={onSetPremiere}
-                isLoading={setPremiereMutation.isLoading}
+                isLoading={setPremiereMutation.isPending}
                 isError={setPremiereMutation.isError}
                 color="green"
               />

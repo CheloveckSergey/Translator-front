@@ -1,6 +1,6 @@
 import { MouseEvent, useEffect, useState } from "react"
-import { useInfiniteQuery } from "react-query";
 import { Copyable, ShowWarningIf, UsualQuery, WarningOperation } from "../../types";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 function useClickOutside<T extends HTMLElement>(ref: React.MutableRefObject<T> | null, callback: () => void) {
   const handleClick = (e: globalThis.MouseEvent) => {
@@ -37,13 +37,18 @@ function useMyInfineQuery<
   const [entities, setEntities] = useState<Entity[]>([]);
 
   const data = useInfiniteQuery({
-    queryKey: queryKey,
-    queryFn: ({ pageParam = query.offset ?? 0 }) => {
-      return apiFunction({ 
+    queryKey: [queryKey], //какой то бред
+    queryFn: async ({ pageParam = query.offset ?? 0 }) => {
+      const data = await apiFunction({ 
         ...query,
         offset: pageParam,
       });
+      
+      setEntities(old => [...old, ...data.map(mapDto)]);
+
+      return data
     },
+    initialPageParam: 0,
     getNextPageParam: (lastPage, pages) => {
       if (!query.limit) {
         return null
@@ -52,14 +57,6 @@ function useMyInfineQuery<
       const nextPageParam = lastPage.length ? pages.length * query.limit : null;
       return nextPageParam;
     },
-    onSuccess: (data) => {
-      let entities: Entity[] = [];
-      for (let page of data.pages) {
-        const curEntities = page.map(mapDto);
-        entities = [...entities, ...curEntities];
-      }
-      setEntities(entities);
-    }
   });
 
   function updateState() {

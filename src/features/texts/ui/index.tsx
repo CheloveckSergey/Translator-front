@@ -14,12 +14,12 @@ interface CBProps {
 }
 const CopyButton: FC<CBProps> = ({ textId, query, color = 'light', size = 25 }) => {
 
-  const { mutateAsync, isLoading, isError } = TextFeaturesLib.useCopyText(textId, query);
+  const { mutateAsync, isPending, isError } = TextFeaturesLib.useCopyText(textId, query);
 
   return (
     <SharedButtons.TextActionButton
       body={<FaCopy size={size} />}
-      isLoading={isLoading}
+      isLoading={isPending}
       isError={isError}
       color={color}
       onClick={mutateAsync}
@@ -36,12 +36,12 @@ interface UBProps {
 }
 const UncopyButton: FC<UBProps> = ({ textId, query, color = 'light', size = 25 }) => {
 
-  const { mutateAsync, isLoading, isError } = TextFeaturesLib.useUncopyText(textId, query);
+  const { mutateAsync, isPending, isError } = TextFeaturesLib.useUncopyText(textId, query);
 
   return (
     <SharedButtons.TextActionButton
       body={<FaDeleteLeft size={size} />}
-      isLoading={isLoading}
+      isLoading={isPending}
       isError={isError}
       color={color}
       onClick={mutateAsync}
@@ -58,12 +58,12 @@ interface DBProps {
 }
 const DeleteButton: FC<DBProps> = ({ textId, query, color = 'light', size = 25 }) => {
 
-  const { mutateAsync, isLoading, isError } = TextFeaturesLib.useDeleteText(textId, query);
+  const { mutateAsync, isPending, isError } = TextFeaturesLib.useDeleteText(textId, query);
 
   return (
     <SharedButtons.TextActionButton
       body={<MdDelete size={size} />}
-      isLoading={isLoading}
+      isLoading={isPending}
       isError={isError}
       color={color}
       onClick={mutateAsync}

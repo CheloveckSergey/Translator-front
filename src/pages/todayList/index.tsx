@@ -76,7 +76,7 @@ const TodayListWidget: FC<TLWProps> = ({ todayList, isLoading, isError, updateSt
             />
             <SharedButtons.SquareActionButton 
               body='Try'
-              isLoading={successMutation.isLoading || unsuccessMutation.isLoading}
+              isLoading={successMutation.isPending || unsuccessMutation.isPending}
               isError={successMutation.isError || unsuccessMutation.isError}
               onClick={tryTranslation}
               color="green"

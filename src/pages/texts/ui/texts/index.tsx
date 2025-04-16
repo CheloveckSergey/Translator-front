@@ -75,7 +75,7 @@ const TextPreviewWidget: FC<TPWProps> = ({ text, textsQuery }) => {
       actionObjects={{
         ...(isCurUserTextsPage && isCurUserText && {changeName: {
           mutate: changeNameMutation.mutateAsync,
-          isLoading: changeNameMutation.isLoading,
+          isLoading: changeNameMutation.isPending,
           isError: changeNameMutation.isError
         }})
       }}
@@ -117,7 +117,7 @@ export const TextListWidget: FC = () => {
   if (user && userId === user.id) {
     actionsObjects.addText = {
       mutate: addTextMutation.mutateAsync,
-      isLoading: addTextMutation.isLoading,
+      isLoading: addTextMutation.isPending,
       isError: addTextMutation.isError,
     }
   }

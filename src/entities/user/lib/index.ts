@@ -1,9 +1,9 @@
-import { useInfiniteQuery, useQuery } from "react-query";
 import { FriendsApi, GetFindFriendsQuery, GetFriendsQuery, GetIncomeRequestsQuery, GetOutcomeRequestsQuery, UserApi, UserQuery } from "../api";
 import { useState } from "react";
 import { FindFriendDto, Friend, FriendDto, IncomeRequestUser, IncomeRequestUserDto, OutcomeRequestUser, OutcomeRequestUserDto, PotentialFriend, User } from "../model";
 import { mapFindFriendDto, mapFriendDto, mapIncomeRequest, mapOutcomeRequest, mapUserDto } from "../model/mappers";
 import { SharedHooks, SharedLib } from "../../../shared/lib";
+import { useQuery } from "@tanstack/react-query";
 
 const userKeys = {
   findUsers: {
@@ -99,11 +99,10 @@ const useUser = (userId: number, query?: UserQuery) => {
 
   const { isFetching, isError } = useQuery({
     queryKey: userKeys.user.slug(userId, query),
-    queryFn: () => {
-      return UserApi.getUserById(userId, query)
-    },
-    onSuccess: (data) => {
+    queryFn: async () => {
+      const data = await UserApi.getUserById(userId, query);
       setUser(mapUserDto(data));
+      return data
     },
   });
 

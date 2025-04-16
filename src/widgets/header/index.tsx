@@ -106,17 +106,6 @@ export const Header: FC<HProps> = ({ switchMenu }) => {
         />
         <span 
           className="app-name"
-          onClick={() => {
-            console.log('***');
-            const queries = queryClient.getQueryCache().findAll();
-            console.log(queries);
-            queryClient.invalidateQueries('texts')
-            .then(() => {
-              console.log('invalidateQueries complete');
-              const queries = queryClient.getQueryCache().findAll();
-              console.log(queries);
-            });
-          }}
         >
           <GiSpinningSword size={25} />
           STranslator

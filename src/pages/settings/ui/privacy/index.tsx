@@ -160,7 +160,7 @@ export const Privacy: FC<PProps> = ({
           )}
         </form>
         <SharedBlocks.BlackoutLoader
-          isLoading={mutateObject.isLoading}
+          isLoading={mutateObject.isPending}
           iconSize={50}
         />
       </div>

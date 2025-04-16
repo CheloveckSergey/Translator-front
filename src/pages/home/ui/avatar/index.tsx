@@ -11,7 +11,7 @@ interface AWProps {
 }
 export const AvatarWidget: FC<AWProps> = ({ user, isLoading, isError, updateState }) => {
 
-  const { mutateAsync, isLoading: updateLoading, isError: updateError } = UserFeaturesLib.useUpdateAvatar(updateAvatar);
+  const { mutateAsync, isPending: updateLoading, isError: updateError } = UserFeaturesLib.useUpdateAvatar(updateAvatar);
 
   function updateAvatar(image: string) {
     user?.setAvatar(image);

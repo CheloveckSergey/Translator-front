@@ -1,8 +1,8 @@
-import { useQuery } from "react-query"
 import { UserSettingsApi } from "../api"
 import { useState } from "react"
 import { PrivacySettings, UserSettings } from "../model"
 import { mapUserSettings } from "../model/mappers"
+import { useQuery } from "@tanstack/react-query"
 
 const userSettingsKeys = {
   settings: {
@@ -24,11 +24,12 @@ const useSettings = (userId: number) => {
 
   const { isFetching, isError } = useQuery({
     queryKey: userSettingsKeys.settings.slug(userId),
-    queryFn: () => {
-      return UserSettingsApi.getSettings(userId)
-    },
-    onSuccess(data) {
+    queryFn: async () => {
+      const data = await UserSettingsApi.getSettings(userId);
+
       setSettings(mapUserSettings(data));
+
+      return data
     },
   });
 

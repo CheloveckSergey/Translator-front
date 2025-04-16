@@ -1,9 +1,9 @@
-import { useInfiniteQuery, useQuery } from "react-query"
 import { UserWordsQuery, WordApi, WordsInfoQuery } from "../api"
 import { TodayList, UserWordInfo, UserWordInfoDto, WordsInfo } from "../model";
 import { useState } from "react";
 import { mapTodayWord, mapUserWordInfo, mapWordsInfo } from "../model/mappers";
 import { SharedHooks } from "../../../shared/lib";
+import { useQuery } from "@tanstack/react-query";
 
 const wordKeys = {
   wordTranslation: {
@@ -30,11 +30,12 @@ const useWordTranslation = (
 ) => {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: wordKeys.wordTranslation.slug(value),
-    queryFn: () => {
-      return WordApi.getTranslation(value);
-    },
-    onSuccess: (data) => {
+    queryFn: async () => {
+      const data = await WordApi.getTranslation(value);
+
       setTranslation(data.translation);
+
+      return data
     },
     enabled: options.enabled,
   });
@@ -53,12 +54,13 @@ const useTodayList = (
   const [todayList, setTodayList] = useState<TodayList>(new TodayList([]));
 
   const { isLoading, isError, refetch } = useQuery({
-    queryKey: wordKeys.todayList.root,
-    queryFn: () => {
-      return WordApi.getTodayList();
-    },
-    onSuccess: (data) => {
+    queryKey: [wordKeys.todayList.root],
+    queryFn: async () => {
+      const data = await WordApi.getTodayList();
+
       setTodayList(new TodayList(data.map((todayWord) => mapTodayWord(todayWord))));
+
+      return data
     },
     enabled: options.enabled,
   });
@@ -110,11 +112,12 @@ const useWordsInfo = (query: WordsInfoQuery) => {
 
   const { isFetching, isError } = useQuery({
     queryKey: wordKeys.wordsInfo.slug(query.userId),
-    queryFn: () => {
-      return WordApi.getWordsInfo(query);
-    },
-    onSuccess(data) {
+    queryFn: async () => {
+      const data = await WordApi.getWordsInfo(query);
+
       setInfo(mapWordsInfo(data));
+
+      return data
     },
   });
 

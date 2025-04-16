@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { EditingTextSpanDto, PremiereTextSpanDto, ShortTextPreviewDto, TextList, TextMetaDto, TextPagination, TextPreview, TextPreviewDto, TextSchema, PremiereTextSpan, TextSpanDto, TextsInfo, Translation } from "../model";
-import { InfiniteData, useInfiniteQuery, useMutation, useQuery } from "react-query";
+import { ShortTextPreviewDto, TextList, TextMetaDto, TextPagination, TextPreview, TextSpanDto, TextsInfo, Translation } from "../model";
 import { AllTextPreviewsQuery, GTextPreviewsQuery, LastFriendsTextsQuery, TextApi, TextPreviewsQuery, TextQuery, TextsInfoQuery } from "../api";
-import { mapEditingTextSpan, mapShortTextPreview, mapTextListDto, mapTextMeta, mapTextPreviewDto, mapTextSpanDto, mapTextsInfo, mapTranslationDto, mapPremiereTextSpan } from "../model/mappers";
+import { mapShortTextPreview, mapTextMeta, mapTextPreviewDto, mapTextsInfo, mapTranslationDto, mapPremiereTextSpan } from "../model/mappers";
 import { ShortTextPreview } from "../model/types/shortTextPreview";
 import { SharedHooks } from "../../../shared/lib";
-import { EditingTextSpan } from "../model/types/editingTextSpan";
+import { InfiniteData, useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 
 export const textsKeys = {
   texts: {
@@ -62,6 +61,7 @@ const useTextPreviewsList = (query: TextPreviewsQuery) => {
         userId: query.userId,
       });
     },
+    initialPageParam: 0,
     getNextPageParam: (lastPage, pages) => {
       if (!query.limit) {
         return null
@@ -82,7 +82,6 @@ const useTextPreviewsList = (query: TextPreviewsQuery) => {
       }
       return data
     },
-    // refetchOnMount: false,
   });
 
   function updateTexts() {
@@ -115,6 +114,7 @@ const useTextPreviewsList2 = (query: TextPreviewsQuery) => {
       });
       return data.map(mapTextPreviewDto)
     },
+    initialPageParam: 0,
     getNextPageParam: (lastPage, pages) => {
       if (!query.limit) {
         return null
@@ -123,7 +123,8 @@ const useTextPreviewsList2 = (query: TextPreviewsQuery) => {
       const nextPageParam = pages.flat().filter(text => !text.isDeleted).length;
       return nextPageParam
     },
-    cacheTime: 60 * 1000,
+    gcTime: 60 * 1000,
+    // cacheTime: 60 * 1000,
   });
 
   function mapData(data: InfiniteData<TextPreview[]> | undefined): TextPreview[] {
@@ -153,6 +154,7 @@ const useAllTextPreviewsList = (query: AllTextPreviewsQuery) => {
       });
       return data.map(mapTextPreviewDto)
     },
+    initialPageParam: 0,
     getNextPageParam: (lastPage, pages) => {
       if (!query.limit) {
         return null
@@ -161,7 +163,7 @@ const useAllTextPreviewsList = (query: AllTextPreviewsQuery) => {
       const nextPageParam = lastPage.length ? pages.length * query.limit : null;
       return nextPageParam;
     },
-    cacheTime: 60 * 1000,
+    gcTime: 60 * 1000,
   });
 
   return {
@@ -237,20 +239,18 @@ const useTextSpan = (query: Omit<TextQuery, 'page'>) => {
 
   const result = useQuery({
     queryKey: textsKeys.text.slug({ ...query, page }),
-    queryFn: () => {
-      return TextApi.getTextSpan({ ...query, page });
-    },
-    onSuccess: (data: TextSpanDto) => {
-      setPagesTotal(data.pagesTotal || 1);
-      if (isNewPage) {
-        setPagesTotal(pagesTotal + 1);
-      }
+    queryFn: async () => {
+      const data = await TextApi.getTextSpan({ ...query, page });
 
+      setPagesTotal(data.pagesTotal || 1);
+      
       if ((page > 0) && (page + 1 > data.pagesTotal) && !isNewPage) {
         setPage(data.pagesTotal - 1);
       }
 
       setIsNewPage(false);
+
+      return data;
     },
     // onSuccess: (data: TextSpanDto) => {
     //   console.log(firstRender);
@@ -380,9 +380,10 @@ const useTranslation = () => {
 
   const [translation, setTranslation] = useState<Translation>()
 
-  const { isLoading, isError, mutateAsync } = useMutation(({ value } : { value: string }) => {
-    return TextApi.getTranslation(value)
-  }, {
+  const { isPending, isError, mutateAsync } = useMutation({
+    mutationFn: ({ value } : { value: string }) => {
+      return TextApi.getTranslation(value)
+    },
     onSuccess: (data) => {
       setTranslation(mapTranslationDto(data));
     }
@@ -408,7 +409,7 @@ const useTranslation = () => {
 
   return {
     translation,
-    isLoading,
+    isLoading: isPending,
     isError,
     refetch: mutateAsync,
     updateState,
@@ -421,11 +422,10 @@ const useTextsInfo = (query: TextsInfoQuery) => {
 
   const { isFetching, isError } = useQuery({
     queryKey: textsKeys.textsInfo.slug(query.userId),
-    queryFn: () => {
-      return TextApi.getTextsInfo(query);
-    },
-    onSuccess(data) {
+    queryFn: async () => {
+      const data = await TextApi.getTextsInfo(query);
       setInfo(mapTextsInfo(data));
+      return data
     },
   });
 

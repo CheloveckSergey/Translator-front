@@ -118,7 +118,7 @@ const BlockWidget: FC<BWProps> = ({ block, text, updateState, showWarningIf, sav
           (<SharedButtons.TextActionButton
             body={<FaShippingFast size={15} />}
             onClick={onFastDelete}
-            isLoading={fastDeleteMutation.isLoading}
+            isLoading={fastDeleteMutation.isPending}
             isError={fastDeleteMutation.isError}
             color="dark"
             title="Fast delete block"
@@ -268,7 +268,7 @@ export const EditingTextWidget: FC<ETWProps> = ({ dto, pagination, newPage, quer
     <SharedButtons.SquareActionButton
       body='Save'
       onClick={onSaveBlocks}
-      isLoading={saveMutation.isLoading}
+      isLoading={saveMutation.isPending}
       isError={saveMutation.isError}
       color="green"
       disabled={!text.getSavedBlocks().length}

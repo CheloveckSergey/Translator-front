@@ -11,12 +11,12 @@ interface ATPBProps {
 }
 const AddToProcessButton: FC<ATPBProps> = ({ value, addToProcess, size=60 }) => {
 
-  const { mutateAsync, isLoading, isError } = WordFeaturesLib.useAddToProcess(value, addToProcess);
+  const { mutateAsync, isPending, isError } = WordFeaturesLib.useAddToProcess(value, addToProcess);
 
   return (
     <SharedButtons.TextActionButton 
       body={<CiSquarePlus size={size} />}
-      isLoading={isLoading}
+      isLoading={isPending}
       isError={isError}
       color="dark"
       className=""
@@ -32,12 +32,12 @@ interface DTSBProps {
 }
 const DeleteToStudiedButton: FC<DTSBProps> = ({ value, deleteToStudied, size=60 }) => {
 
-  const { mutateAsync, isLoading, isError } = WordFeaturesLib.useDeleteToStudied(value, deleteToStudied);
+  const { mutateAsync, isPending, isError } = WordFeaturesLib.useDeleteToStudied(value, deleteToStudied);
 
   return (
     <SharedButtons.TextActionButton 
       body={<CiSquareCheck size={size} />}
-      isLoading={isLoading}
+      isLoading={isPending}
       isError={isError}
       color="dark"
       className=""
