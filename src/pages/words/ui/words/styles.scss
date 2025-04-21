@@ -1,3 +1,12 @@
-.word-list {
-  margin-top: 10px;
+.words {
+
+  .filters {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  .word-list {
+    margin-top: 10px;
+  }
 }

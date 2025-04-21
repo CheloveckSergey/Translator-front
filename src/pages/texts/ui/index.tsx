@@ -67,29 +67,4 @@ export const TextsPage: FC = () => {
       className="texts-page"
     />
   )
-
-  return (
-    <div className="texts-page">
-      <div className="left-content">
-        <TextsInfo />
-      </div>
-      <div className="main-content">
-        <div className="texts-header">
-          <h1>Texts</h1>
-          {!isMyTexts && (
-            <AdditionalHeader userId={userId} />
-          )}
-        </div>
-        {isMyTexts && (
-          <p>
-            Here you can check all of your texts.
-          </p>
-        )}
-        <TextListWidget />
-      </div>
-      <div className="right-content">
-        
-      </div>
-    </div>
-  )
 }

@@ -9,6 +9,142 @@ import { SharedBlocks } from "../../../../shared/sharedUi/blocks";
 import { UsersPageLib } from "../../lib";
 import { OutcomeRequestUser } from "../../../../entities/user";
 
+// interface IRWProps {
+//   user: IncomeRequestUser,
+//   queryKey: string[],
+// }
+// const IncomeRequestWidget: FC<IRWProps> = ({ user, queryKey }) => {
+
+//   const { user: meUser } = useAppSelector(state => state.user);
+
+//   let description: string = '';
+//   const actions: React.ReactNode[] = [];
+
+//   if (user.status === 'accepted') {
+//     description = 'Accepted';
+//   } else {
+//     if (user.status === 'rejected') {
+//       description = 'Rejected';
+//     } else {
+//       actions.push((
+//         <FriendsFeaturesUi.RejectRequestButton
+//           fromUserId={user.id}
+//           toUserId={(meUser!.id)}
+//           queryKey={queryKey}
+//         />
+//       ))
+//     }
+//     actions.push((
+//       <FriendsFeaturesUi.AcceptRequestButton
+//         fromUserId={user.id}
+//         toUserId={meUser!.id}
+//         queryKey={queryKey}
+//       />
+//     ))
+//   }
+
+//   return (
+//     <UserUi.UserCard<IncomeRequestUser>
+//       user={user}
+//       description={description}
+//       actions={actions}
+//     />
+//   )
+// }
+
+// const IncomeRequests: FC = () => {
+
+//   const { user } = useAppSelector(state => state.user);
+
+//   const {
+//     data,
+//     isFetching,
+//     isError,
+//     hasNextPage,
+//     isFetchingNextPage,
+//     fetchNextPage,
+//     queryKey
+//   } = UserLib.useIncomeRequests({ limit: 5, order: 'DESC', userId: user!.id });
+
+//   return (
+//     <UserUi.UserList<IncomeRequestUser>
+//       users={data}
+//       isFetching={isFetching}
+//       isError={isError}
+//       mapUser={(user: IncomeRequestUser, index: number) => <IncomeRequestWidget 
+//         key={index}
+//         user={user}
+//         queryKey={queryKey}
+//       />}
+//       className="user-list"
+//     />
+//   )
+// }
+
+// interface ORWProps {
+//   user: OutcomeRequestUser,
+//   queryKey: string[],
+// }
+// const OutcomeRequestWidget: FC<ORWProps> = ({ user, queryKey }) => {
+
+//   const { user: meUser } = useAppSelector(state => state.user);
+
+//   let description: string = '';
+//   const actions: React.ReactNode[] = [];
+
+//   if (!user.isSentRequest) {
+//     description = "You've canceled your request";
+//   } else {
+//     if (user.status === 'rejected') {
+//       description = "You've been rejected";
+//     }
+//     actions.push((
+//       <FriendsFeaturesUi.CancelRequestButton 
+//         fromUserId={meUser!.id}
+//         toUserId={user.id}
+//         queryKey={queryKey}
+//       />
+//     ))
+//   }
+
+//   return (
+//     <UserUi.UserCard<OutcomeRequestUser>
+//       user={user}
+//       description={description}
+//       actions={actions}
+//     />
+//   )
+// }
+
+// const OutcomeRequests: FC = () => {
+
+//   const { user } = useAppSelector(state => state.user);
+
+//   const {
+//     data,
+//     isFetching,
+//     isError,
+//     hasNextPage,
+//     isFetchingNextPage,
+//     fetchNextPage,
+//     queryKey,
+//   } = UserLib.useOutcomeRequests({ limit: 5, order: 'DESC', userId: user!.id });
+
+//   return (
+//     <UserUi.UserList<OutcomeRequestUser>
+//       users={data}
+//       isFetching={isFetching}
+//       isError={isError}
+//       mapUser={(user: OutcomeRequestUser, index: number) => <OutcomeRequestWidget 
+//         key={index}
+//         user={user}
+//         queryKey={queryKey}
+//       />}
+//       className="user-list"
+//     />
+//   )
+// }
+
 interface IRWProps {
   user: IncomeRequestUser,
   updateState: () => void,
@@ -67,7 +203,7 @@ const IncomeRequests: FC = () => {
   const { user } = useAppSelector(state => state.user);
 
   const {
-    users,
+    data,
     isFetching,
     isError,
     hasNextPage,
@@ -78,7 +214,7 @@ const IncomeRequests: FC = () => {
 
   return (
     <UserUi.UserList<IncomeRequestUser>
-      users={users}
+      users={data}
       isFetching={isFetching}
       isError={isError}
       mapUser={(user: IncomeRequestUser, index: number) => <IncomeRequestWidget 
@@ -100,14 +236,14 @@ const OutcomeRequestWidget: FC<ORWProps> = ({ user, updateState }) => {
   const { user: meUser } = useAppSelector(state => state.user);
 
   function cancelRequests() {
-    user.setIsCanceled(true);
+    user.setIsSentRequest(false);
     updateState();
   }
 
   let description: string = '';
   const actions: React.ReactNode[] = [];
 
-  if (user.isCanceled) {
+  if (!user.isSentRequest) {
     description = "You've canceled your request";
   } else {
     if (user.status === 'rejected') {
@@ -136,7 +272,7 @@ const OutcomeRequests: FC = () => {
   const { user } = useAppSelector(state => state.user);
 
   const {
-    users,
+    data,
     isFetching,
     isError,
     hasNextPage,
@@ -147,7 +283,7 @@ const OutcomeRequests: FC = () => {
 
   return (
     <UserUi.UserList<OutcomeRequestUser>
-      users={users}
+      users={data}
       isFetching={isFetching}
       isError={isError}
       mapUser={(user: OutcomeRequestUser, index: number) => <OutcomeRequestWidget 

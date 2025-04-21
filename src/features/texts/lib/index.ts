@@ -42,6 +42,7 @@ const useChangeName = (textId: number, query: GTextPreviewsQuery) => {
     },
     onSuccess(_, variables) {
       queryClient.setQueryData(textsKeys.texts.slug(query), (old: InfiniteData<TextPreview[]>) => {
+        console.log(old);
         return {
           ...old,
           pages: old.pages.map((page) => {
@@ -142,21 +143,7 @@ const useSetPremiere = (textId: number) => {
     onSuccess: (_, variables) => {
       queryClient.setQueryData(
         textsKeys.textMeta.slug(textId), 
-        (old: TextMetaDto | undefined) => {
-          if (!old) {
-            return {
-              id: 0,
-              name: '',
-              premiere: false,
-              author: {
-                id: 0,
-                login: '',
-              },
-              createDate: '',
-              updateDate: '',
-            }
-          }
-
+        (old: TextMetaDto) => {
           const newDto: TextMetaDto = {
             ...old,
             premiere: variables.premiere,

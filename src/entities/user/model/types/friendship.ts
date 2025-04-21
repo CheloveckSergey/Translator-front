@@ -12,6 +12,22 @@ export abstract class GeneralFriendRequest extends OnlyUser {
   }
 }
 
+export abstract class SendRequestable extends GeneralFriendRequest {
+  constructor(
+    id: number,
+    login: string,
+    public readonly wordsNumber: number,
+    public isSentRequest: boolean,
+    avatar?: string | undefined,
+  ) {
+    super(id, login, wordsNumber, avatar);
+  }
+
+  setIsSentRequest(isSentRequest: boolean) {
+    this.isSentRequest = isSentRequest;
+  }
+}
+
 export class Friend extends GeneralFriendRequest {
   isDeleted: boolean;
 
@@ -32,11 +48,11 @@ export class Friend extends GeneralFriendRequest {
 }
 
 
-export class PotentialFriend extends GeneralFriendRequest {
+export class PotentialFriend extends SendRequestable {
   isSentRequest: boolean;
 
   constructor(id: number, login: string, wordsNumber: number, avatar?: string | undefined) {
-    super(id, login, wordsNumber, avatar);
+    super(id, login, wordsNumber, false, avatar);
     this.isSentRequest = false;
   }
 
@@ -71,23 +87,23 @@ export class IncomeRequestUser extends GeneralFriendRequest {
 }
 
 
-export class OutcomeRequestUser extends GeneralFriendRequest {
+export class OutcomeRequestUser extends SendRequestable {
   status: FriendRequestStatus;
-  isCanceled: boolean;
+  isSentRequest: boolean;
 
   constructor(id: number, login: string, status: FriendRequestStatus, wordsNumber: number, avatar?: string | undefined) {
-    super(id, login, wordsNumber, avatar);
+    super(id, login, wordsNumber, false, avatar);
     this.status = status;
-    this.isCanceled = false;
+    this.isSentRequest = false;
   }
 
-  setIsCanceled(isCanceled: boolean) {
-    this.isCanceled = isCanceled;
+  setIsSentRequest(isSentRequest: boolean) {
+    this.isSentRequest = isSentRequest;
   }
 
   getCopy() {
     const newUser = new OutcomeRequestUser(this.id, this.login, this.status, this.wordsNumber, this.avatar);
-    newUser.setIsCanceled(this.isCanceled);
+    newUser.setIsSentRequest(this.isSentRequest);
     return newUser
   }
 }

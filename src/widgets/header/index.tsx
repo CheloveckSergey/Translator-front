@@ -9,6 +9,7 @@ import { authThunks } from "../../features/auth";
 import { SharedBlocks } from "../../shared/sharedUi/blocks";
 import { SharedUiTypes } from "../../shared/sharedUi/types";
 import { GiSpinningSword } from "react-icons/gi";
+import { useQueryClient } from "@tanstack/react-query";
 
 const UserMenu: FC = () => {
 
@@ -95,6 +96,13 @@ export const Header: FC<HProps> = ({ switchMenu }) => {
 
   const { user } = useAppSelector(state => state.user);
 
+  const queryClient = useQueryClient();
+
+  const showCache = () => {
+    const allQueries = queryClient.getQueryCache().findAll();
+    console.log(allQueries);
+  };
+
   return (
     <header className="header">
       <div className="left">
@@ -106,6 +114,7 @@ export const Header: FC<HProps> = ({ switchMenu }) => {
         />
         <span 
           className="app-name"
+          onClick={showCache}
         >
           <GiSpinningSword size={25} />
           STranslator

@@ -1,6 +1,6 @@
 import { MouseEvent, useEffect, useState } from "react"
 import { Copyable, ShowWarningIf, UsualQuery, WarningOperation } from "../../types";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { UseInfiniteQueryResult, useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 
 function useClickOutside<T extends HTMLElement>(ref: React.MutableRefObject<T> | null, callback: () => void) {
   const handleClick = (e: globalThis.MouseEvent) => {
@@ -34,9 +34,9 @@ function useMyInfineQuery<
   queryKey?: (string | number)[] | undefined,
 }) {
 
-  const [entities, setEntities] = useState<Entity[]>([]);
+  // const [entities, setEntities] = useState<Entity[]>([]);
 
-  const data = useInfiniteQuery({
+  const result = useInfiniteQuery({
     queryKey: [queryKey], //какой то бред
     queryFn: async ({ pageParam = query.offset ?? 0 }) => {
       const data = await apiFunction({ 
@@ -44,7 +44,7 @@ function useMyInfineQuery<
         offset: pageParam,
       });
       
-      setEntities(old => [...old, ...data.map(mapDto)]);
+      // setEntities(old => [...old, ...data.map(mapDto)]);
 
       return data
     },
@@ -57,17 +57,117 @@ function useMyInfineQuery<
       const nextPageParam = lastPage.length ? pages.length * query.limit : null;
       return nextPageParam;
     },
+    select: (data) => {
+      return data.pages.flat().map(mapDto);
+    }
   });
 
+  // function updateState() {
+  //   const newEntities = entities.map(entity => entity.getCopy());
+  //   setEntities(newEntities); 
+  // }
+
+  return {
+    ...result,
+    data: result.data || [],
+  }
+}
+
+function useMyInfineQuery2<
+  Entity extends Copyable<Entity>,
+  Query extends UsualQuery,
+  Dto,
+>({
+  query,
+  apiFunction,
+  mapDto,
+  queryKey,
+} : {
+  query: Query,
+  apiFunction: (query: Query) => Promise<Dto[]>,
+  mapDto: (dto: Dto) => Entity,
+  queryKey?: (string | number)[] | undefined,
+}) {
+  const result = useInfiniteQuery({
+    queryKey: [queryKey],
+    queryFn: async ({ pageParam = query.offset ?? 0 }) => {
+      const data = await apiFunction({ 
+        ...query,
+        offset: pageParam,
+      });
+      return data.map(mapDto)
+    },
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, pages) => {
+      if (!query.limit) {
+        return null
+      }
+      if (lastPage.length < query.limit) return null;
+      const nextPageParam = lastPage.length ? pages.length * query.limit : null;
+      return nextPageParam;
+    },
+    select: (data) => {
+      return data.pages.flat();
+    }
+  });
+
+  return {
+    ...result,
+    data: result.data || [],
+  }
+}
+
+function useMyInfineQuery3<
+  Entity extends Copyable<Entity>,
+  Query extends UsualQuery,
+  Dto,
+>({
+  query,
+  apiFunction,
+  mapDto,
+  queryKey,
+} : {
+  query: Query,
+  apiFunction: (query: Query) => Promise<Dto[]>,
+  mapDto: (dto: Dto) => Entity,
+  queryKey: string[],
+}) {
+  const result = useInfiniteQuery({
+    queryKey: [queryKey],
+    queryFn: async ({ pageParam = query.offset ?? 0 }) => {
+      const data = await apiFunction({ 
+        ...query,
+        offset: pageParam,
+      });
+      return data.map(mapDto)
+    },
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, pages) => {
+      if (!query.limit) {
+        return null
+      }
+      if (lastPage.length < query.limit) return null;
+      const nextPageParam = lastPage.length ? pages.length * query.limit : null;
+      return nextPageParam;
+    },
+    select: (data) => {
+      return data.pages.flat();
+    },
+  });
+
+  const queryClient = useQueryClient();
+
   function updateState() {
-    const newEntities = entities.map(entity => entity.getCopy());
-    setEntities(newEntities); 
+    const newEntities = result.data?.map(entity => entity.getCopy());
+    queryClient.setQueryData(queryKey, (old: Entity[]) => {
+      return old?.map(entity => entity.getCopy())
+    }); 
   }
 
   return {
-    entities,
+    ...result,
+    data: result.data || [],
     updateState,
-    ...data,
   }
 }
 
@@ -134,5 +234,7 @@ function useWarning() {
 export const SharedHooks = {
   useClickOutside,
   useMyInfineQuery,
+  useMyInfineQuery2,
+  useMyInfineQuery3,
   useWarning,
 }

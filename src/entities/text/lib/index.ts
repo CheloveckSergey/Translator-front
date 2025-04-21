@@ -17,10 +17,6 @@ export const textsKeys = {
       return keys
     },
   },
-  // allTexts: {
-  //   root: 'allTexts',
-  //   slug: (query: AllTextPreviewsQuery) => [textsKeys.allTexts.root, query.limit, query.offset, query.order],
-  // },
   text: {
     root: 'text',
     slug: (query: TextQuery) => [textsKeys.text.root, query.textId, query.page, query.limit],
@@ -175,8 +171,7 @@ const useAllTextPreviewsList = (query: AllTextPreviewsQuery) => {
 const useFriendsLastTexts = (query: LastFriendsTextsQuery) => {
 
   const { 
-    entities: texts,
-    updateState,
+    data: texts,
     isFetching,
     isError,
   } = SharedHooks.useMyInfineQuery<
@@ -194,7 +189,6 @@ const useFriendsLastTexts = (query: LastFriendsTextsQuery) => {
     texts,
     isFetching,
     isError,
-    updateState,
   }
 }
 
@@ -226,13 +220,9 @@ const useTextSpan = (query: Omit<TextQuery, 'page'>) => {
     }
   });
 
-  const [firstRender, setFirstRender] = useState<boolean>(true);
   const [isNewPage, setIsNewPage] = useState<boolean>(false);
 
-  // useEffect(() => {
-  //   setFirstRender(false);
-  // }, []);
-
+  //Переделать
   useEffect(() => {
     localStorage.setItem(`TEXT_${query.textId}_PAGE`, String(page));
   }, [page]);
@@ -252,24 +242,6 @@ const useTextSpan = (query: Omit<TextQuery, 'page'>) => {
 
       return data;
     },
-    // onSuccess: (data: TextSpanDto) => {
-    //   console.log(firstRender);
-    //   console.log(data.blocks.length);
-    //   console.log(page + 1 === data.pagesTotal + 1);
-    //   if (!firstRender && !data.blocks.length && (page + 1 === data.pagesTotal + 1)) {
-    //     console.log(1);
-    //     setPagesTotal(data.pagesTotal + 1);
-    //   } else {
-    //     console.log(2);
-    //     setPagesTotal(data.pagesTotal);
-    //   }
-
-    //   if ((page + 1 > data.pagesTotal) && firstRender) {
-    //     setPage(data.pagesTotal - 1);
-    //   }
-
-    //   setFirstRender(false);
-    // },
   });
 
   function nextPage() {
@@ -287,12 +259,13 @@ const useTextSpan = (query: Omit<TextQuery, 'page'>) => {
   }
 
   function newPage() {
+    if ((page + 1) !== pagesTotal) {
+      return
+    }
     if (result.data && result.data.blocks.length < query.limit) {
       return
     }
-    if (page + 1 < pagesTotal) {
-      return
-    }
+
     setIsNewPage(true);
     setPage(prev => prev + 1);
   }
@@ -311,70 +284,6 @@ const useTextSpan = (query: Omit<TextQuery, 'page'>) => {
     newPage,
   }
 }
-
-// const useEditingTextSpan = (textId: number) => {
-
-//   const [text, setText] = useState<EditingTextSpan>(new EditingTextSpan(0, []));
-//   const [page, setPage] = useState<number>(() => {
-//     const page = localStorage.getItem(`TEXT_${textId}_PAGE`);
-//     if (page) {
-//       return Number(page)
-//     } else {
-//       return 0
-//     }
-//   });
-//   const [pagesTotal, setPagesTotal] = useState<number>(0);
-
-//   const { isFetching, isError, refetch } = useQuery({
-//     queryKey: textsKeys.text.slug(textId, page),
-//     queryFn: () => {
-//       return TextApi.getEditingTextSpan({ 
-//         textId: textId,
-//         page,
-//       });
-//     },
-//     onSuccess: (data) => {
-//       setText(mapEditingTextSpan(data));
-//       setPagesTotal(data.pagesTotal);
-//     }
-//   });
-
-//   useEffect(() => {
-//     localStorage.setItem(`TEXT_${textId}_PAGE`, String(page));
-//   }, [page]);
-
-//   function updateState() {
-//     const newTextSpan = text.getCopy();
-//     setText(newTextSpan);
-//   }
-
-//   function nextPage() {
-//     if (pagesTotal <= (page + 1)) {
-//       return
-//     }
-//     setPage(prev => prev + 1);
-//   }
-
-//   function prevPage() {
-//     if (page === 0) {
-//       return
-//     }
-//     setPage(prev => prev - 1);
-//   }
-
-//   return {
-//     text,
-//     page,
-//     pagesTotal,
-//     isFetching,
-//     isError,
-//     updateState,
-//     nextPage,
-//     prevPage,
-//     setPage,
-//     refetch,
-//   }
-// }
 
 const useTranslation = () => {
 

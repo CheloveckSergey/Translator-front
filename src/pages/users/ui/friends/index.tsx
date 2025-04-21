@@ -6,6 +6,74 @@ import { UserUi } from '../../../../entities/user/ui';
 import { FriendsFeaturesUi } from '../../../../features/friendship';
 import { UserLib } from '../../../../entities/user';
 
+// interface FCWProps {
+//   user: Friend,
+//   queryKey: string[],
+// }
+// const FriendCardWidget: FC<FCWProps> = ({ user, queryKey }) => {
+
+//   const { user: meUser } = useAppSelector(state => state.user);
+
+//   let description: string = '';
+//   const actions: React.ReactNode[] = [];
+
+//   if (user.isDeleted) {
+//     description = 'Пользователён удалён';
+//     actions.push(
+//       <FriendsFeaturesUi.CancelDeleteButton
+//         fromUserId={meUser!.id}
+//         toUserId={user.id}
+//         queryKey={queryKey}
+//       />
+//     );
+//   } else {
+//     actions.push(
+//       <FriendsFeaturesUi.DeleteFriendButton
+//         fromUserId={meUser!.id}
+//         toUserId={user.id}
+//         queryKey={queryKey}
+//       />
+//     )
+//   }
+
+//   return (
+//     <UserUi.UserCard<Friend>
+//       user={user}
+//       description={description}
+//       actions={actions}
+//     />
+//   )
+// }
+
+// export const FriendsListWidget: FC = () => {
+
+//   const { user } = useAppSelector(state => state.user);
+
+//   const {
+//     data: users,
+//     isFetching,
+//     isError,
+//     hasNextPage,
+//     isFetchingNextPage,
+//     fetchNextPage,
+//     queryKey,
+//   } = UserLib.useFriends({ limit: 5, order: 'DESC', userId: user!.id });
+
+//   return (
+//     <UserUi.UserList<Friend>
+//       users={users}
+//       isFetching={isFetching}
+//       isError={isError}
+//       mapUser={(user: Friend, index: number) => <FriendCardWidget 
+//         key={index}
+//         user={user}
+//         queryKey={queryKey}
+//       />}
+//       className="user-list-widget"
+//     />
+//   )
+// }
+
 interface FCWProps {
   user: Friend,
   updateState: () => void,
@@ -60,7 +128,7 @@ export const FriendsListWidget: FC = () => {
   const { user } = useAppSelector(state => state.user);
 
   const {
-    users,
+    data,
     isFetching,
     isError,
     hasNextPage,
@@ -71,7 +139,7 @@ export const FriendsListWidget: FC = () => {
 
   return (
     <UserUi.UserList<Friend>
-      users={users}
+      users={data}
       isFetching={isFetching}
       isError={isError}
       mapUser={(user: Friend, index: number) => <FriendCardWidget 

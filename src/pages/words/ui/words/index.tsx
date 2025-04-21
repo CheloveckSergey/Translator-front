@@ -1,9 +1,10 @@
-import { FC } from 'react';
-import { UserWordInfo, WordLib, WordUi } from '../../../../entities/word';
+import { FC, useState } from 'react';
+import { UserWordInfo, WordLib, WordStatus, WordStatusFilter, WordUi } from '../../../../entities/word';
 import './styles.scss';
 import { WordFeaturesUi } from '../../../../features/word';
 import { useAppSelector } from '../../../../app/store';
-import { useUrlUserId } from '../../lib';
+import { getStatusFilter, useUrlUserId } from '../../lib';
+import { SharedInputs } from '../../../../shared/sharedUi/inputs';
 
 interface WLWProps {
   word: UserWordInfo,

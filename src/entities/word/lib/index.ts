@@ -15,7 +15,13 @@ const wordKeys = {
   },
   allWords: {
     root: 'allWords',
-    slug: (userId: number) => [wordKeys.allWords.root, userId],
+    slug: (query: UserWordsQuery) => {
+      const keys: string[] = [wordKeys.allWords.root];
+      Object.values(query).forEach(value => {
+        keys.push(String(value));
+      });
+      return keys
+    },
   },
   wordsInfo: {
     root: 'words',
@@ -76,33 +82,36 @@ const useTodayList = (
 
 const useUserWords = (query: UserWordsQuery) => {
 
+  const key = wordKeys.allWords.slug(query)
+
   const {
-    entities: words,
-    updateState,
+    data: words,
     isFetching,
     isError,
     fetchNextPage,
     isFetchingNextPage,
     hasNextPage,
-  } = SharedHooks.useMyInfineQuery<
+    updateState,
+  } = SharedHooks.useMyInfineQuery3<
     UserWordInfo,
     UserWordsQuery,
     UserWordInfoDto
   >({
     query,
     apiFunction: WordApi.getAllWords,
-    queryKey: wordKeys.allWords.slug(query.userId),
+    queryKey: key,
     mapDto: mapUserWordInfo,
-  })
+  }) 
 
   return {
     words,
     isFetching,
     isError,
-    updateState,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    key,
+    updateState,
   }
 }
 

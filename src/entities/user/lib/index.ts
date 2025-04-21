@@ -5,22 +5,22 @@ import { mapFindFriendDto, mapFriendDto, mapIncomeRequest, mapOutcomeRequest, ma
 import { SharedHooks, SharedLib } from "../../../shared/lib";
 import { useQuery } from "@tanstack/react-query";
 
-const userKeys = {
+export const userKeys = {
   findUsers: {
     root: 'findUsers',
-    slug: (userId: number) => [userKeys.findUsers.root, userId],
+    slug: (userId: number) => [userKeys.findUsers.root, String(userId)],
   },
   friends: {
     root: 'friends',
-    slug: (userId: number) => [userKeys.friends.root, userId],
+    slug: (userId: number) => [userKeys.friends.root, String(userId)],
   },
   incomeRequests: {
     root: 'incomeRequests',
-    slug: (userId: number) => [userKeys.incomeRequests.root, userId],
+    slug: (userId: number) => [userKeys.incomeRequests.root, String(userId)],
   },
   outcomeRequests: {
     root: 'outcomeRequests',
-    slug: (userId: number) => [userKeys.outcomeRequests.root, userId],
+    slug: (userId: number) => [userKeys.outcomeRequests.root, String(userId)],
   },
   user: {
     root: 'user',
@@ -35,62 +35,62 @@ const userKeys = {
 }
 
 const useFriends = (query: GetFriendsQuery) => {
-
-  const data = SharedHooks.useMyInfineQuery<Friend, GetFriendsQuery, FriendDto>({
+  const queryKey = userKeys.friends.slug(query.userId);
+  const data = SharedHooks.useMyInfineQuery3<Friend, GetFriendsQuery, FriendDto>({
     query,
     apiFunction: FriendsApi.getFriends,
     mapDto: mapFriendDto,
-    queryKey: userKeys.friends.slug(query.userId),
+    queryKey,
   })
 
   return {
     ...data,
-    users: data.entities,
+    queryKey,
   }
 }
 
 const useFindFriends = (query: GetFindFriendsQuery) => {
-
-  const data = SharedHooks.useMyInfineQuery<PotentialFriend, GetFindFriendsQuery, FindFriendDto>({
+  const queryKey = userKeys.findUsers.slug(query.userId);
+  const data = SharedHooks.useMyInfineQuery3<PotentialFriend, GetFindFriendsQuery, FindFriendDto>({
     query,
     apiFunction: FriendsApi.getFindFriends,
     mapDto: mapFindFriendDto,
-    queryKey: userKeys.friends.slug(query.userId),
+    queryKey,
   })
 
   return {
     ...data,
-    users: data.entities,
+    queryKey,
   }
 }
 
 const useIncomeRequests = (query: GetIncomeRequestsQuery) => {
-
-  const data = SharedHooks.useMyInfineQuery<IncomeRequestUser, GetIncomeRequestsQuery, IncomeRequestUserDto>({
+  const queryKey = userKeys.incomeRequests.slug(query.userId);
+  const data = SharedHooks.useMyInfineQuery3<IncomeRequestUser, GetIncomeRequestsQuery, IncomeRequestUserDto>({
     query,
     apiFunction: FriendsApi.getIncomeRequests,
     mapDto: mapIncomeRequest,
-    queryKey: userKeys.friends.slug(query.userId),
+    queryKey,
   })
 
   return {
     ...data,
-    users: data.entities,
+    queryKey,
   }
 }
 
 const useOutcomeRequests = (query: GetOutcomeRequestsQuery) => {
-
-  const data = SharedHooks.useMyInfineQuery<OutcomeRequestUser, GetOutcomeRequestsQuery, OutcomeRequestUserDto>({
+  const queryKey = userKeys.outcomeRequests.slug(query.userId);
+  const data = SharedHooks.useMyInfineQuery3<OutcomeRequestUser, GetOutcomeRequestsQuery, OutcomeRequestUserDto>({
     query,
     apiFunction: FriendsApi.getOutcomeRequests,
     mapDto: mapOutcomeRequest,
-    queryKey: userKeys.friends.slug(query.userId),
+    queryKey,
   })
 
   return {
     ...data,
-    users: data.entities,
+    queryKey,
   }
 }
 

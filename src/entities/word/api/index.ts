@@ -1,9 +1,10 @@
 import api from "../../../shared/api";
 import { UsualQuery } from "../../../shared/types";
-import { TodayWordDto, TransWordDto, UserWordInfoDto, WordsInfoDto } from "../model";
+import { TodayWordDto, TransWordDto, UserWordInfoDto, WordStatusFilter, WordsInfoDto } from "../model";
 
 export interface UserWordsQuery extends UsualQuery {
   userId: number,
+  status?: WordStatusFilter,
 }
 
 export interface WordsInfoQuery {
@@ -17,7 +18,10 @@ export class WordApi {
     const response = await api.get<UserWordInfoDto[]>(
       INITIAL_URL + '/getAllWords',
       {
-        params: query
+        params: {
+          ...query,
+          status: query.status || 'all',
+        }
       }
     );
     return response.data;
