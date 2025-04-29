@@ -184,32 +184,33 @@ const useAcceptRequest = (fromUserId: number, toUserId: number, acceptRequest: (
 }
 
 const useDeleteFriend = (fromUserId: number, toUserId: number, deleteFriend: () => void) => {
-  const queryClient = useQueryClient();
-  const queryKey = userKeys.friends.slug(fromUserId);
-  console.log(queryKey);
+  // const queryClient = useQueryClient();
+  // const queryKey = userKeys.friends.slug(fromUserId);
+  // console.log(queryKey);
 
   return useMutation({
     mutationFn: () => {
       return FriendsApi.deleteFriend(fromUserId, toUserId)
     },
     onSuccess: () => {
-      queryClient.setQueryData(
-        queryKey, 
-        (old: Friend[]) => {
-          console.log(old);
-          if (!old) {
-            return undefined
-          }
-          return old.map(user => {
-            if (user.id === toUserId) {
-              user.setIsDeleted(true);
-              return user
-            } else {
-              return user
-            }
-          })
-        }
-      );
+      // queryClient.setQueryData(
+      //   queryKey, 
+      //   (old: Friend[]) => {
+      //     console.log(old);
+      //     if (!old) {
+      //       return undefined
+      //     }
+      //     return old.map(user => {
+      //       if (user.id === toUserId) {
+      //         user.setIsDeleted(true);
+      //         return user
+      //       } else {
+      //         return user
+      //       }
+      //     })
+      //   }
+      // );
+      deleteFriend();
     },
   })
 }

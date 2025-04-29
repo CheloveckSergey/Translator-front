@@ -1,7 +1,7 @@
 import { FriendsApi, GetFindFriendsQuery, GetFriendsQuery, GetIncomeRequestsQuery, GetOutcomeRequestsQuery, UserApi, UserQuery } from "../api";
 import { useState } from "react";
-import { FindFriendDto, Friend, FriendDto, IncomeRequestUser, IncomeRequestUserDto, OutcomeRequestUser, OutcomeRequestUserDto, PotentialFriend, User } from "../model";
-import { mapFindFriendDto, mapFriendDto, mapIncomeRequest, mapOutcomeRequest, mapUserDto } from "../model/mappers";
+import { AvatarUser, FindFriendDto, Friend, FriendDto, IncomeRequestUser, IncomeRequestUserDto, OutcomeRequestUser, OutcomeRequestUserDto, PotentialFriend, User } from "../model";
+import { mapFindFriendDto, mapFriendDto, mapIncomeRequest, mapOutcomeRequest, mapAvatarUserDto } from "../model/mappers";
 import { SharedHooks, SharedLib } from "../../../shared/lib";
 import { useQuery } from "@tanstack/react-query";
 
@@ -94,14 +94,14 @@ const useOutcomeRequests = (query: GetOutcomeRequestsQuery) => {
   }
 }
 
-const useUser = (userId: number, query?: UserQuery) => {
-  const [user, setUser] = useState<User>();
+const useAvatarUser = (userId: number, query?: UserQuery) => {
+  const [user, setUser] = useState<AvatarUser>();
 
   const { isFetching, isError } = useQuery({
     queryKey: userKeys.user.slug(userId, query),
     queryFn: async () => {
       const data = await UserApi.getUserById(userId, query);
-      setUser(mapUserDto(data));
+      setUser(mapAvatarUserDto(data));
       return data
     },
   });
@@ -124,5 +124,5 @@ export const UserLib = {
   useFriends,
   useIncomeRequests,
   useOutcomeRequests,
-  useUser,
+  useAvatarUser,
 }

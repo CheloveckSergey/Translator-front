@@ -2,7 +2,7 @@ import { FriendRequestStatus } from "./types/types";
 
 export type SentRequestStatus = 'sentTo' | 'sentFrom' | undefined;
 
-export interface UserDto {
+export interface AvatarUserDto {
   id: number,
   login: string,
   avatar: string | undefined,
@@ -14,7 +14,7 @@ export interface UserDto {
 export interface GeneralFriendRequstDto {
   id: number,
   login: string,
-  wordsNumber: number,
+  wordsNumber?: number,
   avatar?: string | undefined,
 }
 

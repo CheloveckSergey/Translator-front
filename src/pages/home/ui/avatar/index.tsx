@@ -1,10 +1,10 @@
 import { FC } from "react";
-import { User } from "../../../../entities/user";
+import { AvatarUser, User } from "../../../../entities/user";
 import { UserUi } from "../../../../entities/user/ui";
 import { UserFeaturesLib } from "../../../../features/user";
 
 interface AWProps {
-  user: User | undefined,
+  user: AvatarUser | undefined,
   isLoading: boolean,
   isError: boolean,
   updateState: () => void,

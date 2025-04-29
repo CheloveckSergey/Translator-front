@@ -1,9 +1,10 @@
 import { FC } from "react";
 import { SharedUiHelpers } from "../../../../shared/sharedUi/helpers";
-import { OnlyUser } from "../../model/types/onlyUser";
+import { User } from "../../model";
 import './styles.scss';
 import { useNavigate } from "react-router-dom";
 import { GeneralFriendRequest } from "../../model";
+import { SharedButtons } from "../../../../shared/sharedUi/buttons";
 
 const UserCardSceleton: FC = () => {
 
@@ -12,12 +13,12 @@ const UserCardSceleton: FC = () => {
   )
 }
 
-interface UCProps<T extends GeneralFriendRequest> {
+interface UCProps<T extends User> {
   user: T,
   actions: React.ReactNode | React.ReactNode[],
   description?: string | undefined,
 }
-export function UserCard<T extends GeneralFriendRequest>({ user, actions, description } : UCProps<T>) {
+export function UserCard<T extends User>({ user, actions, description } : UCProps<T>) {
 
   const navigate = useNavigate();
 
@@ -35,7 +36,9 @@ export function UserCard<T extends GeneralFriendRequest>({ user, actions, descri
           >
             {user.login}
           </h4>
-          <span className="words-number extra">{user.wordsNumber} words</span>
+          {user.wordsNumber && (
+            <span className="words-number extra">{user.wordsNumber} words</span>
+          )}
         </div>
       </div>
       <div className="actions">
@@ -57,19 +60,25 @@ const UserListSceleton: FC = () => {
   )
 }
 
-interface ULProps<T extends OnlyUser> {
+interface ULProps<T extends User> {
   users: T[],
   isFetching: boolean,
   isError: boolean,
   mapUser: (user: T, index: number) => React.ReactNode | React.ReactNode[],
+  fetchNextPage?: () => void,
+  hasNextPage?: boolean,
+  isFetchingNextPage?: boolean,
   className?: string,
   emptyHolder?: React.ReactNode,
 }
-export function UserList<T extends OnlyUser>({ 
+export function UserList<T extends User>({ 
   users, 
   isFetching, 
   isError, 
   mapUser, 
+  fetchNextPage,
+  hasNextPage,
+  isFetchingNextPage,
   className, 
   emptyHolder = 'Nothing here'
 } : ULProps<T>) {
@@ -85,7 +94,15 @@ export function UserList<T extends OnlyUser>({
         emptyClassname="user-list-empty"
         iconSize={40}
       >
-        {users.map(mapUser)}
+        <div className="content">
+          {users.map(mapUser)}
+        </div>
+        <SharedButtons.LoadMoreButton
+          fetchNextPage={fetchNextPage as () => void}
+          isFetchingNextPage={!!isFetchingNextPage}
+          hasNextPage={!!hasNextPage}
+          isError={isError}
+        />
       </SharedUiHelpers.ErrorLoader>
     </div>
   )

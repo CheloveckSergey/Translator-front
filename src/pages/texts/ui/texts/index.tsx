@@ -11,14 +11,20 @@ import { SharedUiTypes } from "../../../../shared/sharedUi/types";
 interface TPWProps {
   text: TextPreview,
   textsQuery: TextPreviewsQuery,
+  updateData: () => void,
 }
-const TextPreviewWidget: FC<TPWProps> = ({ text, textsQuery }) => {
+const TextPreviewWidget: FC<TPWProps> = ({ text, textsQuery, updateData }) => {
 
   const { user } = useAppSelector(state => state.user);
 
   const urlUserId = useUrlUserId();
 
-  const changeNameMutation = TextFeaturesLib.useChangeName(text.id, textsQuery);
+  const changeNameMutation = TextFeaturesLib.useChangeName(text.id, textsQuery, changeName);
+
+  function changeName(name: string) {
+    text.changeName(name);
+    updateData();
+  }
 
   const isCurUserTextsPage = user && urlUserId === user.id;
   const isCurUserText = user && user.id === text.author.id;
@@ -108,6 +114,7 @@ export const TextListWidget: FC = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    updateData,
   } = TextsLib.useTextPreviewsList2(textsQuery);
 
   const addTextMutation = TextFeaturesLib.useAddText(textsQuery);
@@ -150,6 +157,7 @@ export const TextListWidget: FC = () => {
           key={index}
           text={text}
           textsQuery={textsQuery}
+          updateData={updateData}
         />}
         className="text-list"
       />

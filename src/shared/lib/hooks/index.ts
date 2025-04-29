@@ -1,6 +1,6 @@
 import { MouseEvent, useEffect, useState } from "react"
 import { Copyable, ShowWarningIf, UsualQuery, WarningOperation } from "../../types";
-import { UseInfiniteQueryResult, useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { InfiniteData, UseInfiniteQueryResult, useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 
 function useClickOutside<T extends HTMLElement>(ref: React.MutableRefObject<T> | null, callback: () => void) {
   const handleClick = (e: globalThis.MouseEvent) => {
@@ -133,7 +133,7 @@ function useMyInfineQuery3<
   queryKey: string[],
 }) {
   const result = useInfiniteQuery({
-    queryKey: [queryKey],
+    queryKey,
     queryFn: async ({ pageParam = query.offset ?? 0 }) => {
       const data = await apiFunction({ 
         ...query,
@@ -157,11 +157,27 @@ function useMyInfineQuery3<
 
   const queryClient = useQueryClient();
 
+  // function updateState() {
+  //   const newEntities = result.data?.map(entity => entity.getCopy());
+  //   queryClient.setQueryData(queryKey, (old: Entity[]) => {
+  //     return old?.map(entity => entity.getCopy())
+  //   }); 
+  // }
+
   function updateState() {
-    const newEntities = result.data?.map(entity => entity.getCopy());
-    queryClient.setQueryData(queryKey, (old: Entity[]) => {
-      return old?.map(entity => entity.getCopy())
-    }); 
+    queryClient.setQueryData(queryKey, (old: InfiniteData<Entity[]>) => {
+      console.log(1);
+      console.log(old);
+      const newPages = old.pages.map(page => {
+        return page.map(entity => entity.getCopy())
+      });
+      const newData: InfiniteData<Entity[]> = {
+        pageParams: old.pageParams,
+        pages: newPages,
+      }
+      console.log(newData);
+      return newData
+    }) 
   }
 
   return {

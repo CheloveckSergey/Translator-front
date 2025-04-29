@@ -42,6 +42,19 @@ export class TextPreview {
   setIsCopied(isCopied: boolean) {
     this.isCopied = isCopied;
   }
+
+  getCopy() {
+    const newText = new TextPreview(
+      this.id, 
+      this.name, 
+      this.content, 
+      this.author.id, 
+      this.author.login, 
+      this.isCopied, 
+      this.createDate
+    );
+    return newText
+  }
 }
 
 export class TextList {

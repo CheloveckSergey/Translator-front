@@ -4,7 +4,7 @@ import { UseModalWindow } from "../../../../widgets/modalWindow";
 import { SharedLib } from "../../../../shared/lib";
 import { SharedUiHelpers } from "../../../../shared/sharedUi/helpers";
 import './styles.scss';
-import { User } from "../../model";
+import { AvatarUser, User } from "../../model";
 import { useAppSelector } from "../../../../app/store";
 import { SharedBlocks } from "../../../../shared/sharedUi/blocks";
 
@@ -73,7 +73,7 @@ const AvatarSceleton: FC = () => {
 }
 
 interface UAProps {
-  user?: User,
+  user?: AvatarUser,
   isLoading: boolean,
   isError: boolean,
   updateAvatarObject?: {
@@ -116,10 +116,12 @@ export const UserAvatar: FC<UAProps> = ({ user, isLoading, isError, updateAvatar
               left="Name"
               right={user.login}
             />
-            <SharedBlocks.InfoLine
-              left="Studied words"
-              right={String(user.wordsNumber)}
-            />
+            {user.wordsNumber && (
+              <SharedBlocks.InfoLine
+                left="Studied words"
+                right={String(user.wordsNumber)}
+              />
+            )}
           </div>
         </>}
       </SharedUiHelpers.ErrorLoader>

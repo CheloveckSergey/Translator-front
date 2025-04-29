@@ -1,5 +1,5 @@
 import api from "../../../shared/api";
-import { UpdateImageDto, UserDto } from "../model";
+import { UpdateImageDto, AvatarUserDto } from "../model";
 
 export interface UserQuery {
   wordsNumber?: boolean,
@@ -10,7 +10,7 @@ const INITIAL_URL = '/users';
 
 export class UserApi {
   static async getUserById(userId: number, query?: UserQuery) {
-    const response = await api.get<UserDto>(
+    const response = await api.get<AvatarUserDto>(
       INITIAL_URL + '/getUserById/' + userId,
       {
         params: query,

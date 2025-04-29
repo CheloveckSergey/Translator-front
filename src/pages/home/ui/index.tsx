@@ -12,7 +12,7 @@ export const HomePage: FC = () => {
 
   const { user: meUser } = useAppSelector(state => state.user);
 
-  const { user, isLoading, isError, updateState } = UserLib.useUser(meUser!.id, { wordsNumber: true });
+  const { user, isLoading, isError, updateState } = UserLib.useAvatarUser(meUser!.id, { wordsNumber: true });
 
   return (
     <SharedBlocks.RegularLayout

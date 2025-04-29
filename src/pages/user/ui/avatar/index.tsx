@@ -1,12 +1,12 @@
 import { FC } from "react";
 import './styles.scss';
 import { useAppSelector } from "../../../../app/store";
-import { User } from "../../../../entities/user";
+import { AvatarUser } from "../../../../entities/user";
 import { FriendsFeaturesUi } from "../../../../features/friendship";
 import { UserUi } from "../../../../entities/user/ui";
 
 interface AProps {
-  user: User | undefined,
+  user: AvatarUser | undefined,
   isLoading: boolean,
   isError: boolean,
   updateState: () => void,
@@ -21,17 +21,17 @@ export const Avatar: FC<AProps> = ({ user, isLoading, isError, updateState }) =>
   }
 
   function cancelRequest() {
-    user?.setIsSentRequest(undefined);
+    user?.setRequestStatus(undefined);
     updateState();
   }
   function sendRequest() {
-    user?.setIsSentRequest('sentTo');
+    user?.setRequestStatus('sentTo');
     updateState();
   }
 
   function deleteFriend() {
     user?.setIsFriend(false);
-    user?.setIsSentRequest(undefined);
+    user?.setRequestStatus(undefined);
     updateState();
   }
 
@@ -52,7 +52,7 @@ export const Avatar: FC<AProps> = ({ user, isLoading, isError, updateState }) =>
           <span className="description">The friend of yours</span>
         </>
       )
-    } else if (user.isSentRequest === 'sentFrom') {
+    } else if (user.requestStatus === 'sentFrom') {
       block = (
         <>
           <FriendsFeaturesUi.AcceptRequestButton 
@@ -64,7 +64,7 @@ export const Avatar: FC<AProps> = ({ user, isLoading, isError, updateState }) =>
           <span className="description">Sent you request</span>
         </>
       );
-    } else if (user.isSentRequest === 'sentTo') {
+    } else if (user.requestStatus === 'sentTo') {
       block = (
         <>
           <FriendsFeaturesUi.CancelRequestButton

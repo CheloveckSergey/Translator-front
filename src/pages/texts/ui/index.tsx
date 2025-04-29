@@ -14,7 +14,7 @@ interface AHProps {
 }
 const AdditionalHeader: FC<AHProps> = ({ userId }) => {
 
-  const { user, isLoading, isError } = UserLib.useUser(userId);
+  const { user, isLoading, isError } = UserLib.useAvatarUser(userId);
 
   const navigate = useNavigate();
   

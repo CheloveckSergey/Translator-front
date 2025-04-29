@@ -31,9 +31,6 @@ export const LastTextsListWidget: FC = () => {
     data,
     isLoading,
     isError,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
   } = TextsLib.useTextPreviewsList2(query);
 
   return (

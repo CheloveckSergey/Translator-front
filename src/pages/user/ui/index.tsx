@@ -10,7 +10,7 @@ export const UserPage: FC = () => {
 
   const userId = useUrlUserId();
 
-  const { user, isLoading, isError, updateState } = UserLib.useUser(
+  const { user, isLoading, isError, updateState } = UserLib.useAvatarUser(
     userId, 
     { 
       friendship: true,

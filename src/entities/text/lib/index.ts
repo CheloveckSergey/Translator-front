@@ -3,19 +3,13 @@ import { ShortTextPreviewDto, TextList, TextMetaDto, TextPagination, TextPreview
 import { AllTextPreviewsQuery, GTextPreviewsQuery, LastFriendsTextsQuery, TextApi, TextPreviewsQuery, TextQuery, TextsInfoQuery } from "../api";
 import { mapShortTextPreview, mapTextMeta, mapTextPreviewDto, mapTextsInfo, mapTranslationDto, mapPremiereTextSpan } from "../model/mappers";
 import { ShortTextPreview } from "../model/types/shortTextPreview";
-import { SharedHooks } from "../../../shared/lib";
-import { InfiniteData, useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
+import { SharedHooks, SharedLib } from "../../../shared/lib";
+import { InfiniteData, useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const textsKeys = {
   texts: {
     root: 'texts',
-    slug: (query: GTextPreviewsQuery) => {
-      const keys: (string | number)[] = [textsKeys.texts.root];
-      Object.values(query).forEach(value => {
-        keys.push(String(value));
-      });
-      return keys
-    },
+    slug: (query: GTextPreviewsQuery) => SharedLib.getQueryKey(textsKeys.texts.root, query),
   },
   text: {
     root: 'text',
@@ -98,9 +92,9 @@ const useTextPreviewsList = (query: TextPreviewsQuery) => {
 }
 
 const useTextPreviewsList2 = (query: TextPreviewsQuery) => {
-
+  const queryKey = textsKeys.texts.slug(query);
   const queryData = useInfiniteQuery({
-    queryKey: textsKeys.texts.slug(query),
+    queryKey,
     queryFn: async ({ pageParam = query.offset ?? 0 }) => {
       const data = await TextApi.getAllTextPreviewsByUser({ 
         offset: pageParam, 
@@ -120,21 +114,33 @@ const useTextPreviewsList2 = (query: TextPreviewsQuery) => {
       return nextPageParam
     },
     gcTime: 60 * 1000,
-    // cacheTime: 60 * 1000,
+    select: (data: InfiniteData<TextPreview[], number>) => {
+      return data.pages.flat()
+    },
   });
 
-  function mapData(data: InfiniteData<TextPreview[]> | undefined): TextPreview[] {
-    if (!data) {
-      return []
-    }
+  const queryClient = useQueryClient();
 
-    const texts: TextPreview[] = data.pages.flat();
-    return texts
+  function updateData() {
+    queryClient.setQueryData(queryKey, (old: InfiniteData<TextPreview[]>) => {
+      console.log(1);
+      console.log(old);
+      const newPages = old.pages.map(page => {
+        return page.map(text => text.getCopy())
+      });
+      const newData: InfiniteData<TextPreview[]> = {
+        pageParams: old.pageParams,
+        pages: newPages,
+      }
+      console.log(newData);
+      return newData
+    }) 
   }
 
   return {
     ...queryData,
-    data: mapData(queryData.data)
+    data: queryData.data || [],
+    updateData,
   }
 }
 

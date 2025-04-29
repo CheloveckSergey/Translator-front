@@ -1,36 +1,12 @@
-import { SentRequestStatus } from "..";
+import { Copyable } from "../../../../shared/types";
 
-export class User {
-  id: number;
-  login: string;
-  _avatar: string | undefined;
-  isFriend: boolean;
-  isSentRequest: SentRequestStatus;
-  wordsNumber?: number;
-
+export abstract class User implements Copyable<User> {
   constructor(
-    id: number, 
-    login: string, 
-    isFriend: boolean, 
-    isSentRequest: SentRequestStatus, 
-    avatar?: string,
-    wordsNumber?: number,
-  ) {
-    this.id = id;
-    this.login = login;
-    this.isFriend = isFriend;
-    this.isSentRequest = isSentRequest;
-    this._avatar = avatar;
-    this.wordsNumber = wordsNumber;
-  }
-
-  setIsFriend(isFriend: boolean) {
-    this.isFriend = isFriend;
-  }
-
-  setIsSentRequest(isSentRequest: SentRequestStatus) {
-    this.isSentRequest = isSentRequest;
-  }
+    public id: number,
+    public login: string,
+    public _avatar?: string | undefined,
+    public wordsNumber?: number, 
+  ) {}
 
   setAvatar(image: string) {
     this._avatar = image;
@@ -44,8 +20,5 @@ export class User {
     return 'http://localhost:5000/' + this._avatar
   }
 
-  getCopy(): User {
-    const newUser = new User(this.id, this.login, this.isFriend, this.isSentRequest, this._avatar, this.wordsNumber);
-    return newUser
-  }
+  abstract getCopy(): User;
 }

@@ -33,7 +33,7 @@ const useAddText = (query: GTextPreviewsQuery) => {
 interface ChangeNameProps {
   name: string,
 }
-const useChangeName = (textId: number, query: GTextPreviewsQuery) => {
+const useChangeName = (textId: number, query: GTextPreviewsQuery, changeName: (name: string) => void) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -41,22 +41,7 @@ const useChangeName = (textId: number, query: GTextPreviewsQuery) => {
       return TextApi.changeName(dto.name, textId);
     },
     onSuccess(_, variables) {
-      queryClient.setQueryData(textsKeys.texts.slug(query), (old: InfiniteData<TextPreview[]>) => {
-        console.log(old);
-        return {
-          ...old,
-          pages: old.pages.map((page) => {
-            return page.filter(text => {
-              if (text.id === textId) {
-                text.changeName(variables.name);
-                return text
-              } else {
-                return text
-              }
-            });
-          })
-        } as InfiniteData<TextPreview[]>
-      }) 
+      changeName(variables.name);
     },
   });
 }

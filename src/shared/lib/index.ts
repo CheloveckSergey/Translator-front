@@ -66,6 +66,14 @@ function getRandomNumber(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function getQueryKey(root: string, query: object): string[] {
+  const keys: string[] = [root];
+  Object.values(query).forEach(value => {
+    keys.push(String(value));
+  });
+  return keys
+}
+
 export const SharedLib = {
   getComfortableDate,
   getImageUrlFromFile,
@@ -73,6 +81,7 @@ export const SharedLib = {
   useUrlUserId,
   useUrlTextId,
   getRandomNumber,
+  getQueryKey,
 }
 
 export { SharedHooks } from './hooks'
