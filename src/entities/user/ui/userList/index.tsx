@@ -3,7 +3,6 @@ import { SharedUiHelpers } from "../../../../shared/sharedUi/helpers";
 import { User } from "../../model";
 import './styles.scss';
 import { useNavigate } from "react-router-dom";
-import { GeneralFriendRequest } from "../../model";
 import { SharedButtons } from "../../../../shared/sharedUi/buttons";
 
 const UserCardSceleton: FC = () => {
@@ -36,9 +35,6 @@ export function UserCard<T extends User>({ user, actions, description } : UCProp
           >
             {user.login}
           </h4>
-          {user.wordsNumber && (
-            <span className="words-number extra">{user.wordsNumber} words</span>
-          )}
         </div>
       </div>
       <div className="actions">

@@ -19,7 +19,7 @@ export const Header: FC<HProps> = ({ refetchTextData }) => {
 
   function onSetPremiere() {
     if (!meta) {
-      return
+      return 
     }
     setPremiereMutation.mutateAsync({ premiere: meta.premiere ? false : true })
     .then(() => {

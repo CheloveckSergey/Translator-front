@@ -5,6 +5,7 @@ export interface UserSettingsDto {
   textsPrivacy: PrivacySettings,
   wordsPrivacy: PrivacySettings,
   pagePrivacy: PrivacySettings,
+  friendsPrivacy: PrivacySettings,
   createdDate: string,
   updatedDate: string,
 }

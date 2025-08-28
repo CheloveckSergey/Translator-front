@@ -5,6 +5,7 @@ const useChangeSettings = (
   updateTextsPrivacy?: (setting: PrivacySettings) => void,
   updateWordsPrivacy?: (setting: PrivacySettings) => void,
   updatePagePrivacy?: (setting: PrivacySettings) => void,
+  updateFriendsPrivacy?: (setting: PrivacySettings) => void,
 ) => {
   return useMutation({
     mutationFn: (props : ChangeUserSettingReqDto) => {
@@ -19,6 +20,9 @@ const useChangeSettings = (
       }
       if (props.pagePrivacy && updatePagePrivacy) {
         updatePagePrivacy(data.pagePrivacy);
+      }
+      if (props.friendsPrivacy && updateFriendsPrivacy) {
+        updateFriendsPrivacy(data.friendsPrivacy);
       }
     }
   })

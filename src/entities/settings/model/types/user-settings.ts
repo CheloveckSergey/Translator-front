@@ -8,6 +8,7 @@ export class UserSettings implements Copyable<UserSettings> {
     public textsPrivacy: PrivacySettings,
     public wordsPrivacy: PrivacySettings,
     public pagePrivacy: PrivacySettings,
+    public friendsPrivacy: PrivacySettings,
     public createdDate: Date,
     public updatedDate: Date,
   ) {}
@@ -24,12 +25,17 @@ export class UserSettings implements Copyable<UserSettings> {
     this.pagePrivacy = privacy;
   }
 
+  setFriendsPrivacy(privacy: PrivacySettings) {
+    this.friendsPrivacy = privacy;
+  }
+
   getCopy() {
     const newSettings = new UserSettings(
       this.id, 
       this.textsPrivacy, 
       this.wordsPrivacy, 
       this.pagePrivacy,
+      this.friendsPrivacy,
       this.createdDate,
       this.updatedDate,
     );

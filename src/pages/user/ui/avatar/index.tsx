@@ -2,8 +2,8 @@ import { FC } from "react";
 import './styles.scss';
 import { useAppSelector } from "../../../../app/store";
 import { AvatarUser } from "../../../../entities/user";
-import { FriendsFeaturesUi } from "../../../../features/friendship";
-import { UserUi } from "../../../../entities/user/ui";
+import { FriendsFeaturesLib, FriendsFeaturesUi } from "../../../../features/friendship";
+import { UserUi, UserUiTypes } from "../../../../entities/user/ui";
 
 interface AProps {
   user: AvatarUser | undefined,
@@ -14,6 +14,11 @@ interface AProps {
 export const Avatar: FC<AProps> = ({ user, isLoading, isError, updateState }) => {
 
   const { user: meUser } = useAppSelector(state => state.user);
+
+  // const deleteFeature = FriendsFeaturesLib.useDeleteFriend(user!.id, meUser!.id, deleteFriend);
+  // const acceptFeature = FriendsFeaturesLib.useAcceptRequest(user!.id, meUser!.id, acceptRequest);
+  // const cancelFeature = FriendsFeaturesLib.useCancelRequest(user!.id, meUser!.id, cancelRequest);
+  // const sendFeature = FriendsFeaturesLib.useSendRequest(user!.id, meUser!.id, sendRequest);
 
   function acceptRequest() {
     user?.setIsFriend(true);
@@ -35,68 +40,71 @@ export const Avatar: FC<AProps> = ({ user, isLoading, isError, updateState }) =>
     updateState();
   }
 
-  const actions: React.ReactNode[] = [];
+  const actions: UserUiTypes.AvatarTypes.FeatureBlock[] = [];
   
-  if (meUser && user) {
-    let block: React.ReactNode | undefined;
+  // if (meUser && user) {
+  //   let action: UserUiTypes.AvatarTypes.FeatureBlock;
 
-    if (user.isFriend) {
-      block = (
-        <>
-          <FriendsFeaturesUi.DeleteFriendButton
-            fromUserId={user.id}
-            toUserId={meUser.id}
-            deleteFriend={deleteFriend}
-            className="friendship-button"
-          />
-          <span className="description">The friend of yours</span>
-        </>
-      )
-    } else if (user.requestStatus === 'sentFrom') {
-      block = (
-        <>
-          <FriendsFeaturesUi.AcceptRequestButton 
-            fromUserId={user.id}
-            toUserId={meUser.id}
-            acceptRequest={acceptRequest}
-            className="friendship-button"
-          />
-          <span className="description">Sent you request</span>
-        </>
-      );
-    } else if (user.requestStatus === 'sentTo') {
-      block = (
-        <>
-          <FriendsFeaturesUi.CancelRequestButton
-            fromUserId={meUser.id}
-            toUserId={user.id}
-            cancelRequest={cancelRequest}
-            className="friendship-button"
-          />
-          <span className="description">You sent request</span>
-        </>
-      )
-    } else {
-      block = (
-        <FriendsFeaturesUi.SendRequestButton
-          fromUserId={meUser.id}
-          toUserId={user.id}
-          sendRequest={sendRequest}
-          className="friendship-button"
-        />
-      )
-    }
+  //   if (user.isFriend) {
+  //     action = {
+  //       type: 'action',
+  //       body: 'Delete friend',
+  //       description: 'The friend of yours',
+  //       mutate: () => deleteFeature.mutate(),
+  //       isLoading: deleteFeature.isPending,
+  //       isError: deleteFeature.isError,
+  //     }
+  //   } else if (user.requestStatus === 'sentFrom') {
+  //     action = {
+  //       type: 'action',
+  //       body: 'Accept request',
+  //       description: 'Sent you request',
+  //       mutate: () => acceptFeature.mutate(),
+  //       isLoading: acceptFeature.isPending,
+  //       isError: acceptFeature.isError,
+  //     }
+  //   } else if (user.requestStatus === 'sentFromRejected') {
+  //     action = {
+  //       type: 'action',
+  //       body: 'Accept request',
+  //       description: 'You rejected request',
+  //       mutate: () => acceptFeature.mutate(),
+  //       isLoading: acceptFeature.isPending,
+  //       isError: acceptFeature.isError,
+  //     }
+  //   } else if (user.requestStatus === 'sentTo') {
+  //     action = {
+  //       type: 'action',
+  //       body: 'Cancel request',
+  //       description: 'You sent request',
+  //       mutate: () => cancelFeature.mutate(),
+  //       isLoading: cancelFeature.isPending,
+  //       isError: cancelFeature.isError,
+  //     }
+  //   } else if (user.requestStatus === 'sentToRejected') {
+  //     action = {
+  //       type: 'description',
+  //       description: "You've been rejected",
+  //     }
+  //   } else {
+  //     action = {
+  //       type: 'action',
+  //       body: 'Send request',
+  //       mutate: () => sendFeature.mutate(),
+  //       isLoading: sendFeature.isPending,
+  //       isError: sendFeature.isError,
+  //     }
+  //   }
 
-    actions.push(block);
-  }
-
+  //   actions.push(action);
+  // }
 
   return (
     <UserUi.UserAvatar
       user={user}
       isLoading={isLoading}
       isError={isError}
-      actions={actions}
+      featureBlocks={actions}
       className="user-avatar"
     />
   )

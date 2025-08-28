@@ -5,6 +5,7 @@ export interface ChangeUserSettingReqDto {
   textsPrivacy?: PrivacySettings | undefined,
   wordsPrivacy?: PrivacySettings | undefined,
   pagePrivacy?: PrivacySettings | undefined,
+  friendsPrivacy?: PrivacySettings | undefined,
   userId: number,
 }
 

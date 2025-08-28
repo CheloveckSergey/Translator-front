@@ -1,32 +1,50 @@
 import { FriendRequestStatus } from "./types/types";
 
-export type SentRequestStatus = 'sentTo' | 'sentFrom' | undefined;
+export type SentRequestStatus = 'sentTo' | 'sentToRejected' | 'sentFrom' | 'sentFromRejected' | undefined;
 
 export interface AvatarUserDto {
   id: number,
   login: string,
-  avatar: string | undefined,
+  avatar?: string | undefined,
   isFriend: boolean,
   isSentRequest: SentRequestStatus;
   wordsNumber?: number;
+  textsNumber?: number,
 }
 
-export interface GeneralFriendRequstDto {
+export interface MeAvatarUserDto {
   id: number,
   login: string,
-  wordsNumber?: number,
+  avatar?: string | undefined,
+  wordsNumber: number,
+  textsNumber: number,
+}
+
+export interface UserDto {
+  id: number,
+  login: string,
   avatar?: string | undefined,
 }
 
-export interface FriendDto extends GeneralFriendRequstDto {}
+export interface UserDtoSchema {
+  id: number,
+  login: string,
+  avatar?: string | undefined,
+  isFriend: boolean,
+  isSentRequest: SentRequestStatus;
+  wordsNumber: number;
+  textsNumber: number,
+}
 
-export interface FindFriendDto extends GeneralFriendRequstDto {}
+export interface FriendDto extends UserDto {}
 
-export interface IncomeRequestUserDto extends GeneralFriendRequstDto {
+export interface FindFriendDto extends UserDto {}
+
+export interface IncomeRequestUserDto extends UserDto {
   status: FriendRequestStatus,
 }
 
-export interface OutcomeRequestUserDto extends GeneralFriendRequstDto {
+export interface OutcomeRequestUserDto extends UserDto {
   status: FriendRequestStatus,
 }
 

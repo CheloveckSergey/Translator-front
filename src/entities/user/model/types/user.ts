@@ -5,7 +5,6 @@ export abstract class User implements Copyable<User> {
     public id: number,
     public login: string,
     public _avatar?: string | undefined,
-    public wordsNumber?: number, 
   ) {}
 
   setAvatar(image: string) {

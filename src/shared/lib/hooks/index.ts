@@ -1,6 +1,7 @@
 import { MouseEvent, useEffect, useState } from "react"
-import { Copyable, ShowWarningIf, UsualQuery, WarningOperation } from "../../types";
+import { Copyable, MyErrorObject, ShowWarningIf, UsualQuery, WarningOperation } from "../../types";
 import { InfiniteData, UseInfiniteQueryResult, useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 
 function useClickOutside<T extends HTMLElement>(ref: React.MutableRefObject<T> | null, callback: () => void) {
   const handleClick = (e: globalThis.MouseEvent) => {
@@ -132,7 +133,13 @@ function useMyInfineQuery3<
   mapDto: (dto: Dto) => Entity,
   queryKey: string[],
 }) {
-  const result = useInfiniteQuery({
+  const result = useInfiniteQuery<
+    Entity[],
+    AxiosError<MyErrorObject>,
+    Entity[],
+    (string | number)[],
+    number
+  >({
     queryKey,
     queryFn: async ({ pageParam = query.offset ?? 0 }) => {
       const data = await apiFunction({ 
@@ -156,13 +163,6 @@ function useMyInfineQuery3<
   });
 
   const queryClient = useQueryClient();
-
-  // function updateState() {
-  //   const newEntities = result.data?.map(entity => entity.getCopy());
-  //   queryClient.setQueryData(queryKey, (old: Entity[]) => {
-  //     return old?.map(entity => entity.getCopy())
-  //   }); 
-  // }
 
   function updateState() {
     queryClient.setQueryData(queryKey, (old: InfiniteData<Entity[]>) => {

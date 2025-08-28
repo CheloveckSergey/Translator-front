@@ -15,6 +15,7 @@ export const SettingsPage: FC = () => {
     changeTextsPrivacy,
     changeWordsPrivacy,
     changePagePrivacy,
+    changeFriendsPrivacy,
   } = UserSettingsLib.useSettings(user!.id);
 
   return (
@@ -31,9 +32,11 @@ export const SettingsPage: FC = () => {
           textsPrivacy={settings.textsPrivacy}
           wordsPrivacy={settings.wordsPrivacy}
           pagePrivacy={settings.pagePrivacy}
+          friendsPrivacy={settings.friendsPrivacy}
           changeTextsPrivacy={changeTextsPrivacy}
           changeWordsPrivacy={changeWordsPrivacy}
           changePagePrivacy={changePagePrivacy}
+          changeFriendsPrivacy={changeFriendsPrivacy}
           isLoading={isFetching}
           isError={isError}
         />

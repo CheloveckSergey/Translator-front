@@ -1,10 +1,10 @@
 import { FC } from "react";
-import { AvatarUser, User } from "../../../../entities/user";
+import { MeAvatarUser } from "../../../../entities/user";
 import { UserUi } from "../../../../entities/user/ui";
 import { UserFeaturesLib } from "../../../../features/user";
 
 interface AWProps {
-  user: AvatarUser | undefined,
+  user: MeAvatarUser | undefined,
   isLoading: boolean,
   isError: boolean,
   updateState: () => void,
@@ -32,7 +32,8 @@ export const AvatarWidget: FC<AWProps> = ({ user, isLoading, isError, updateStat
         isLoading: updateLoading,
         isError: updateError,
       }}
-      actions={[]}
+      featureBlocks={[]}
+      // actions={[]}
     />
   )
 }

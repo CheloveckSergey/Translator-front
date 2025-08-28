@@ -22,4 +22,8 @@ export type ShowWarningIf = (conditionText: {
   text: string;
 }[], operation: () => void) => void
 
+export interface MyErrorObject {
+  message: string,
+}
+
 export * as SharedTypes from './union'

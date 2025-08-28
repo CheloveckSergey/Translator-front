@@ -52,9 +52,11 @@ interface PProps {
   textsPrivacy: PrivacySettings,
   wordsPrivacy: PrivacySettings,
   pagePrivacy: PrivacySettings,
+  friendsPrivacy: PrivacySettings,
   changeTextsPrivacy: (privacy: PrivacySettings) => void,
   changeWordsPrivacy: (privacy: PrivacySettings) => void,
   changePagePrivacy: (privacy: PrivacySettings) => void,
+  changeFriendsPrivacy: (privacy: PrivacySettings) => void,
   isLoading: boolean,
   isError: boolean,
 }
@@ -62,9 +64,11 @@ export const Privacy: FC<PProps> = ({
   textsPrivacy, 
   wordsPrivacy, 
   pagePrivacy,
+  friendsPrivacy,
   changeTextsPrivacy,
   changeWordsPrivacy,
   changePagePrivacy,
+  changeFriendsPrivacy,
   isLoading,
   isError,
 }) => {
@@ -74,10 +78,12 @@ export const Privacy: FC<PProps> = ({
   const [newTextsPrivacy, setNewTextsPrivacy] = useState<PrivacySettings>(textsPrivacy);
   const [newWordsPrivacy, setNewWordsPrivacy] = useState<PrivacySettings>(wordsPrivacy);
   const [newPagePrivacy, setNewPagePrivacy] = useState<PrivacySettings>(pagePrivacy);
+  const [newFriendsPrivacy, setNewFriendsPrivacy] = useState<PrivacySettings>(pagePrivacy);
 
   const [prevTextsPrivacy, setPrevTextsPrivacy] = useState<PrivacySettings>(textsPrivacy);
   const [prevWordsPrivacy, setPrevWordsPrivacy] = useState<PrivacySettings>(wordsPrivacy);
   const [prevPagePrivacy, setPrevPagePrivacy] = useState<PrivacySettings>(pagePrivacy);
+  const [prevFriendsPrivacy, setPrevFriendsPrivacy] = useState<PrivacySettings>(pagePrivacy);
 
   if (prevTextsPrivacy !== textsPrivacy) {
     setNewTextsPrivacy(textsPrivacy);
@@ -91,11 +97,16 @@ export const Privacy: FC<PProps> = ({
     setNewPagePrivacy(pagePrivacy);
     setPrevPagePrivacy(pagePrivacy);
   }
+  if (prevFriendsPrivacy !== friendsPrivacy) {
+    setNewFriendsPrivacy(friendsPrivacy);
+    setPrevFriendsPrivacy(friendsPrivacy);
+  }
 
   const mutateObject = UserSettingsFeatures.useChangeSettings(
     changeTextsPrivacy,
     changeWordsPrivacy,
     changePagePrivacy,
+    changeFriendsPrivacy,
   );
 
   function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -113,13 +124,17 @@ export const Privacy: FC<PProps> = ({
     if (pagePrivacy !== newPagePrivacy) {
       props.pagePrivacy = newPagePrivacy;
     }
+    if (friendsPrivacy !== newFriendsPrivacy) {
+      props.friendsPrivacy = newFriendsPrivacy;
+    }
 
     mutateObject.mutateAsync(props);
   }
 
   const isChange: boolean = textsPrivacy !== newTextsPrivacy
   || wordsPrivacy !== newWordsPrivacy
-  || pagePrivacy !== newPagePrivacy;
+  || pagePrivacy !== newPagePrivacy
+  || friendsPrivacy !== newFriendsPrivacy;
 
   return (
     <SharedUiHelpers.ErrorLoader
@@ -149,6 +164,12 @@ export const Privacy: FC<PProps> = ({
             formName="page-privacy"
             newPrivacy={newPagePrivacy}
             setNewPrivacy={setNewPagePrivacy}
+          />
+          <LineSelect 
+            name="Просмотр друзей" 
+            formName="page-privacy"
+            newPrivacy={newFriendsPrivacy}
+            setNewPrivacy={setNewFriendsPrivacy}
           />
           {isChange && (
             <div className="submit-container">

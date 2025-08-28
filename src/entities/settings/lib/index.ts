@@ -18,6 +18,7 @@ const useSettings = (userId: number) => {
     PrivacySettings.ALL,
     PrivacySettings.ALL,
     PrivacySettings.ALL,
+    PrivacySettings.ALL,
     new Date(),
     new Date(),
   ))
@@ -53,6 +54,11 @@ const useSettings = (userId: number) => {
     updateState();
   }
 
+  function changeFriendsPrivacy(privacy: PrivacySettings) {
+    settings.setFriendsPrivacy(privacy);
+    updateState();
+  }
+
   return {
     settings,
     isFetching,
@@ -61,6 +67,7 @@ const useSettings = (userId: number) => {
     changeTextsPrivacy,
     changeWordsPrivacy,
     changePagePrivacy,
+    changeFriendsPrivacy,
   }
 }
 

@@ -1,21 +1,16 @@
 import { User } from "./user";
 import { FriendRequestStatus } from "./types";
 
-export abstract class GeneralFriendRequest extends User {
-  constructor(
-    id: number,
-    login: string,
-    avatar?: string | undefined,
-    wordsNumber?: number,
-  ) {
-    super(id, login, avatar, wordsNumber);
-  }
-}
-
 export interface SendRequestable {
   isSentRequest: boolean;
 
   setIsSentRequest(isSentRequest: boolean): void;
+}
+
+export interface StatusRequestable {
+  status: FriendRequestStatus;
+
+  setStatus(status: FriendRequestStatus): void;
 }
 
 export interface Friendable {
@@ -24,32 +19,15 @@ export interface Friendable {
   setIsFriend(isFriend: boolean): void;
 }
 
-export abstract class SendableFriendRequest extends GeneralFriendRequest implements SendRequestable {
-  constructor(
-    id: number,
-    login: string,
-    public isSentRequest: boolean,
-    avatar?: string | undefined,
-    wordsNumber?: number,
-  ) {
-    super(id, login, avatar, wordsNumber);
-  }
-
-  setIsSentRequest(isSentRequest: boolean) {
-    this.isSentRequest = isSentRequest;
-  }
-}
-
-export class Friend extends GeneralFriendRequest implements Friendable {
+export class Friend extends User implements Friendable {
   isFriend: boolean;
 
   constructor(
     id: number, 
     login: string, 
     avatar?: string | undefined,
-    wordsNumber?: number, 
   ) {
-    super(id, login, avatar, wordsNumber);
+    super(id, login, avatar);
     this.isFriend = true;
   }
 
@@ -58,40 +36,44 @@ export class Friend extends GeneralFriendRequest implements Friendable {
   }
 
   getCopy() {
-    const newUser = new Friend(this.id, this.login, this._avatar, this.wordsNumber);
+    const newUser = new Friend(this.id, this.login, this._avatar);
     newUser.isFriend = this.isFriend;
     return newUser
   }
 }
 
 
-export class PotentialFriend extends SendableFriendRequest {
+export class PotentialFriend extends User implements SendRequestable {
+  public isSentRequest: boolean = false;
+
   constructor(
     id: number, 
     login: string, 
     avatar?: string | undefined,
-    wordsNumber?: number, 
   ) {
-    super(id, login, false, avatar, wordsNumber);
+    super(id, login, avatar);
+  }
+
+  setIsSentRequest(isSentRequest: boolean): void {
+    this.isSentRequest = isSentRequest
   }
 
   getCopy() {
-    const newUser = new PotentialFriend(this.id, this.login, this._avatar, this.wordsNumber);
+    const newUser = new PotentialFriend(this.id, this.login, this._avatar);
     newUser.isSentRequest = this.isSentRequest;
     return newUser;
   }
 }
 
 
-export class IncomeRequestUser extends GeneralFriendRequest {
+export class IncomeRequestUser extends User implements StatusRequestable {
   constructor(
     id: number, 
     login: string, 
     public status: FriendRequestStatus, 
-    avatar?: string | undefined,
-    wordsNumber?: number, 
+    avatar?: string | undefined, 
   ) {
-    super(id, login, avatar, wordsNumber);
+    super(id, login, avatar);
   }
 
   setStatus(status: FriendRequestStatus) {
@@ -99,28 +81,35 @@ export class IncomeRequestUser extends GeneralFriendRequest {
   }
 
   getCopy() {
-    const newUser = new IncomeRequestUser(this.id, this.login, this.status, this._avatar, this.wordsNumber);
+    const newUser = new IncomeRequestUser(this.id, this.login, this.status, this._avatar);
     return newUser
   }
 }
 
 
-export class OutcomeRequestUser extends SendableFriendRequest {
-  status: FriendRequestStatus;
+export class OutcomeRequestUser extends User implements SendRequestable, StatusRequestable {
+  public isSentRequest: boolean;
 
   constructor(
     id: number, 
     login: string, 
-    status: FriendRequestStatus, 
+    public status: FriendRequestStatus, 
     avatar?: string | undefined,
-    wordsNumber?: number, 
   ) {
-    super(id, login, true, avatar, wordsNumber);
+    super(id, login, avatar);
+    this.isSentRequest = true;
+  }
+
+  setIsSentRequest(isSentRequest: boolean): void {
+    this.isSentRequest = isSentRequest
+  }
+
+  setStatus(status: FriendRequestStatus) {
     this.status = status;
   }
 
   getCopy() {
-    const newUser = new OutcomeRequestUser(this.id, this.login, this.status, this._avatar, this.wordsNumber);
+    const newUser = new OutcomeRequestUser(this.id, this.login, this.status, this._avatar);
     newUser.setIsSentRequest(this.isSentRequest);
     return newUser
   }

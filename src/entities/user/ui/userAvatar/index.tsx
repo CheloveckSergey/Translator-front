@@ -1,12 +1,12 @@
 import { ChangeEvent, FC, useState } from "react";
-import { ButtonColor, SharedButtons } from "../../../../shared/sharedUi/buttons";
+import { SharedButtons } from "../../../../shared/sharedUi/buttons";
 import { UseModalWindow } from "../../../../widgets/modalWindow";
 import { SharedLib } from "../../../../shared/lib";
 import { SharedUiHelpers } from "../../../../shared/sharedUi/helpers";
 import './styles.scss';
-import { AvatarUser, User } from "../../model";
-import { useAppSelector } from "../../../../app/store";
+import { TextsNumberableOptional, User, WordsNumberableOptional } from "../../model";
 import { SharedBlocks } from "../../../../shared/sharedUi/blocks";
+import { FeatureBlock } from "./types";
 
 interface UAWProps {
   updateAvatarObject?: {
@@ -73,7 +73,7 @@ const AvatarSceleton: FC = () => {
 }
 
 interface UAProps {
-  user?: AvatarUser,
+  user?: User & WordsNumberableOptional & TextsNumberableOptional,
   isLoading: boolean,
   isError: boolean,
   updateAvatarObject?: {
@@ -81,10 +81,11 @@ interface UAProps {
     isLoading: boolean,
     isError: boolean,
   },
-  actions: React.ReactNode[],
+  featureBlocks: FeatureBlock[],
+  // actions: React.ReactNode[],
   className?: string,
 }
-export const UserAvatar: FC<UAProps> = ({ user, isLoading, isError, updateAvatarObject, actions, className }) => {
+export const UserAvatar: FC<UAProps> = ({ user, isLoading, isError, updateAvatarObject, featureBlocks, className }) => {
 
   const [showUAWindow, setShowUAWindow] = useState<boolean>(false);
 
@@ -109,17 +110,36 @@ export const UserAvatar: FC<UAProps> = ({ user, isLoading, isError, updateAvatar
                 className="change-avatar-button"
               />
             )}
-            {actions}
+            {featureBlocks.map((block, index) => (
+              <>
+                {block.description && <span>{block.description}</span>}
+                {block.type === 'action' && (
+                  <SharedButtons.SquareActionButton
+                    body={block.body}
+                    isLoading={block.isLoading}
+                    isError={block.isError}
+                    onClick={() => block.mutate()}
+                    color="green"
+                  />)
+                }
+              </>
+            ))}
           </div>
           <div className="info">
             <SharedBlocks.InfoLine 
               left="Name"
               right={user.login}
             />
-            {user.wordsNumber && (
+            {user.wordsNumber !== undefined && (
               <SharedBlocks.InfoLine
                 left="Studied words"
                 right={String(user.wordsNumber)}
+              />
+            )}
+            {user.textsNumber !== undefined && (
+              <SharedBlocks.InfoLine
+                left="Loaded texts"
+                right={String(user.textsNumber)}
               />
             )}
           </div>

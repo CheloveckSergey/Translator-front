@@ -7,6 +7,7 @@ export function mapUserSettings(settingsDto: UserSettingsDto): UserSettings {
     settingsDto.textsPrivacy,
     settingsDto.wordsPrivacy,
     settingsDto.pagePrivacy,
+    settingsDto.friendsPrivacy,
     new Date(settingsDto.createdDate),
     new Date(settingsDto.updatedDate),
   );

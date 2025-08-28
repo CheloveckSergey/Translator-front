@@ -1,9 +1,10 @@
-import { FriendsApi, GetFindFriendsQuery, GetFriendsQuery, GetIncomeRequestsQuery, GetOutcomeRequestsQuery, UserApi, UserQuery } from "../api";
+import { FriendsApi, GetFindFriendsQuery, GetFriendsQuery, GetIncomeRequestsQuery, GetOutcomeRequestsQuery, UserApi, UserQuery, UserQuery1 } from "../api";
 import { useState } from "react";
-import { AvatarUser, FindFriendDto, Friend, FriendDto, IncomeRequestUser, IncomeRequestUserDto, OutcomeRequestUser, OutcomeRequestUserDto, PotentialFriend, User } from "../model";
+import { AvatarUser, FindFriendDto, Friend, FriendDto, IncomeRequestUser, IncomeRequestUserDto, OutcomeRequestUser, OutcomeRequestUserDto, PotentialFriend, User, UserDtoSchema } from "../model";
 import { mapFindFriendDto, mapFriendDto, mapIncomeRequest, mapOutcomeRequest, mapAvatarUserDto } from "../model/mappers";
 import { SharedHooks, SharedLib } from "../../../shared/lib";
 import { useQuery } from "@tanstack/react-query";
+import { Copyable } from "../../../shared/types";
 
 export const userKeys = {
   findUsers: {
@@ -41,7 +42,9 @@ const useFriends = (query: GetFriendsQuery) => {
     apiFunction: FriendsApi.getFriends,
     mapDto: mapFriendDto,
     queryKey,
-  })
+  });
+
+  console.log(data.error);
 
   return {
     ...data,
@@ -119,10 +122,42 @@ const useAvatarUser = (userId: number, query?: UserQuery) => {
   }
 }
 
+function useUser1<
+  E extends Copyable<E>,
+  K extends keyof UserDtoSchema,
+>(
+  query: UserQuery1<K>,
+  mapper: (dto: Pick<UserDtoSchema, K>) => E,
+) {
+  const [user, setUser] = useState<E>();
+
+  const { isFetching, isError } = useQuery({
+    queryKey: ['user', ...query.fields],
+    queryFn: async () => {
+      const data = await UserApi.getUser1(query);
+      setUser(mapper(data));
+      return data
+    },
+  });
+
+  function updateState() {
+    const newUser = user?.getCopy();
+    setUser(newUser);
+  }
+
+  return {
+    user,
+    isLoading: isFetching,
+    isError,
+    updateState,
+  }
+}
+
 export const UserLib = {
   useFindFriends,
   useFriends,
   useIncomeRequests,
   useOutcomeRequests,
   useAvatarUser,
+  useUser1,
 }
